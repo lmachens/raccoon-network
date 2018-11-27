@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config build/production.js",
-    "build-dev": "webpack --config build/dev.js --watch",
+    "start": "webpack --config build/dev.js --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,7 +20,8 @@
   "homepage": "https://github.com/lmachens/raccoon-network#readme",
   "sideEffects": false,
   "dependencies": {
-    "react": "^16.6.3"
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
@@ -28,10 +29,11 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.1.0",
     "@types/node": "^10.12.10",
+    "@types/react": "^16.7.7",
+    "@types/react-dom": "^16.0.10",
     "babel-loader": "^8.0.4",
     "clean-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^4.6.0",
-    "file-loader": "^2.0.0",
     "generate-json-webpack-plugin": "^0.3.1",
     "html-webpack-plugin": "^3.2.0",
     "tslint": "^5.11.0",

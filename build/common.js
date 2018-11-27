@@ -5,7 +5,7 @@ const manifest = require('./manifest');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
-module.exports = ({ outputPath, mode }) => ({
+module.exports = ({ outputPath, mode, ...other }) => ({
   name: 'server',
   mode,
   target: 'web',
@@ -22,7 +22,7 @@ module.exports = ({ outputPath, mode }) => ({
       {
         test: /\.(tsx?)|(jsx?)$/,
         loader: require.resolve('babel-loader'),
-        include: [path.resolve(__dirname, 'src')]
+        include: [path.resolve(__dirname, '../src')]
       }
     ]
   },
@@ -64,5 +64,6 @@ module.exports = ({ outputPath, mode }) => ({
     splitChunks: {
       chunks: 'all'
     }
-  }
+  },
+  ...other
 });

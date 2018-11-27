@@ -6,9 +6,9 @@ module.exports = {
     version: '0.23.0',
     'minimum-overwolf-version': '0.109.1',
     author: 'Leon Machens',
-    icon: 'assets/icon.png',
-    icon_gray: 'assets/icon_gray.png',
-    launcher_icon: 'assets/launcher_icon.ico',
+    icon: 'assets/logo.png',
+    icon_gray: 'assets/logo.png',
+    launcher_icon: 'assets/favicon.ico',
     description: ''
   },
   permissions: [],
