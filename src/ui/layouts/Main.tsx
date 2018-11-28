@@ -73,6 +73,7 @@ const styles = createStyles({
   },
   logo: {
     height: 24,
+    marginLeft: 4,
     marginRight: 4
   },
   grow: {

@@ -1,13 +1,9 @@
-import {
-  Avatar,
-  createStyles,
-  IconButton,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import React, { SFC } from 'react';
+import { createStyles, withStyles, WithStyles } from '@material-ui/core';
+import React, { SFC, useState } from 'react';
+import Events from 'ui/components/Events';
+import Friends from 'ui/components/Friends';
+import Profile from 'ui/components/Profile';
+import Views from 'ui/components/Views';
 
 interface MainProps extends WithStyles<typeof styles> {}
 
@@ -24,17 +20,21 @@ const styles = createStyles({
   }
 });
 
-const Main: SFC<MainProps> = ({ classes }) => (
-  <div>
-    <div className={classes.profile}>
-      <Avatar className={classes.avatar}>LM</Avatar>
-      <Typography>Username</Typography>
-      <div className={classes.grow} />
-      <IconButton>
-        <MoreHorizIcon color="action" />
-      </IconButton>
+const Main: SFC<MainProps> = ({ classes }) => {
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <div>
+      <Profile />
+      <Views value={value} onChange={handleChange} />
+      {value === 0 && <Events />}
+      {value === 1 && <Friends />}
     </div>
-  </div>
-);
+  );
+};
 
 export default withStyles(styles)(Main);
