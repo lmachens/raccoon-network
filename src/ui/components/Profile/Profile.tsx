@@ -35,16 +35,21 @@ const Profile: SFC<ProfileProps> = ({ classes }) => {
   const [gameInfo, setGameInfo] = useState<ProfileState>(null);
 
   const handleGameInfoUpdated = newGameInfo => {
+    console.log(newGameInfo);
     setGameInfo(newGameInfo);
   };
 
-  useEffect(() => {
-    overwolf.games.getRunningGameInfo(handleGameInfoUpdated);
-    overwolf.games.onGameInfoUpdated.addListener(handleGameInfoUpdated);
-    return () => {
-      overwolf.games.onGameInfoUpdated.removeListener(handleGameInfoUpdated);
-    };
-  });
+  useEffect(
+    () => {
+      console.log('use Profile effect');
+      overwolf.games.getRunningGameInfo(handleGameInfoUpdated);
+      overwolf.games.onGameInfoUpdated.addListener(handleGameInfoUpdated);
+      return () => {
+        overwolf.games.onGameInfoUpdated.removeListener(handleGameInfoUpdated);
+      };
+    },
+    [gameInfo && gameInfo.title]
+  );
 
   return (
     <div className={classes.profile}>
