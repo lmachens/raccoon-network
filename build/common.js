@@ -10,8 +10,8 @@ module.exports = ({ outputPath, mode, ...other }) => ({
   mode,
   target: 'web',
   entry: {
-    main: 'startup/main.ts',
-    overlay: 'startup/overlay.ts'
+    main: 'startup/main.tsx',
+    overlay: 'startup/overlay.tsx'
   },
   devtool: mode === 'production' ? '' : 'eval-source-map',
   output: {

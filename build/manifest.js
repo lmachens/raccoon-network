@@ -3,7 +3,7 @@ module.exports = {
   type: 'WebApp',
   meta: {
     name: 'Raccoon Network',
-    version: '0.23.0',
+    version: '1.0.0',
     'minimum-overwolf-version': '0.109.1',
     author: 'Leon Machens',
     icon: 'assets/logo.png',
@@ -20,25 +20,16 @@ module.exports = {
     windows: {
       main: {
         file: 'main.html',
-        transparent: false,
-        resizable: false,
+        transparent: true,
+        resizable: true,
         show_in_taskbar: true,
-        desktop_only: true,
         size: {
-          width: 680,
-          height: 420
+          width: 400,
+          height: 700
         },
         min_size: {
-          width: 680,
-          height: 420
-        },
-        max_size: {
-          width: 680,
-          height: 420
-        },
-        start_position: {
-          Top: 100,
-          Left: 300
+          width: 400,
+          height: 500
         }
       }
     },

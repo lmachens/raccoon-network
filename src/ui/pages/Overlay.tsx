@@ -1,5 +1,5 @@
 import React from 'react';
 
-const Main = <div>Overlay</div>;
+const Overlay = () => <div>Overlay</div>;
 
-export default Main;
+export default Overlay;

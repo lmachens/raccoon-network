@@ -20,6 +20,8 @@
   "homepage": "https://github.com/lmachens/raccoon-network#readme",
   "sideEffects": false,
   "dependencies": {
+    "@material-ui/core": "^3.6.0",
+    "@material-ui/icons": "^3.0.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3"
   },
