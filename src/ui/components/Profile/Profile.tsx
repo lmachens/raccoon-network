@@ -7,7 +7,9 @@ import {
   WithStyles
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import React, { SFC } from 'react';
+import overwolf from 'api/overwolf';
+import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
+import React, { SFC, useEffect, useState } from 'react';
 
 interface ProfileProps extends WithStyles<typeof styles> {}
 
@@ -27,22 +29,40 @@ const styles = createStyles({
   }
 });
 
-const Profile: SFC<ProfileProps> = ({ classes }) => (
-  <div className={classes.profile}>
-    <Avatar className={classes.avatar}>LM</Avatar>
-    <div>
-      <Typography>Leon Machens</Typography>
-      <Typography>
-        <Typography component="span" className={classes.inline} color="textPrimary">
-          Not playing a game
+type ProfileState = ODKRunningGameInfo | null;
+
+const Profile: SFC<ProfileProps> = ({ classes }) => {
+  const [gameInfo, setGameInfo] = useState<ProfileState>(null);
+
+  const handleGameInfoUpdated = newGameInfo => {
+    setGameInfo(newGameInfo);
+  };
+
+  useEffect(() => {
+    overwolf.games.getRunningGameInfo(handleGameInfoUpdated);
+    overwolf.games.onGameInfoUpdated.addListener(handleGameInfoUpdated);
+    return () => {
+      overwolf.games.onGameInfoUpdated.removeListener(handleGameInfoUpdated);
+    };
+  });
+
+  return (
+    <div className={classes.profile}>
+      <Avatar className={classes.avatar}>LM</Avatar>
+      <div>
+        <Typography>Leon Machens</Typography>
+        <Typography>
+          <Typography component="span" className={classes.inline} color="textPrimary">
+            {(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
+          </Typography>
         </Typography>
-      </Typography>
+      </div>
+      <div className={classes.grow} />
+      <IconButton>
+        <MoreHorizIcon color="action" />
+      </IconButton>
     </div>
-    <div className={classes.grow} />
-    <IconButton>
-      <MoreHorizIcon color="action" />
-    </IconButton>
-  </div>
-);
+  );
+};
 
 export default withStyles(styles)(Profile);
