@@ -13,7 +13,7 @@ module.exports = ({ outputPath, mode, ...other }) => ({
     main: 'startup/main.tsx',
     overlay: 'startup/overlay.tsx'
   },
-  devtool: mode === 'production' ? '' : 'eval-source-map',
+  devtool: mode === 'production' ? '' : 'source-map',
   output: {
     path: path.resolve(__dirname, '..', outputPath)
   },

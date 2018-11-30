@@ -16,6 +16,7 @@ module.exports = {
     game_targeting: {
       type: 'all'
     },
+    game_events: [5426],
     start_window: 'main',
     windows: {
       main: {

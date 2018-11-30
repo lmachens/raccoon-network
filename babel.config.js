@@ -10,7 +10,7 @@ module.exports = {
     '@babel/preset-react'
   ],
   sourceRoot: 'src',
-  plugins: [],
+  plugins: ['@babel/proposal-class-properties'],
   env: {
     test: {
       presets: ['@babel/env'],

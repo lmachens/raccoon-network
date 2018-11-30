@@ -7,9 +7,8 @@ import {
   WithStyles
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import overwolf from 'api/overwolf';
-import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
-import React, { SFC, useEffect, useState } from 'react';
+import React, { SFC, useContext } from 'react';
+import { GamesContext } from 'ui/contexts/games';
 
 interface ProfileProps extends WithStyles<typeof styles> {}
 
@@ -29,27 +28,8 @@ const styles = createStyles({
   }
 });
 
-type ProfileState = ODKRunningGameInfo | null;
-
 const Profile: SFC<ProfileProps> = ({ classes }) => {
-  const [gameInfo, setGameInfo] = useState<ProfileState>(null);
-
-  const handleGameInfoUpdated = newGameInfo => {
-    console.log(newGameInfo);
-    setGameInfo(newGameInfo);
-  };
-
-  useEffect(
-    () => {
-      console.log('use Profile effect');
-      overwolf.games.getRunningGameInfo(handleGameInfoUpdated);
-      overwolf.games.onGameInfoUpdated.addListener(handleGameInfoUpdated);
-      return () => {
-        overwolf.games.onGameInfoUpdated.removeListener(handleGameInfoUpdated);
-      };
-    },
-    [gameInfo && gameInfo.title]
-  );
+  const { gameInfo } = useContext(GamesContext);
 
   return (
     <div className={classes.profile}>
