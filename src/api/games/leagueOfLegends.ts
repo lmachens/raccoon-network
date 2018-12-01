@@ -10,7 +10,7 @@ export const leagueOfLegends: Game = {
     'abilities',
     'kill',
     'assist',
-    'gold',
+    // 'gold',
     'minions',
     'summoner_info',
     'gameMode',

@@ -22,8 +22,11 @@ const styles = theme =>
     root: {
       backgroundColor: theme.palette.background.paper
     },
-    inline: {
-      display: 'inline'
+    flex: {
+      display: 'flex'
+    },
+    grow: {
+      flexGrow: 1
     },
     screenshot: {
       width: 300
@@ -37,10 +40,20 @@ const styles = theme =>
     }
   });
 
+const formatTime = time => {
+  const minutes = Math.floor(time / 60000);
+  const seconds = Math.floor((time % 60000) / 1000);
+
+  const minutesString = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  const secondsString = seconds < 10 ? `0${seconds}` : `${seconds}`;
+
+  return `${minutesString}:${secondsString}`;
+};
+
 const Events: SFC<EventsProps> = ({ classes }) => {
   const [open, setOpen] = useState(true);
 
-  const { events, matchInfo, infoUpdates } = useContext(GamesContext);
+  const { events, matchInfo } = useContext(GamesContext);
 
   const handleExpand = () => {
     setOpen(!open);
@@ -52,15 +65,14 @@ const Events: SFC<EventsProps> = ({ classes }) => {
       {matchInfo && (
         <li className={classes.listSection}>
           <ul className={classes.ul}>
-            <ListSubheader>
+            <ListSubheader className={classes.flex} onClick={handleExpand}>
               {matchInfo.champion} Alive: {matchInfo.alive ? 'true' : 'false'} Level:{' '}
-              {matchInfo.level} KDA: {matchInfo.kills}/{matchInfo.deaths}/{matchInfo.assists}{' '}
-              Minions: {matchInfo.minionKills} Gold: {matchInfo.gold}
-            </ListSubheader>
-            <ListItem button onClick={handleExpand}>
-              <ListItemText inset primary="Details" />
+              {matchInfo.level} KDA: {matchInfo.kills}/{matchInfo.deaths}/{matchInfo.assists} CS:{' '}
+              {matchInfo.minionKills}
+              <div className={classes.grow} />
               {open ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
+            </ListSubheader>
+
             <Collapse in={open} timeout="auto" unmountOnExit>
               {events.map((event, i) => (
                 <ListItem key={i} component="div">
@@ -68,25 +80,13 @@ const Events: SFC<EventsProps> = ({ classes }) => {
                     <Avatar>LoL</Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={`Event: ${event.name}`}
+                    primary={`Event: ${event.name} - ${formatTime(
+                      event.timestamp - matchInfo.startedAt
+                    )}`}
                     secondary={JSON.stringify(event.data)}
                   />
                   {event.screenshotUrl && (
                     <img src={event.screenshotUrl} className={classes.screenshot} />
-                  )}
-                </ListItem>
-              ))}
-              {infoUpdates.map((infoUpdate, i) => (
-                <ListItem key={i}>
-                  <ListItemAvatar>
-                    <Avatar>LoL</Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`InfoUpdate: ${infoUpdate.feature}`}
-                    secondary={JSON.stringify(infoUpdate.info)}
-                  />
-                  {infoUpdate.screenshotUrl && (
-                    <img src={infoUpdate.screenshotUrl} className={classes.screenshot} />
                   )}
                 </ListItem>
               ))}

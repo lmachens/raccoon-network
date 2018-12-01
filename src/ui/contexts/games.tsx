@@ -6,45 +6,41 @@ import React from 'react';
 interface GamesContextValue {
   events: any;
   gameInfo: any;
-  infoUpdates: any;
   matchInfo: any;
 }
 export const GamesContext = React.createContext<GamesContextValue>({
   events: null,
   gameInfo: null,
-  infoUpdates: null,
   matchInfo: null
 });
 
 type GameInfoState = ODKRunningGameInfo | null;
-type InfoUpdatesState = ODK.GameEvents.InfoUpdateData[];
 interface Event extends ODK.GameEvents.EventData<ODK.GameEvents.LOL.TEventsLOL> {
   screenshotUrld: string;
 }
-type ErrorsState = Array<ODKListenable<{ error: string; isRelaunching: boolean }>>;
 
 interface GamesProviderState {
   gameInfo: GameInfoState;
-  infoUpdates: InfoUpdatesState;
   events: Event[];
-  errors: ErrorsState;
   matchInfo: any;
 }
 
 const defaultMatchInfo = {
   alive: true,
+  level: 1,
   kills: 0,
   deaths: 0,
-  assists: 0
+  assists: 0,
+  minionKills: 0,
+  gold: 0,
+  startedAt: 0
 };
 
 export class GamesProvider extends React.Component<{}, GamesProviderState> {
   state = {
     gameInfo: null,
-    infoUpdates: [],
-    events: [],
-    errors: [],
-    matchInfo: null
+    matchInfo: null,
+    events: []
   };
 
   componentDidMount() {
@@ -59,21 +55,9 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
 
   handleInfoUpdate = newInfoUpdate => {
     const timestamp = Date.now();
-    // overwolf.media.takeScreenshot(result => {
-    const result = { url: '' };
-    const screenshotUrl = result.url;
-    const infoUpdate = { ...newInfoUpdate, screenshotUrl, timestamp };
+    const infoUpdate = { ...newInfoUpdate, timestamp };
     const { game_info = {}, level = {}, summoner_info = {} } = infoUpdate.info;
 
-    if (infoUpdate.feature !== 'gold') {
-      this.setState(state => ({
-        infoUpdates: [infoUpdate, ...state.infoUpdates]
-      }));
-    }
-
-    if (summoner_info.champion) {
-      console.log('!!!summoner_info', summoner_info);
-    }
     this.setState(state => ({
       matchInfo: {
         ...defaultMatchInfo,
@@ -83,22 +67,42 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         ...summoner_info
       }
     }));
-    // });
   };
 
   handleNewEvents = eventUpdate => {
     const timestamp = Date.now();
-    // overwolf.media.takeScreenshot(result => {
-    const result = { url: '' };
-    const screenshotUrl = result.url;
-    const events = eventUpdate.events.map(event => ({ ...event, screenshotUrl, timestamp }));
+
+    const events = eventUpdate.events;
+    const announcerEvents = events
+      .filter(event => event.name === 'announcer')
+      .map(event => {
+        const data =
+          typeof event.data === 'string'
+            ? JSON.parse(event.data.replace('\r', '').replace('\n', ''))
+            : event.data;
+        return { ...data, timestamp };
+      });
+    if (announcerEvents.length) {
+      this.setState(state => ({
+        events: [...announcerEvents, ...state.events]
+      }));
+    }
+
+    const matchStarted = !!events.find(event => event.name === 'matchStart');
+    if (matchStarted) {
+      this.setState(state => ({
+        matchInfo: { ...state.matchInfo, startedAt: timestamp }
+      }));
+    }
+    const matchOutcome = events.find(event => event.name === 'matchOutcome');
+    if (matchOutcome) {
+      this.setState(state => ({
+        matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome }
+      }));
+    }
 
     const died = !!events.find(event => event.name === 'death');
     const respawnded = !!events.find(event => event.name === 'respawn');
-
-    this.setState(state => ({
-      events: [...events, ...state.events]
-    }));
 
     if (died || respawnded) {
       const alive = respawnded || !died;
@@ -107,13 +111,10 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         matchInfo: { ...state.matchInfo, alive }
       }));
     }
-    // });
   };
 
   handleError = error => {
-    this.setState(state => ({
-      errors: [error, ...state.errors]
-    }));
+    console.log('Handle Error', error);
   };
 
   unregisterEvents = () => {
@@ -145,7 +146,13 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         console.log('getInfo:', result);
         const { game_info = {}, level = {}, summoner_info = {} } = result.res || {};
         this.setState({
-          matchInfo: { ...defaultMatchInfo, ...game_info, ...level, ...summoner_info }
+          matchInfo: {
+            ...defaultMatchInfo,
+            ...game_info,
+            ...level,
+            ...summoner_info,
+            startedAt: Date.now()
+          }
         });
       }
     });
