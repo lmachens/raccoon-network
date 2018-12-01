@@ -173,26 +173,24 @@ export namespace ODK {
     namespace LOL {
       type TFeaturesLOL =
         | 'matchState'
-        | 'spellsAndAbilities'
         | 'death'
         | 'respawn'
-        /** @deprecated */
-        | 'deathAndRespawn'
+        | 'abilities'
         | 'kill'
         | 'assist'
         | 'gold'
         | 'minions'
         | 'summoner_info'
         | 'gameMode'
-        | 'teams';
+        | 'teams'
+        | 'level'
+        | 'announcer';
 
       interface AvailableFeaturesMapLOL extends ODK.GameEvents.AvailableFeaturesMap {
         matchState: TBuggedBoolean;
-        spellsAndAbilities: TBuggedBoolean;
-        /** @deprecated use solo events / features instead*/
-        deathAndRespawn: TBuggedBoolean;
         death: TBuggedBoolean;
         respawn: TBuggedBoolean;
+        abilities: TBuggedBoolean;
         kill: TBuggedBoolean;
         assist: TBuggedBoolean;
         gold: TBuggedBoolean;
@@ -200,6 +198,8 @@ export namespace ODK {
         summoner_info: TBuggedBoolean;
         gameMode: TBuggedBoolean;
         teams: TBuggedBoolean;
+        level: TBuggedBoolean;
+        announcer: TBuggedBoolean;
       }
 
       type TCategoriesLOL = 'summoner_info' | 'game_info' | 'level';
