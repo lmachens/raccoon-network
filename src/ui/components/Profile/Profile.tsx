@@ -15,7 +15,8 @@ interface ProfileProps extends WithStyles<typeof styles> {}
 const styles = createStyles({
   profile: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    minHeight: 48
   },
   avatar: {
     marginRight: 4

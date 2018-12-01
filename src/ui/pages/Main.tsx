@@ -8,15 +8,14 @@ import Views from 'ui/components/Views';
 interface MainProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
-  profile: {
+  root: {
+    height: '100%',
     display: 'flex',
-    alignItems: 'center'
-  },
-  avatar: {
-    marginRight: 4
+    flexDirection: 'column'
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
+    overflow: 'auto'
   }
 });
 
@@ -28,11 +27,13 @@ const Main: SFC<MainProps> = ({ classes }) => {
   };
 
   return (
-    <div>
+    <div className={classes.root}>
       <Profile />
       <Views value={value} onChange={handleChange} />
-      {value === 0 && <Events />}
-      {value === 1 && <Friends />}
+      <div className={classes.grow}>
+        {value === 0 && <Events />}
+        {value === 1 && <Friends />}
+      </div>
     </div>
   );
 };

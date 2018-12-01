@@ -56,7 +56,8 @@ const styles = createStyles({
     userSelect: 'none',
     height: '100vh',
     width: '100vw',
-    border: '1px solid #a7a7a7'
+    border: '1px solid #a7a7a7',
+    overflow: 'hidden'
   },
   dragResize: {
     width: 20,
@@ -64,7 +65,8 @@ const styles = createStyles({
     bottom: 0,
     right: 0,
     position: 'absolute',
-    cursor: 'se-resize'
+    cursor: 'se-resize',
+    zIndex: 1
   },
   header: {
     display: 'flex',
@@ -80,7 +82,8 @@ const styles = createStyles({
     flexGrow: 1
   },
   main: {
-    padding: 4
+    padding: 4,
+    height: 'calc(100% - 24px)'
   }
 });
 
