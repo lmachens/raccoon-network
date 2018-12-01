@@ -11,7 +11,7 @@ module.exports = {
     launcher_icon: 'assets/favicon.ico',
     description: ''
   },
-  permissions: [],
+  permissions: ['FileSystem', 'GameInfo', 'Media', 'VideoCaptureSettings'],
   data: {
     game_targeting: {
       type: 'all'

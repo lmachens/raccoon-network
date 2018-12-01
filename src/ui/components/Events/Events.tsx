@@ -88,6 +88,16 @@ const Events: SFC<EventsProps> = ({ classes }) => {
                   {event.screenshotUrl && (
                     <img src={event.screenshotUrl} className={classes.screenshot} />
                   )}
+                  {event.replay && (
+                    <video width="320" height="240" controls>
+                      <source src={event.replay.url} type="video/mp4" />
+                    </video>
+                  )}
+                  {event.replay && (
+                    <a onClick={() => overwolf.utils.openUrlInDefaultBrowser(event.replay.path)}>
+                      Open
+                    </a>
+                  )}
                 </ListItem>
               ))}
             </Collapse>

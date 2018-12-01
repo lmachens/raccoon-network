@@ -1025,6 +1025,8 @@ export interface OverwolfMedia {
 
   /** @type {OverwolfParameterlessListenable} Fired when a screenshot was taken. */
   onScreenshotTaken: OverwolfParameterlessListenable;
+
+  replays: any;
 }
 
 export interface ScreenshotEventArgs extends OverwolfEventArgs {

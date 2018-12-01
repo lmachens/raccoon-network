@@ -15,8 +15,12 @@ export const GamesContext = React.createContext<GamesContextValue>({
 });
 
 type GameInfoState = ODKRunningGameInfo | null;
-interface Event extends ODK.GameEvents.EventData<ODK.GameEvents.LOL.TEventsLOL> {
-  screenshotUrld: string;
+interface Event {
+  name: string;
+  data: any;
+  timestamp: number;
+  screenshotUrld?: string;
+  replay?: any;
 }
 
 interface GamesProviderState {
@@ -37,6 +41,9 @@ const defaultMatchInfo = {
 };
 
 export class GamesProvider extends React.Component<{}, GamesProviderState> {
+  stopCaptureTimeout: NodeJS.Timeout | null = null;
+  replay: any = null;
+
   state = {
     gameInfo: null,
     matchInfo: null,
@@ -111,6 +118,44 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         matchInfo: { ...state.matchInfo, alive }
       }));
     }
+
+    const killed = !!events.find(event => event.name === 'kill');
+    const assisted = !!events.find(event => event.name === 'assist');
+
+    if (died || killed || assisted) {
+      this.recordHighlight();
+    }
+  };
+
+  recordHighlight = () => {
+    console.log('record highlight', !!this.stopCaptureTimeout, this.replay);
+    if (this.stopCaptureTimeout) {
+      clearTimeout(this.stopCaptureTimeout);
+      this.stopCaptureTimeout = setTimeout(this.saveHighlight, 3000);
+    } else {
+      overwolf.media.replays.startCapture(6000, replay => {
+        this.replay = replay;
+        this.stopCaptureTimeout = setTimeout(this.saveHighlight, 3000);
+      });
+    }
+  };
+
+  saveHighlight = () => {
+    overwolf.media.replays.stopCapture(this.replay.id, () => {
+      const event: Event = {
+        name: 'Highlight',
+        timestamp: Date.now(),
+        data: {},
+        replay: this.replay
+      };
+
+      console.log(this.replay);
+      this.setState(state => ({
+        events: [event, ...state.events]
+      }));
+      delete this.stopCaptureTimeout;
+      delete this.replay;
+    });
   };
 
   handleError = error => {
@@ -118,6 +163,9 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   };
 
   unregisterEvents = () => {
+    /*overwolf.media.replays.turnOff(() => {
+      console.log('Replay capture deactivated');
+    });*/
     overwolf.games.events.onError.removeListener(this.handleError);
     overwolf.games.events.onInfoUpdates2.removeListener(this.handleInfoUpdate);
     overwolf.games.events.onNewEvents.removeListener(this.handleNewEvents);
@@ -138,6 +186,29 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
 
     // an event triggerd
     overwolf.games.events.onNewEvents.addListener(this.handleNewEvents);
+
+    // turn on replay capture
+    overwolf.media.replays.turnOn(
+      {
+        settings: {
+          video: { buffer_length: 20000 },
+          audio: {
+            mic: {
+              volume: 0,
+              enabled: false
+            },
+            game: {
+              volume: 100,
+              enabled: true
+            }
+          },
+          peripherals: { capture_mouse_cursor: 'both' }
+        }
+      },
+      result => {
+        console.log('Replay capture activated', result);
+      }
+    );
   };
 
   getInfo = () => {
