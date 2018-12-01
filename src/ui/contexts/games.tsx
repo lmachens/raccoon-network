@@ -1,6 +1,6 @@
 import games from 'api/games';
 import overwolf from 'api/overwolf';
-import { ODK, ODKListenable, ODKRunningGameInfo } from 'api/overwolf/overwolf';
+import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
 import React from 'react';
 
 interface GamesContextValue {

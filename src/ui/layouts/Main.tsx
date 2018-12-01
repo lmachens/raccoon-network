@@ -3,7 +3,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
 import overwolf from 'api/overwolf';
-import React, { SFC } from 'react';
+import React, { SFC, useContext } from 'react';
+import { ProfileContext } from 'ui/contexts/profile';
 
 const dragResize = edge => () => {
   overwolf.windows.getCurrentWindow(result => {
@@ -88,6 +89,8 @@ const styles = createStyles({
 });
 
 const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
+  const profile = useContext(ProfileContext);
+
   return (
     <div className={classes.root}>
       <header className={classes.header} onMouseDown={dragMove}>
@@ -105,7 +108,10 @@ const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
         </ButtonBase>
       </header>
       <div className={classes.dragResize} onMouseDown={dragResize('BottomRight')} />
-      <main className={classes.main}>{children}</main>
+      <main className={classes.main}>
+        {!profile && <a onClick={() => overwolf.profile.openLoginDialog()}>Please log in</a>}
+        {profile && children}
+      </main>
     </div>
   );
 };

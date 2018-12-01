@@ -1,17 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { GamesProvider } from 'ui/contexts/games';
+import { ProfileProvider } from 'ui/contexts/profile';
 import MainLayout from 'ui/layouts/Main';
 import Main from 'ui/pages/Main';
 import ThemeProvider from 'ui/themes/ThemeProvider';
 
 const Root = (
   <ThemeProvider>
-    <GamesProvider>
+    <ProfileProvider>
       <MainLayout>
-        <Main />
+        <GamesProvider>
+          <Main />
+        </GamesProvider>
       </MainLayout>
-    </GamesProvider>
+    </ProfileProvider>
   </ThemeProvider>
 );
 

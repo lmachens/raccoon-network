@@ -9,6 +9,7 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import React, { SFC, useContext } from 'react';
 import { GamesContext } from 'ui/contexts/games';
+import { ProfileContext } from 'ui/contexts/profile';
 
 interface ProfileProps extends WithStyles<typeof styles> {}
 
@@ -30,13 +31,14 @@ const styles = createStyles({
 });
 
 const Profile: SFC<ProfileProps> = ({ classes }) => {
+  const profile = useContext(ProfileContext);
   const { gameInfo } = useContext(GamesContext);
 
   return (
     <div className={classes.profile}>
       <Avatar className={classes.avatar}>LM</Avatar>
       <div>
-        <Typography>Leon Machens</Typography>
+        <Typography>{profile.username}</Typography>
         <Typography>
           <Typography component="span" className={classes.inline} color="textPrimary">
             {(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
