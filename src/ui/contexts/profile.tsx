@@ -1,52 +1,39 @@
-import overwolf from 'api/overwolf';
+import { stitchClient } from 'api/stitch';
+import { StitchAuthListener, StitchUser } from 'mongodb-stitch-browser-sdk';
 import React from 'react';
 
 interface Profile {
-  username: string | null;
-  userId: string | null;
-  machineId: string | null;
-  partnerId: number | null;
-  channel: string | null;
+  isLoggedIn: boolean;
+  user?: StitchUser | null;
 }
 export const ProfileContext = React.createContext<Profile>({
-  username: null,
-  userId: null,
-  machineId: null,
-  partnerId: null,
-  channel: null
+  isLoggedIn: false,
+  user: null
 });
 
 export class ProfileProvider extends React.Component<{}, Profile> {
   state = {
-    username: null,
-    userId: null,
-    machineId: null,
-    partnerId: null,
-    channel: null
+    isLoggedIn: false,
+    user: null
+  };
+
+  handleAuth: StitchAuthListener = {
+    onAuthEvent: auth => {
+      console.log(auth);
+      this.setState({
+        isLoggedIn: auth.isLoggedIn,
+        user: auth.user
+      });
+    }
   };
 
   componentDidMount() {
-    overwolf.profile.onLoginStateChanged.addListener(this.handleLoginStateChanged);
-    overwolf.profile.getCurrentUser(this.handleCurrentUser);
+    stitchClient.auth.addAuthListener(this.handleAuth);
   }
 
   componentWillUnmount() {
-    overwolf.profile.onLoginStateChanged.removeListener(this.handleLoginStateChanged);
+    stitchClient.auth.removeAuthListener(this.handleAuth);
   }
-
-  handleLoginStateChanged = loginState => {
-    overwolf.profile.getCurrentUser(this.handleCurrentUser);
-  };
-
-  handleCurrentUser = currentUser => {
-    this.setState({
-      username: currentUser.username,
-      userId: currentUser.userId,
-      machineId: currentUser.machineId,
-      partnerId: currentUser.partnerId,
-      channel: currentUser.channel
-    });
-  };
 
   render() {
     const { children } = this.props;

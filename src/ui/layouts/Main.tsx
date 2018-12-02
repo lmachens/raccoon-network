@@ -4,6 +4,7 @@ import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
 import overwolf from 'api/overwolf';
 import React, { SFC, useContext } from 'react';
+import Auth from 'ui/components/Auth';
 import { ProfileContext } from 'ui/contexts/profile';
 
 const dragResize = edge => () => {
@@ -89,7 +90,7 @@ const styles = createStyles({
 });
 
 const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
-  const profile = useContext(ProfileContext);
+  const { isLoggedIn } = useContext(ProfileContext);
 
   return (
     <div className={classes.root}>
@@ -109,8 +110,8 @@ const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
       </header>
       <div className={classes.dragResize} onMouseDown={dragResize('BottomRight')} />
       <main className={classes.main}>
-        {!profile && <a onClick={() => overwolf.profile.openLoginDialog()}>Please log in</a>}
-        {profile && children}
+        {!isLoggedIn && <Auth />}
+        {isLoggedIn && children}
       </main>
     </div>
   );
