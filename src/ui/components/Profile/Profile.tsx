@@ -31,14 +31,14 @@ const styles = createStyles({
 });
 
 const Profile: SFC<ProfileProps> = ({ classes }) => {
-  const profile = useContext(ProfileContext);
+  const { user } = useContext(ProfileContext);
   const { gameInfo } = useContext(GamesContext);
 
   return (
     <div className={classes.profile}>
       <Avatar className={classes.avatar}>LM</Avatar>
       <div>
-        <Typography>{profile.username}</Typography>
+        <Typography>{user!.profile.email}</Typography>
         <Typography>
           <Typography component="span" className={classes.inline} color="textPrimary">
             {(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
