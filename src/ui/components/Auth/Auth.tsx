@@ -15,7 +15,7 @@ import {
   WithStyles
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { handleLogin, handleResendConfirmation, handleSignup } from 'api/stitch';
+import { handleConfirmUser, handleLogin, handleResendConfirmation, handleSignup } from 'api/stitch';
 import React, { SFC, useState } from 'react';
 
 const styles = theme =>
@@ -48,34 +48,49 @@ const styles = theme =>
 
 type SignInProps = WithStyles<typeof styles>;
 
-const lables = ['Sign in', 'Sign up', 'Reset'];
+const lables = ['Sign in', 'Sign up', 'Reset', 'Verify'];
 
 const SignIn: SFC<SignInProps> = ({ classes }) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [message, setMessage] = useState<string>('');
+  const [error, setError] = useState<Error | null>(null);
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
+    setError(null);
     event.preventDefault();
 
-    const { email, password, repeatPassword } = event.target;
+    const { email, password, repeatPassword, token, tokenId } = event.target;
 
-    const emailValue = email.value;
+    const emailValue = email && email.value;
     const passwordValue = password && password.value;
     const repeatPasswordValue = repeatPassword && repeatPassword.value;
+    const tokenValue = token && token.value;
+    const tokenIdValue = tokenId && tokenId.value;
 
-    if (tabIndex === 0) {
-      handleLogin(emailValue, passwordValue);
-    } else if (tabIndex === 1) {
-      if (passwordValue !== repeatPasswordValue) {
-        console.errror("Password doesn't match");
-      } else {
-        handleSignup(emailValue, passwordValue);
+    try {
+      if (tabIndex === 0) {
+        await handleLogin(emailValue, passwordValue);
+      } else if (tabIndex === 1) {
+        if (passwordValue !== repeatPasswordValue) {
+          throw new Error("Password doesn't match");
+        } else {
+          await handleSignup(emailValue, passwordValue);
+          setTabIndex(3);
+        }
+      } else if (tabIndex === 2) {
+        await handleResendConfirmation(emailValue);
+      } else if (tabIndex === 3) {
+        await handleConfirmUser(tokenValue, tokenIdValue);
+        setTabIndex(0);
       }
-    } else if (tabIndex === 2) {
-      handleResendConfirmation(emailValue);
+    } catch (error) {
+      setError(error);
+      console.error(error);
     }
   };
 
   const handleTabChange = (event, value) => {
+    setError(null);
     setTabIndex(value);
   };
 
@@ -93,14 +108,17 @@ const SignIn: SFC<SignInProps> = ({ classes }) => {
         <Tab label={lables[0]} />
         <Tab label={lables[1]} />
         <Tab label={lables[2]} />
+        <Tab label={lables[3]} />
       </Tabs>
 
       <form className={classes.form} onSubmit={handleSubmit}>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email Address</InputLabel>
-          <Input id="email" name="email" autoComplete="email" autoFocus type="email" />
-        </FormControl>
-        {tabIndex !== 2 && (
+        {tabIndex !== 3 && (
+          <FormControl margin="normal" required fullWidth>
+            <InputLabel htmlFor="email">Email Address</InputLabel>
+            <Input id="email" name="email" autoComplete="email" autoFocus type="email" />
+          </FormControl>
+        )}
+        {tabIndex < 2 && (
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
             <Input name="password" type="password" id="password" autoComplete="current-password" />
@@ -117,6 +135,23 @@ const SignIn: SFC<SignInProps> = ({ classes }) => {
             />
           </FormControl>
         )}
+        {tabIndex === 3 && (
+          <>
+            <Typography>
+              This is a temporary solution! Please extract the token and tokenId from the
+              confirmation email.
+            </Typography>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="token">Token</InputLabel>
+              <Input name="token" id="token" autoComplete="token" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="token-id">Token ID</InputLabel>
+              <Input name="tokenId" id="token-id" autoComplete="token-id" />
+            </FormControl>
+          </>
+        )}
+        {error && <Typography color="error">{error.message}</Typography>}
         <Button
           type="submit"
           fullWidth

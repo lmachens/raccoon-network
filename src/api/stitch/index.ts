@@ -17,32 +17,24 @@ const emailPasswordClient = stitchClient.auth.getProviderClient(
 );
 
 // Register a new application user when the user submits their information
-export const handleSignup = async (email, password) => {
-  try {
-    await emailPasswordClient.registerWithEmail(email, password);
-    console.log('Successfully registered. Check your inbox for a confirmation email.');
-  } catch (e) {
-    console.error(e);
-  }
+export const handleSignup = (email, password) => {
+  return emailPasswordClient.registerWithEmail(email, password);
 };
 
 // Authenticate an application user based on the submitted information
-export const handleLogin = async (email, password) => {
+export const handleLogin = (email, password) => {
   const credential = new UserPasswordCredential(email, password);
-
-  try {
-    await stitchClient.auth.loginWithCredential(credential);
-    const user = stitchClient.auth.user;
-    console.log(`Logged in as:`, user);
-  } catch (e) {
-    console.error(e);
-  }
+  return stitchClient.auth.loginWithCredential(credential);
 };
 
-export const handleLogout = async () => {
-  await stitchClient.auth.logout();
+export const handleLogout = () => {
+  return stitchClient.auth.logout();
 };
 
-export const handleResendConfirmation = async email => {
-  await emailPasswordClient.resendConfirmationEmail(email);
+export const handleResendConfirmation = email => {
+  return emailPasswordClient.resendConfirmationEmail(email);
+};
+
+export const handleConfirmUser = (token, tokenId) => {
+  return emailPasswordClient.confirmUser(token, tokenId);
 };
