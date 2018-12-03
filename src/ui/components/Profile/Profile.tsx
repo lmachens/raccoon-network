@@ -11,7 +11,9 @@ import React, { SFC, useContext } from 'react';
 import { GamesContext } from 'ui/contexts/games';
 import { ProfileContext } from 'ui/contexts/profile';
 
-interface ProfileProps extends WithStyles<typeof styles> {}
+interface ProfileProps extends WithStyles<typeof styles> {
+  onSelectUser(user: any): void;
+}
 
 const styles = createStyles({
   profile: {
@@ -30,12 +32,16 @@ const styles = createStyles({
   }
 });
 
-const Profile: SFC<ProfileProps> = ({ classes }) => {
+const Profile: SFC<ProfileProps> = ({ classes, onSelectUser }) => {
   const { user } = useContext(ProfileContext);
   const { gameInfo } = useContext(GamesContext);
 
+  const handleClick = () => {
+    onSelectUser(user);
+  };
+
   return (
-    <div className={classes.profile}>
+    <div className={classes.profile} onClick={handleClick}>
       <Avatar className={classes.avatar}>LM</Avatar>
       <div>
         <Typography>{user!.profile.email}</Typography>

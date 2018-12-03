@@ -1,5 +1,5 @@
 import { UserPasswordAuthProviderClient, UserPasswordCredential } from 'mongodb-stitch-browser-sdk';
-import { stitchClient } from '.';
+import { stitchClient } from './client';
 
 const emailPasswordClient = stitchClient.auth.getProviderClient(
   // @ts-ignore

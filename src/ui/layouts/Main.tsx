@@ -73,7 +73,10 @@ const styles = createStyles({
   header: {
     display: 'flex',
     alignItems: 'center',
-    height: 24
+    height: 28
+  },
+  title: {
+    fontWeight: 500
   },
   logo: {
     height: 24,
@@ -83,9 +86,15 @@ const styles = createStyles({
   grow: {
     flexGrow: 1
   },
+  button: {
+    height: '100%',
+    width: 40,
+    '&:hover': {
+      backgroundColor: '#d0d0d0'
+    }
+  },
   main: {
-    padding: 4,
-    height: 'calc(100% - 24px)'
+    height: 'calc(100% - 28px)'
   }
 });
 
@@ -96,15 +105,17 @@ const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
     <div className={classes.root}>
       <header className={classes.header} onMouseDown={dragMove}>
         <img src="/assets/logo.png" className={classes.logo} />
-        <Typography>Raccoon Network</Typography>
+        <Typography component="h1" className={classes.title}>
+          Raccoon Network
+        </Typography>
         <div className={classes.grow} />
-        <ButtonBase focusRipple onClick={minimizeWindow}>
+        <ButtonBase className={classes.button} focusRipple onClick={minimizeWindow}>
           <MinimizeIcon color="action" />
         </ButtonBase>
-        <ButtonBase focusRipple onClick={maximizeWindow}>
+        <ButtonBase className={classes.button} focusRipple onClick={maximizeWindow}>
           <MaximizeIcon color="action" />
         </ButtonBase>
-        <ButtonBase focusRipple onClick={closeWindow}>
+        <ButtonBase className={classes.button} focusRipple onClick={closeWindow}>
           <CloseIcon color="action" />
         </ButtonBase>
       </header>
