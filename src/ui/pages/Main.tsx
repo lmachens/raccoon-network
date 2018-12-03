@@ -1,8 +1,8 @@
-import { createStyles, Divider, Hidden, withStyles, WithStyles } from '@material-ui/core';
+import { createStyles, Hidden, withStyles, WithStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import React, { SFC, useState } from 'react';
-import Friends from 'ui/components/Friends';
 import Profile from 'ui/components/Profile';
+import Search from 'ui/components/Search';
 import User from 'ui/components/User';
 
 interface MainProps extends WithStyles<typeof styles> {}
@@ -13,7 +13,6 @@ const styles = theme =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      padding: 4,
       backgroundColor: '#f3f3f3'
     },
     fixedRoot: {
@@ -30,13 +29,10 @@ const styles = theme =>
     }
   });
 
-const Core = ({ classes, onSelectUser }) => (
+const Core = ({ onSelectUser, selectedUser }) => (
   <>
-    <Profile onSelectUser={onSelectUser} />
-    <Divider />
-    <div className={classes.grow}>
-      <Friends />
-    </div>
+    <Profile selectedUser={selectedUser} onSelectUser={onSelectUser} />
+    <Search selectedUser={selectedUser} onSelectUser={onSelectUser} />
   </>
 );
 
@@ -56,13 +52,13 @@ const Main: SFC<MainProps> = ({ classes }) => {
       <Hidden smUp>
         <div className={classes.root}>
           {selectedUser && <User user={selectedUser} onExit={handleDeselectUser} />}
-          {!selectedUser && <Core onSelectUser={handleSelectUser} classes={classes} />}
+          {!selectedUser && <Core selectedUser={selectedUser} onSelectUser={handleSelectUser} />}
         </div>
       </Hidden>
       <Hidden xsDown>
         <div className={classes.flex}>
           <div className={classNames(classes.root, classes.fixedRoot)}>
-            <Core onSelectUser={handleSelectUser} classes={classes} />
+            <Core selectedUser={selectedUser} onSelectUser={handleSelectUser} />
           </div>
           <div className={classes.grow}>
             <User user={selectedUser} />

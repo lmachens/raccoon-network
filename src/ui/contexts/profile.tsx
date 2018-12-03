@@ -1,28 +1,49 @@
 import { stitchClient } from 'api/stitch';
+import { getProfile } from 'api/stitch/profile';
 import { StitchAuthListener, StitchUser } from 'mongodb-stitch-browser-sdk';
 import React from 'react';
 
-interface Profile {
-  isLoggedIn: boolean;
-  user?: StitchUser | null;
+interface Profile extends ProfileState {
+  refreshProfile(): void;
 }
 export const ProfileContext = React.createContext<Profile>({
+  isLoggingIn: false,
   isLoggedIn: false,
-  user: null
+  isAnonymous: false,
+  user: null,
+  profile: null,
+  refreshProfile: () => {
+    //
+  }
 });
 
-export class ProfileProvider extends React.Component<{}, Profile> {
+interface ProfileState {
+  isLoggingIn: boolean;
+  isLoggedIn: boolean;
+  isAnonymous: boolean;
+  user?: StitchUser | null;
+  profile?: any | null;
+}
+
+class ProfileProvider extends React.Component<{}, ProfileState> {
   state = {
+    isLoggingIn: true,
     isLoggedIn: false,
-    user: null
+    isAnonymous: false,
+    user: null,
+    profile: null
   };
 
   handleAuth: StitchAuthListener = {
-    onAuthEvent: auth => {
-      console.log(auth);
+    onAuthEvent: async auth => {
+      const profile = auth.isLoggedIn ? await getProfile(auth.user!.id) : null;
+      const isAnonymous = !!auth.user && auth.user.loggedInProviderName === 'anon-user';
       this.setState({
+        isLoggingIn: false,
         isLoggedIn: auth.isLoggedIn,
-        user: auth.user
+        isAnonymous,
+        user: auth.user,
+        profile
       });
     }
   };
@@ -35,9 +56,27 @@ export class ProfileProvider extends React.Component<{}, Profile> {
     stitchClient.auth.removeAuthListener(this.handleAuth);
   }
 
+  refreshProfile = async () => {
+    const { user } = this.state;
+    if (!user) {
+      return;
+    }
+    // @ts-ignore
+    const profile = await getProfile(user!.id);
+    this.setState({
+      profile
+    });
+  };
+
   render() {
     const { children } = this.props;
+    const value = {
+      ...this.state,
+      refreshProfile: this.refreshProfile
+    };
 
-    return <ProfileContext.Provider value={this.state}>{children}</ProfileContext.Provider>;
+    return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
   }
 }
+
+export { ProfileProvider };

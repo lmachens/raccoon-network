@@ -1,37 +1,37 @@
 import {
-  Avatar,
   Button,
-  Checkbox,
   createStyles,
   FormControl,
-  FormControlLabel,
   Input,
   InputLabel,
-  Paper,
   Tab,
   Tabs,
   Typography,
   withStyles,
   WithStyles
 } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { handleConfirmUser, handleLogin, handleResendConfirmation, handleSignup } from 'api/stitch';
-import React, { SFC, useState } from 'react';
+import {
+  handleAnonymousLogin,
+  handleConfirmUser,
+  handleLogin,
+  handleResendConfirmation,
+  handleSignup
+} from 'api/stitch';
+import React, { SFC, useContext, useState } from 'react';
+import { LoadingContext } from 'ui/contexts/loading';
 
 const styles = theme =>
   createStyles({
-    paper: {
-      marginTop: theme.spacing.unit * 8,
+    root: {
+      marginTop: 8,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit *
         3}px`,
-      [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-        width: 400,
-        marginLeft: 'auto',
-        marginRight: 'auto'
-      }
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      width: '100%'
     },
     avatar: {
       margin: theme.spacing.unit,
@@ -46,26 +46,27 @@ const styles = theme =>
     }
   });
 
-type SignInProps = WithStyles<typeof styles>;
+type AuthProps = WithStyles<typeof styles>;
 
 const lables = ['Sign in', 'Sign up', 'Reset', 'Verify'];
 
-const SignIn: SFC<SignInProps> = ({ classes }) => {
+const Auth: SFC<AuthProps> = ({ classes }) => {
+  const { setLoading } = useContext(LoadingContext);
   const [tabIndex, setTabIndex] = useState(0);
-  const [message, setMessage] = useState<string>('');
   const [error, setError] = useState<Error | null>(null);
 
   const handleSubmit = async event => {
+    setLoading('auth', lables[tabIndex]);
     setError(null);
     event.preventDefault();
 
     const { email, password, repeatPassword, token, tokenId } = event.target;
 
-    const emailValue = email && email.value;
-    const passwordValue = password && password.value;
-    const repeatPasswordValue = repeatPassword && repeatPassword.value;
-    const tokenValue = token && token.value;
-    const tokenIdValue = tokenId && tokenId.value;
+    const emailValue = email && email.value.trim();
+    const passwordValue = password && password.value.trim();
+    const repeatPasswordValue = repeatPassword && repeatPassword.value.trim();
+    const tokenValue = token && token.value.trim();
+    const tokenIdValue = tokenId && tokenId.value.trim();
 
     try {
       if (tabIndex === 0) {
@@ -87,6 +88,7 @@ const SignIn: SFC<SignInProps> = ({ classes }) => {
       setError(error);
       console.error(error);
     }
+    setLoading('auth');
   };
 
   const handleTabChange = (event, value) => {
@@ -94,11 +96,25 @@ const SignIn: SFC<SignInProps> = ({ classes }) => {
     setTabIndex(value);
   };
 
+  const handleAnonymousLoginClick = event => {
+    event.preventDefault();
+
+    setLoading('auth', 'Anonymous login');
+    handleAnonymousLogin().then(() => {
+      setLoading('auth');
+    });
+  };
+
   return (
-    <Paper className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
+    <div className={classes.root}>
+      <Typography variant="subtitle1">
+        Welcome! Glad to see that you like to become part of the <i>Raccoon Network</i>! If you want
+        to try out this app, you can simply{' '}
+        <a href="# " onClick={handleAnonymousLoginClick}>
+          skip the authentication
+        </a>
+        .
+      </Typography>
       <Tabs
         value={tabIndex}
         onChange={handleTabChange}
@@ -162,8 +178,8 @@ const SignIn: SFC<SignInProps> = ({ classes }) => {
           {lables[tabIndex]}
         </Button>
       </form>
-    </Paper>
+    </div>
   );
 };
 
-export default withStyles(styles)(SignIn);
+export default withStyles(styles)(Auth);

@@ -1,11 +1,22 @@
-import { ButtonBase, createStyles, Typography, withStyles, WithStyles } from '@material-ui/core';
+import {
+  ButtonBase,
+  CircularProgress,
+  createStyles,
+  Typography,
+  withStyles,
+  WithStyles
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
 import overwolf from 'api/overwolf';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import React, { SFC, useContext } from 'react';
 import Auth from 'ui/components/Auth';
+import Username from 'ui/components/Username';
+import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
+import Welcome from 'ui/pages/Welcome';
 
 const dragResize = edge => () => {
   overwolf.windows.getCurrentWindow(result => {
@@ -95,12 +106,23 @@ const styles = createStyles({
   },
   main: {
     height: 'calc(100% - 28px)'
+  },
+  loading: {
+    zIndex: 1,
+    position: 'fixed',
+    top: 'calc(50% - 20px)',
+    left: 'calc(50% - 20px)',
+    textAlign: 'center'
+  },
+  loadingText: {
+    marginTop: 8
   }
 });
 
 const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
-  const { isLoggedIn } = useContext(ProfileContext);
-
+  const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
+  const { state } = useContext(LoadingContext);
+  const loading = state && Object.values(state)[0];
   return (
     <div className={classes.root}>
       <header className={classes.header} onMouseDown={dragMove}>
@@ -121,8 +143,25 @@ const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
       </header>
       <div className={classes.dragResize} onMouseDown={dragResize('BottomRight')} />
       <main className={classes.main}>
-        {!isLoggedIn && <Auth />}
-        {isLoggedIn && children}
+        {(isLoggingIn || loading) && (
+          <div className={classes.loading}>
+            <CircularProgress />
+            <Typography className={classes.loadingText} variant="overline">
+              {isLoggingIn ? 'Logging in' : loading}
+            </Typography>
+          </div>
+        )}
+        {!isLoggingIn && !isLoggedIn && (
+          <Welcome>
+            <Auth />
+          </Welcome>
+        )}
+        {!isLoggingIn && isLoggedIn && !profile && !isAnonymous && (
+          <Welcome>
+            <Username />
+          </Welcome>
+        )}
+        {!isLoggingIn && isLoggedIn && (profile || isAnonymous) && children}
       </main>
     </div>
   );

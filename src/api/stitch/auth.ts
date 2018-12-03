@@ -1,4 +1,8 @@
-import { UserPasswordAuthProviderClient, UserPasswordCredential } from 'mongodb-stitch-browser-sdk';
+import {
+  AnonymousCredential,
+  UserPasswordAuthProviderClient,
+  UserPasswordCredential
+} from 'mongodb-stitch-browser-sdk';
 import { stitchClient } from './client';
 
 const emailPasswordClient = stitchClient.auth.getProviderClient(
@@ -10,6 +14,11 @@ const emailPasswordClient = stitchClient.auth.getProviderClient(
 // Register a new application user when the user submits their information
 export const handleSignup = (email, password) => {
   return emailPasswordClient.registerWithEmail(email, password);
+};
+
+export const handleAnonymousLogin = () => {
+  const credential = new AnonymousCredential();
+  return stitchClient.auth.loginWithCredential(credential);
 };
 
 // Authenticate an application user based on the submitted information
