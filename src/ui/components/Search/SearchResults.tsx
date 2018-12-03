@@ -1,4 +1,4 @@
-import { findProfiles } from 'api/stitch/profile';
+import { findProfiles, UserProfile } from 'api/stitch/profile';
 import React, { SFC, useEffect, useState } from 'react';
 import Contact from '../Contacts/Contact';
 
@@ -8,17 +8,13 @@ interface SearchResultsProps {
 }
 
 const SearchResults: SFC<SearchResultsProps> = ({ search, query }) => {
-  const [profiles, setProfiles] = useState([]);
+  const [profiles, setProfiles] = useState<UserProfile[]>([]);
   useEffect(
     () => {
       if (search === 'all') {
-        findProfiles(query, { limit: 5 }).then(result => {
-          setProfiles(result);
-        });
+        findProfiles(query, { limit: 5 }).then(setProfiles);
       } else if (search === 'contacts') {
-        findProfiles(query, { limit: 30 }).then(result => {
-          setProfiles(result);
-        });
+        findProfiles(query, { limit: 30 }).then(setProfiles);
       }
     },
     [search, query]

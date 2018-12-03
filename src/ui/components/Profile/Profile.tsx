@@ -83,7 +83,7 @@ const Profile: SFC<ProfileProps> = ({ classes }) => {
           <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={isAnonymous ? 'Guest' : profile.username}
+          primary={isAnonymous ? 'Guest' : profile!.username}
           secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
         />
         <ListItemSecondaryAction>

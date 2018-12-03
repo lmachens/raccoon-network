@@ -1,10 +1,17 @@
 import { appDb, stitchClient } from './client';
 
-const profiles = appDb.collection('profiles');
+export interface UserProfile {
+  userId: string;
+  username: string;
+  contactUserIds?: string[];
+}
+
+const profiles = appDb.collection<UserProfile>('profiles');
 export const getProfile = async userId => {
   console.log('getProfile');
   const result = await profiles.find({ userId }, { limit: 1 }).asArray();
-  return result ? result[0] : null;
+  const profile = result ? result[0] : null;
+  return profile;
 };
 
 export const findProfiles = (keyword, options) => {

@@ -4,18 +4,15 @@ import {
   ListItem,
   ListItemText,
   ListSubheader,
-  Typography,
   withStyles,
   WithStyles
 } from '@material-ui/core';
-import { getContacts } from 'api/stitch/profile';
+import { getContacts, UserProfile } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { ProfileContext } from 'ui/contexts/profile';
 import Contact from './Contact';
 
-interface ContactsProps extends WithStyles<typeof styles> {
-  className: string;
-}
+interface ContactsProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
   subheader: {
@@ -28,9 +25,9 @@ const styles = createStyles({
   }
 });
 
-const Contacts: SFC<ContactsProps> = ({ classes, className }) => {
+const Contacts: SFC<ContactsProps> = ({ classes }) => {
   const [loading, setLoading] = useState(true);
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState<UserProfile[]>([]);
   const { profile } = useContext(ProfileContext);
   useEffect(
     () => {
@@ -38,9 +35,9 @@ const Contacts: SFC<ContactsProps> = ({ classes, className }) => {
         setLoading(true);
         getContacts(profile.contactUserIds).then(result => {
           setContacts(result);
+          setLoading(false);
         });
       }
-      setLoading(false);
     },
     [profile && profile.contactUserIds && JSON.stringify(profile.contactUserIds)]
   );

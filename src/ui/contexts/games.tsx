@@ -1,6 +1,7 @@
 import games from 'api/games';
 import overwolf from 'api/overwolf';
 import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
+import { addGameSessionEvent, setGameSessionInfo } from 'api/stitch/gameSessions';
 import React from 'react';
 
 interface GamesContextValue {
@@ -65,15 +66,25 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
     const infoUpdate = { ...newInfoUpdate, timestamp };
     const { game_info = {}, level = {}, summoner_info = {} } = infoUpdate.info;
 
-    this.setState(state => ({
-      matchInfo: {
-        ...defaultMatchInfo,
-        ...state.matchInfo,
-        ...game_info,
-        ...level,
-        ...summoner_info
-      }
-    }));
+    this.setState(
+      state => ({
+        matchInfo: {
+          ...defaultMatchInfo,
+          ...state.matchInfo,
+          ...game_info,
+          ...level,
+          ...summoner_info
+        }
+      }),
+      this.updateGameSession
+    );
+  };
+
+  updateGameSession = () => {
+    const { matchInfo } = this.state;
+    if (matchInfo && matchInfo.matchId) {
+      setGameSessionInfo(matchInfo.matchId, matchInfo);
+    }
   };
 
   handleNewEvents = eventUpdate => {
@@ -90,6 +101,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         return { ...data, timestamp };
       });
     if (announcerEvents.length) {
+      addGameSessionEvent(this.state.matchInfo!.matchId, announcerEvents);
       this.setState(state => ({
         events: [...announcerEvents, ...state.events]
       }));
@@ -97,15 +109,21 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
 
     const matchStarted = !!events.find(event => event.name === 'matchStart');
     if (matchStarted) {
-      this.setState(state => ({
-        matchInfo: { ...state.matchInfo, startedAt: timestamp }
-      }));
+      this.setState(
+        state => ({
+          matchInfo: { ...state.matchInfo, startedAt: timestamp }
+        }),
+        this.updateGameSession
+      );
     }
     const matchOutcome = events.find(event => event.name === 'matchOutcome');
     if (matchOutcome) {
-      this.setState(state => ({
-        matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome }
-      }));
+      this.setState(
+        state => ({
+          matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome }
+        }),
+        this.updateGameSession
+      );
     }
 
     const died = !!events.find(event => event.name === 'death');
@@ -114,9 +132,12 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
     if (died || respawnded) {
       const alive = respawnded || !died;
 
-      this.setState(state => ({
-        matchInfo: { ...state.matchInfo, alive }
-      }));
+      this.setState(
+        state => ({
+          matchInfo: { ...state.matchInfo, alive }
+        }),
+        this.updateGameSession
+      );
     }
 
     const killed = !!events.find(event => event.name === 'kill');
@@ -149,6 +170,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         replay: this.replay
       };
 
+      addGameSessionEvent(this.state.matchInfo!.matchId, event);
       console.log(this.replay);
       this.setState(state => ({
         events: [event, ...state.events]
@@ -216,15 +238,19 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
       if (result.status === 'success') {
         console.log('getInfo:', result);
         const { game_info = {}, level = {}, summoner_info = {} } = result.res || {};
-        this.setState({
-          matchInfo: {
-            ...defaultMatchInfo,
-            ...game_info,
-            ...level,
-            ...summoner_info,
-            startedAt: Date.now()
-          }
-        });
+
+        this.setState(
+          {
+            matchInfo: {
+              ...defaultMatchInfo,
+              ...game_info,
+              ...level,
+              ...summoner_info,
+              startedAt: Date.now()
+            }
+          },
+          this.updateGameSession
+        );
       }
     });
   };

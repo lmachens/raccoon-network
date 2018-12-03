@@ -1,5 +1,5 @@
 import { stitchClient } from 'api/stitch';
-import { getProfile } from 'api/stitch/profile';
+import { getProfile, UserProfile } from 'api/stitch/profile';
 import { StitchAuthListener, StitchUser } from 'mongodb-stitch-browser-sdk';
 import React from 'react';
 
@@ -16,12 +16,6 @@ export const ProfileContext = React.createContext<Profile>({
     //
   }
 });
-
-interface UserProfile {
-  userId: string;
-  username: string;
-  contactUserIds?: string[];
-}
 
 interface ProfileState {
   isLoggingIn: boolean;

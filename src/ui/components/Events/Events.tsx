@@ -12,10 +12,12 @@ import {
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import React, { SFC, useContext, useState } from 'react';
-import { GamesContext } from 'ui/contexts/games';
+import { GameSession, getGameSessions } from 'api/stitch/gameSessions';
+import React, { SFC, useEffect, useState } from 'react';
 
-interface EventsProps extends WithStyles<typeof styles> {}
+interface EventsProps extends WithStyles<typeof styles> {
+  userId: string;
+}
 
 const styles = theme =>
   createStyles({
@@ -50,25 +52,41 @@ const formatTime = time => {
   return `${minutesString}:${secondsString}`;
 };
 
-const Events: SFC<EventsProps> = ({ classes }) => {
+const Events: SFC<EventsProps> = ({ classes, userId }) => {
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(true);
 
-  const { events, matchInfo } = useContext(GamesContext);
+  // const { events, matchInfo } = useContext(GamesContext);
+  const [gameSessions, setGameSessions] = useState<GameSession[]>([]);
 
   const handleExpand = () => {
     setOpen(!open);
   };
 
+  useEffect(
+    () => {
+      setLoading(true);
+      getGameSessions(userId).then(result => {
+        setGameSessions(result);
+        setLoading(false);
+      });
+    },
+    [userId]
+  );
+
   return (
     <List className={classes.root} subheader={<li />}>
-      {!matchInfo && 'No Match'}
-      {matchInfo && (
-        <li className={classes.listSection}>
+      {!loading && gameSessions.length === 0 && (
+        <ListItem>
+          <ListItemText primary="No games found" />
+        </ListItem>
+      )}
+      {gameSessions.map(({ info, events }, index) => (
+        <li key={index} className={classes.listSection}>
           <ul className={classes.ul}>
             <ListSubheader className={classes.flex} onClick={handleExpand}>
-              {matchInfo.champion} Alive: {matchInfo.alive ? 'true' : 'false'} Level:{' '}
-              {matchInfo.level} KDA: {matchInfo.kills}/{matchInfo.deaths}/{matchInfo.assists} CS:{' '}
-              {matchInfo.minionKills}
+              {info.champion} Alive: {info.alive ? 'true' : 'false'} Level: {info.level} KDA:{' '}
+              {info.kills}/{info.deaths}/{info.assists} CS: {info.minionKills}
               <div className={classes.grow} />
               {open ? <ExpandLess /> : <ExpandMore />}
             </ListSubheader>
@@ -81,7 +99,7 @@ const Events: SFC<EventsProps> = ({ classes }) => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={`Event: ${event.name} - ${formatTime(
-                      event.timestamp - matchInfo.startedAt
+                      event.timestamp - info.startedAt
                     )}`}
                     secondary={JSON.stringify(event.data)}
                   />
@@ -93,17 +111,12 @@ const Events: SFC<EventsProps> = ({ classes }) => {
                       <source src={event.replay.url} type="video/mp4" />
                     </video>
                   )}
-                  {event.replay && (
-                    <a onClick={() => overwolf.utils.openUrlInDefaultBrowser(event.replay.path)}>
-                      Open
-                    </a>
-                  )}
                 </ListItem>
               ))}
             </Collapse>
           </ul>
         </li>
-      )}
+      ))}
     </List>
   );
 };
