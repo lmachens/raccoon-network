@@ -17,12 +17,18 @@ export const ProfileContext = React.createContext<Profile>({
   }
 });
 
+interface UserProfile {
+  userId: string;
+  username: string;
+  contactUserIds?: string[];
+}
+
 interface ProfileState {
   isLoggingIn: boolean;
   isLoggedIn: boolean;
   isAnonymous: boolean;
   user?: StitchUser | null;
-  profile?: any | null;
+  profile?: UserProfile | null;
 }
 
 export class ProfileProvider extends React.Component<{}, ProfileState> {

@@ -53,9 +53,7 @@ const Main: SFC<MainProps> = ({ classes }) => {
           <div className={classNames(classes.root, classes.fixedRoot)}>
             <Core />
           </div>
-          <div className={classes.grow}>
-            <User />
-          </div>
+          <div className={classes.grow}>{target && <User />}</div>
         </div>
       </Hidden>
     </>

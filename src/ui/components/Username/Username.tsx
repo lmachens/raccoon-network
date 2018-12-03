@@ -38,7 +38,7 @@ const styles = theme =>
   });
 
 const Username: SFC<UsernameProps> = ({ classes }) => {
-  const { user, refreshProfile } = useContext(ProfileContext);
+  const { refreshProfile } = useContext(ProfileContext);
   const { setLoading } = useContext(LoadingContext);
   const [error, setError] = useState<Error | null>(null);
 
@@ -51,13 +51,13 @@ const Username: SFC<UsernameProps> = ({ classes }) => {
 
     try {
       setLoading('username', 'Set username');
-      await setProfile(user!.id, { username: usernameValue });
+      await setProfile({ username: usernameValue });
       refreshProfile();
-      setLoading('username');
     } catch (error) {
       setError(error);
       console.error(error);
     }
+    setLoading('username');
   };
 
   return (
