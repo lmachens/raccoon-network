@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { GamesProvider } from 'ui/contexts/games';
 import { LoadingProvider } from 'ui/contexts/loading';
 import { ProfileProvider } from 'ui/contexts/profile';
+import { TargetProvider } from 'ui/contexts/target';
 import MainLayout from 'ui/layouts/Main';
 import Main from 'ui/pages/Main';
 import ThemeProvider from 'ui/themes/ThemeProvider';
@@ -10,13 +11,15 @@ import ThemeProvider from 'ui/themes/ThemeProvider';
 const Root = (
   <ThemeProvider>
     <LoadingProvider>
-      <ProfileProvider>
-        <MainLayout>
-          <GamesProvider>
-            <Main />
-          </GamesProvider>
-        </MainLayout>
-      </ProfileProvider>
+      <TargetProvider>
+        <ProfileProvider>
+          <MainLayout>
+            <GamesProvider>
+              <Main />
+            </GamesProvider>
+          </MainLayout>
+        </ProfileProvider>
+      </TargetProvider>
     </LoadingProvider>
   </ThemeProvider>
 );

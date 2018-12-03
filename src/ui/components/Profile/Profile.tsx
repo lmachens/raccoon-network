@@ -1,7 +1,13 @@
 import {
   Avatar,
+  ButtonBase,
   createStyles,
   IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
   Menu,
   MenuItem,
   Typography,
@@ -15,41 +21,35 @@ import React, { SFC, useContext, useState } from 'react';
 import { GamesContext } from 'ui/contexts/games';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
+import { TargetContext } from 'ui/contexts/target';
 
-interface ProfileProps extends WithStyles<typeof styles> {
-  selectedUser: any;
-  onSelectUser(user: any): void;
-}
+interface ProfileProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
-  profile: {
-    display: 'flex',
-    alignItems: 'center',
-    minHeight: 48,
+  root: {
     padding: 8
   },
-  avatar: {
-    marginRight: 8
-  },
+
   grow: {
     flexGrow: 1
   },
   inline: {
     display: 'inline'
   },
-  selectedUser: {
+  selected: {
     backgroundColor: '#d0e6ec'
   }
 });
 
-const Profile: SFC<ProfileProps> = ({ classes, onSelectUser, selectedUser }) => {
+const Profile: SFC<ProfileProps> = ({ classes }) => {
+  const { target, setTarget } = useContext(TargetContext);
   const { setLoading } = useContext(LoadingContext);
-  const { profile, isAnonymous } = useContext(ProfileContext);
+  const { user, profile, isAnonymous } = useContext(ProfileContext);
   const { gameInfo } = useContext(GamesContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   const handleClick = () => {
-    onSelectUser(profile);
+    setTarget('profile', user!.id);
   };
 
   const handleActionsClick = event => {
@@ -70,33 +70,41 @@ const Profile: SFC<ProfileProps> = ({ classes, onSelectUser, selectedUser }) => 
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className={classNames(classes.profile, {
-        [classes.selectedUser]: selectedUser && profile!.userId === selectedUser.userId
-      })}
-    >
-      <Avatar className={classes.avatar}>LM</Avatar>
-      <div>
-        <Typography>{isAnonymous ? 'Guest' : profile.username}</Typography>
-        <Typography>
-          <Typography component="span" className={classes.inline} color="textPrimary">
-            {(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
-          </Typography>
-        </Typography>
-      </div>
-      <div className={classes.grow} />
-      <IconButton
-        aria-owns={menuAnchor ? 'menu' : undefined}
-        aria-haspopup="true"
-        onClick={handleActionsClick}
+    <List disablePadding>
+      <ListItem
+        button
+        disableGutters
+        onClick={handleClick}
+        className={classNames(classes.root, {
+          [classes.selected]: target && target.key === 'profile' && user!.id === target.value
+        })}
       >
-        <MoreHorizIcon color="action" />
-      </IconButton>
-      <Menu id="menu" anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleCloseMenu}>
-        <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-      </Menu>
-    </div>
+        <ListItemAvatar>
+          <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={isAnonymous ? 'Guest' : profile.username}
+          secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
+        />
+        <ListItemSecondaryAction>
+          <IconButton
+            aria-owns={menuAnchor ? 'menu' : undefined}
+            aria-haspopup="true"
+            onClick={handleActionsClick}
+          >
+            <MoreHorizIcon color="action" />
+          </IconButton>
+          <Menu
+            id="menu"
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={handleCloseMenu}
+          >
+            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+          </Menu>
+        </ListItemSecondaryAction>
+      </ListItem>
+    </List>
   );
 };
 

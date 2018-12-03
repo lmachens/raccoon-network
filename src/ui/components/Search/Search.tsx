@@ -12,13 +12,10 @@ import {
 import ClearIcon from '@material-ui/icons/Clear';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { SFC, useRef, useState } from 'react';
-import Friends from '../Friends';
+import Contacts from '../Contacts';
 import SearchResults from './SearchResults';
 
-interface SearchProps extends WithStyles<typeof styles> {
-  selectedUser: any;
-  onSelectUser(user: any): void;
-}
+interface SearchProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
   root: {
@@ -31,21 +28,17 @@ const styles = createStyles({
   },
   button: {
     borderRadius: 0
-  },
-  grow: {
-    flexGrow: 1,
-    overflow: 'auto'
   }
 });
 
 const tabs = ['all', 'contacts', 'games'];
-const Search: SFC<SearchProps> = ({ classes, selectedUser, onSelectUser }) => {
+const Search: SFC<SearchProps> = ({ classes }) => {
   const inputElement = useRef(null);
-  const [search, setSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [tab, setTab] = useState(0);
 
   const handleChange = event => {
-    setSearch(event.target.value);
+    setSearchQuery(event.target.value);
   };
 
   const handleSearchClick = () => {
@@ -54,14 +47,14 @@ const Search: SFC<SearchProps> = ({ classes, selectedUser, onSelectUser }) => {
   };
 
   const handleClearInput = () => {
-    setSearch('');
+    setSearchQuery('');
   };
 
   const handleTabChange = (event, value) => {
     setTab(value);
   };
 
-  const isSearching = search.length > 0;
+  const isSearching = searchQuery.length > 0;
 
   return (
     <>
@@ -69,7 +62,7 @@ const Search: SFC<SearchProps> = ({ classes, selectedUser, onSelectUser }) => {
         <TextField
           className={classes.textField}
           onChange={handleChange}
-          value={search}
+          value={searchQuery}
           inputRef={inputElement}
           InputProps={{
             startAdornment: (
@@ -99,10 +92,8 @@ const Search: SFC<SearchProps> = ({ classes, selectedUser, onSelectUser }) => {
         </Tabs>
       )}
       <Divider />
-      {isSearching && <SearchResults query={tabs[tab]} />}
-      {!isSearching && (
-        <Friends className={classes.grow} selectedUser={selectedUser} onSelectUser={onSelectUser} />
-      )}
+      {isSearching && <SearchResults search={tabs[tab]} query={searchQuery} />}
+      {!isSearching && <Contacts />}
     </>
   );
 };

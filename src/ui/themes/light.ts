@@ -16,7 +16,8 @@ const light = () => {
         lg: 1280,
         xl: 1920
       }
-    }
+    },
+    overrides: {}
   });
 };
 

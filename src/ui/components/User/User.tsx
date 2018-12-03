@@ -1,20 +1,23 @@
 import { Divider } from '@material-ui/core';
-import React, { ChangeEvent, SFC } from 'react';
+import React, { SFC, useContext } from 'react';
+import { TargetContext } from 'ui/contexts/target';
 import Events from '../Events';
 
 interface UserProps {
-  user: any;
-  onExit?(): void;
+  showExit?: boolean;
 }
 
-const User: SFC<UserProps> = ({ user, onExit }) => (
-  <div>
-    {onExit && <div onClick={onExit}>B</div>}
-    {user && user.profile && user.profile.email}
-    {!user && 'Show welcome'}
-    <Divider />
-    <Events />
-  </div>
-);
+const User: SFC<UserProps> = ({ showExit }) => {
+  const { target, unsetTarget } = useContext(TargetContext);
+
+  return (
+    <div>
+      {showExit && <div onClick={unsetTarget}>B</div>}
+      <Divider />
+      {target && target.value}
+      <Events />
+    </div>
+  );
+};
 
 export default User;

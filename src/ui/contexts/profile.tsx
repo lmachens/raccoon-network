@@ -25,7 +25,7 @@ interface ProfileState {
   profile?: any | null;
 }
 
-class ProfileProvider extends React.Component<{}, ProfileState> {
+export class ProfileProvider extends React.Component<{}, ProfileState> {
   state = {
     isLoggingIn: true,
     isLoggedIn: false,
@@ -78,5 +78,3 @@ class ProfileProvider extends React.Component<{}, ProfileState> {
     return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
   }
 }
-
-export { ProfileProvider };

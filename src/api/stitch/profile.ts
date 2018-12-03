@@ -6,6 +6,10 @@ export const getProfile = async userId => {
   return result ? result[0] : null;
 };
 
+export const findProfiles = (keyword, options?) => {
+  return profiles.find({ username: new RegExp(keyword, 'i') }, options).asArray();
+};
+
 export const setProfile = async (userId, { username }) => {
   console.log(userId, username);
   const existingProfiles = await profiles.find({ username }, { limit: 1 }).asArray();
