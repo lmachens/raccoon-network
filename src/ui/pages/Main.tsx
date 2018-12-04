@@ -18,6 +18,7 @@ const styles = theme =>
     },
     fixedRoot: {
       width: 360,
+      minWidth: 360,
       borderRight: `1px solid ${theme.palette.divider}`
     },
     flex: {
@@ -25,8 +26,7 @@ const styles = theme =>
       height: '100%'
     },
     grow: {
-      flexGrow: 1,
-      overflow: 'auto'
+      flexGrow: 1
     }
   });
 

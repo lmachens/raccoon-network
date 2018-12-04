@@ -25,7 +25,8 @@ interface UserProps extends WithStyles<typeof styles> {
 const styles = createStyles({
   root: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    height: '100%'
   }
 });
 

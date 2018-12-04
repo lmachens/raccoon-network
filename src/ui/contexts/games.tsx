@@ -1,7 +1,11 @@
 import games from 'api/games';
 import overwolf from 'api/overwolf';
 import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
-import { addGameSessionEvent, setGameSessionInfo } from 'api/stitch/gameSessions';
+import {
+  addGameSessionEvent,
+  addGameSessionEvents,
+  setGameSessionInfo
+} from 'api/stitch/gameSessions';
 import React from 'react';
 
 interface GamesContextValue {
@@ -43,9 +47,11 @@ const defaultMatchInfo = {
 
 export class GamesProvider extends React.Component<{}, GamesProviderState> {
   stopCaptureTimeout: NodeJS.Timeout | null = null;
+  highlightEvents: any[] = [];
+
   replay: any = null;
 
-  state = {
+  state: GamesProviderState = {
     gameInfo: null,
     matchInfo: null,
     events: []
@@ -82,6 +88,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
 
   updateGameSession = () => {
     const { matchInfo } = this.state;
+    console.log('updateGameSession', matchInfo);
     if (matchInfo && matchInfo.matchId) {
       setGameSessionInfo(matchInfo.matchId, matchInfo);
     }
@@ -90,18 +97,16 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   handleNewEvents = eventUpdate => {
     const timestamp = Date.now();
 
-    const events = eventUpdate.events;
-    const announcerEvents = events
-      .filter(event => event.name === 'announcer')
-      .map(event => {
-        const data =
-          typeof event.data === 'string'
-            ? JSON.parse(event.data.replace('\r', '').replace('\n', ''))
-            : event.data;
-        return { ...data, timestamp };
-      });
+    const events = eventUpdate.events.map(event => {
+      const data =
+        typeof event.data === 'string'
+          ? JSON.parse(event.data.replace('\r', '').replace('\n', ''))
+          : event.data;
+      return { ...data, timestamp };
+    });
+    const announcerEvents = events.filter(event => event.name === 'announcer');
     if (announcerEvents.length) {
-      addGameSessionEvent(this.state.matchInfo!.matchId, announcerEvents);
+      addGameSessionEvents(this.state.matchInfo!.matchId, announcerEvents);
       this.setState(state => ({
         events: [...announcerEvents, ...state.events]
       }));
@@ -126,11 +131,11 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
       );
     }
 
-    const died = !!events.find(event => event.name === 'death');
-    const respawnded = !!events.find(event => event.name === 'respawn');
+    const died = events.find(event => event.name === 'death');
+    const respawnded = events.find(event => event.name === 'respawn');
 
     if (died || respawnded) {
-      const alive = respawnded || !died;
+      const alive = !!(respawnded || !died);
 
       this.setState(
         state => ({
@@ -140,16 +145,22 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
       );
     }
 
-    const killed = !!events.find(event => event.name === 'kill');
-    const assisted = !!events.find(event => event.name === 'assist');
+    const killed = events.find(event => event.name === 'kill');
+    const assisted = events.find(event => event.name === 'assist');
 
     if (died || killed || assisted) {
-      this.recordHighlight();
+      const highlightEvent = {
+        timestamp,
+        events: [died, killed, assisted].filter(event => event)
+      };
+      this.recordHighlight(highlightEvent);
     }
   };
 
-  recordHighlight = () => {
-    console.log('record highlight', !!this.stopCaptureTimeout, this.replay);
+  recordHighlight = highlightEvent => {
+    this.highlightEvents = [...this.highlightEvents, highlightEvent];
+
+    console.log('record highlight', !!this.stopCaptureTimeout, this.replay, highlightEvent);
     if (this.stopCaptureTimeout) {
       clearTimeout(this.stopCaptureTimeout);
       this.stopCaptureTimeout = setTimeout(this.saveHighlight, 3000);
@@ -166,7 +177,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
       const event: Event = {
         name: 'Highlight',
         timestamp: Date.now(),
-        data: {},
+        data: this.highlightEvents,
         replay: this.replay
       };
 
@@ -176,6 +187,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
         events: [event, ...state.events]
       }));
       delete this.stopCaptureTimeout;
+      this.highlightEvents = [];
       delete this.replay;
     });
   };
