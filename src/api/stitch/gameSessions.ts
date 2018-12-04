@@ -2,6 +2,7 @@ import { appDb, stitchClient } from './client';
 
 export interface GameSession {
   gameId: string;
+  matchId: string;
   userId: string;
   info: any;
   events: any[];
@@ -15,26 +16,26 @@ export const getGameSessions = userId => {
   return gameSessions.find({ userId }, { sort: { createdAt: -1 } }).asArray();
 };
 
-export const setGameSessionInfo = async (gameId, info) => {
+export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
   console.log('setGameSessionInfo');
   const userId = stitchClient.auth.user!.id;
   const now = Date.now();
   return gameSessions.updateOne(
-    { gameId },
+    { gameId, matchId },
     {
       $set: { info, updatedAt: now },
-      $setOnInsert: { gameId, userId, events: [], createdAt: now }
+      $setOnInsert: { gameId, matchId, userId, events: [], createdAt: now }
     },
     { upsert: true }
   );
 };
 
-export const addGameSessionEvent = async (gameId, event) => {
-  console.log('addGameSessionEvent', gameId, event);
-  return gameSessions.updateOne({ gameId }, { $addToSet: { events: event } });
+export const addGameSessionEvent = async (matchId, event) => {
+  console.log('addGameSessionEvent', matchId, event);
+  return gameSessions.updateOne({ matchId }, { $addToSet: { events: event } });
 };
 
-export const addGameSessionEvents = async (gameId, events) => {
-  console.log('addGameSessionEvents', gameId, events);
-  return gameSessions.updateOne({ gameId }, { $addToSet: { events: { $each: events } } });
+export const addGameSessionEvents = async (matchId, events) => {
+  console.log('addGameSessionEvents', matchId, events);
+  return gameSessions.updateOne({ matchId }, { $addToSet: { events: { $each: events } } });
 };

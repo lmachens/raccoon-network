@@ -87,10 +87,14 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   };
 
   updateGameSession = () => {
-    const { matchInfo } = this.state;
+    const { matchInfo, gameInfo } = this.state;
     console.log('updateGameSession', matchInfo);
     if (matchInfo && matchInfo.matchId) {
-      setGameSessionInfo(matchInfo.matchId, matchInfo);
+      setGameSessionInfo({
+        gameId: Math.floor(gameInfo!.id / 10),
+        matchId: matchInfo.matchId,
+        info: matchInfo
+      });
     }
   };
 
