@@ -48,6 +48,7 @@ const Profile: SFC<ProfileProps> = ({ classes, location }) => {
 
   const handleActionsClick = event => {
     event.stopPropagation();
+    event.preventDefault();
     setMenuAnchor(event.currentTarget);
   };
 
