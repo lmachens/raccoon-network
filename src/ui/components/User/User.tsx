@@ -6,7 +6,6 @@ import {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-  Typography,
   WithStyles,
   withStyles
 } from '@material-ui/core';
@@ -15,11 +14,12 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import { addContact, getProfile, removeContact, UserProfile } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ProfileContext } from 'ui/contexts/profile';
-import { TargetContext } from 'ui/contexts/target';
 import Events from '../Events';
 
 interface UserProps extends WithStyles<typeof styles> {
+  userId: string;
   showExit?: boolean;
 }
 const styles = createStyles({
@@ -30,12 +30,10 @@ const styles = createStyles({
   }
 });
 
-const User: SFC<UserProps> = ({ classes, showExit }) => {
+const User: SFC<UserProps> = ({ classes, showExit, userId }) => {
   const { user, isAnonymous, refreshProfile, profile } = useContext(ProfileContext);
-  const { target, unsetTarget } = useContext(TargetContext);
   const [targetUser, setTargetUser] = useState<UserProfile | null>(null);
 
-  const userId = target!.value;
   const isSelf = userId === user!.id;
   const isContact = profile!.contactUserIds && profile!.contactUserIds!.includes(userId);
   const toggleContact = () => {
@@ -62,9 +60,11 @@ const User: SFC<UserProps> = ({ classes, showExit }) => {
       <List>
         <ListItem>
           {showExit && (
-            <IconButton onClick={unsetTarget}>
-              <ArrowBackIcon />
-            </IconButton>
+            <Link style={{ textDecoration: 'none' }} to="/">
+              <IconButton>
+                <ArrowBackIcon />
+              </IconButton>
+            </Link>
           )}
           <ListItemText primary={targetUser && targetUser.username} />
           {!isSelf && (

@@ -1,11 +1,11 @@
 import { createStyles, Hidden, withStyles, WithStyles } from '@material-ui/core';
 import classNames from 'classnames';
-import React, { SFC, useContext, useState } from 'react';
+import React, { SFC } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import Feed from 'ui/components/Feed';
 import Profile from 'ui/components/Profile';
 import Search from 'ui/components/Search';
 import User from 'ui/components/User';
-import { TargetContext } from 'ui/contexts/target';
 
 interface MainProps extends WithStyles<typeof styles> {}
 
@@ -39,14 +39,18 @@ const Core = () => (
 );
 
 const Main: SFC<MainProps> = ({ classes }) => {
-  const { target } = useContext(TargetContext);
-
   return (
     <>
       <Hidden smUp>
         <div className={classes.root}>
-          {target && <User showExit />}
-          {!target && <Core />}
+          <Switch>
+            <Route exact={true} path="/" component={Core} />
+            <Route
+              exact={true}
+              path="/users/:userId"
+              render={({ match }) => <User userId={match.params.userId} showExit />}
+            />
+          </Switch>
         </div>
       </Hidden>
       <Hidden xsDown>
@@ -54,7 +58,16 @@ const Main: SFC<MainProps> = ({ classes }) => {
           <div className={classNames(classes.root, classes.fixedRoot)}>
             <Core />
           </div>
-          <div className={classes.grow}>{target ? <User /> : <Feed />}</div>
+          <div className={classes.grow}>
+            <Switch>
+              <Route exact={true} path="/" component={Feed} />
+              <Route
+                exact={true}
+                path="/users/:userId"
+                render={({ match }) => <User userId={match.params.userId} />}
+              />
+            </Switch>
+          </div>
         </div>
       </Hidden>
     </>

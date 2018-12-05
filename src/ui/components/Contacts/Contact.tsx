@@ -10,9 +10,9 @@ import {
 } from '@material-ui/core';
 import classNames from 'classnames';
 import React, { SFC, useContext } from 'react';
-import { TargetContext } from 'ui/contexts/target';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface ContactProps extends WithStyles<typeof styles> {
+interface ContactProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {
   profile: any;
 }
 
@@ -33,38 +33,32 @@ const styles = createStyles({
   }
 });
 
-const Contact: SFC<ContactProps> = ({ classes, profile }) => {
-  const { target, setTarget } = useContext(TargetContext);
-  const handleClick = () => {
-    setTarget('profile', profile.userId);
-  };
-
+const Contact: SFC<ContactProps> = ({ classes, profile, location }) => {
   return (
-    <ListItem
-      onClick={handleClick}
-      button
-      disableGutters
-      className={classNames(
-        classes.listItem,
-        target && target.key === 'profile' && profile!.userId === target.value
-          ? classes.selected
-          : classes.notSelected
-      )}
-    >
-      <ListItemAvatar>
-        <Avatar>{profile.username.slice(0, 2)}</Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={profile.username}
-        secondary={
-          <>
-            <Typography component="span" className={classes.inline} color="textPrimary">
-              Playing League of Legends
-            </Typography>
-          </>
-        }
-      />
-    </ListItem>
+    <Link style={{ textDecoration: 'none' }} to={`/users/${profile.userId}`}>
+      <ListItem
+        button
+        disableGutters
+        className={classNames(
+          classes.listItem,
+          location.pathname === `/users/${profile.userId}` ? classes.selected : classes.notSelected
+        )}
+      >
+        <ListItemAvatar>
+          <Avatar>{profile.username.slice(0, 2)}</Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={profile.username}
+          secondary={
+            <>
+              <Typography component="span" className={classes.inline} color="textPrimary">
+                Playing League of Legends
+              </Typography>
+            </>
+          }
+        />
+      </ListItem>
+    </Link>
   );
 };
-export default withStyles(styles)(Contact);
+export default withStyles(styles)(withRouter(Contact));

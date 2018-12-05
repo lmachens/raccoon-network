@@ -350,11 +350,6 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   render() {
     const { children } = this.props;
 
-    return (
-      <GamesContext.Provider value={this.state}>
-        {children}
-        <input ref={this.fileInput} style={{ display: 'none ' }} type="file" />
-      </GamesContext.Provider>
-    );
+    return <GamesContext.Provider value={this.state}>{children}</GamesContext.Provider>;
   }
 }

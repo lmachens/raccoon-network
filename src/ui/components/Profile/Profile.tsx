@@ -10,7 +10,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Typography,
   withStyles,
   WithStyles
 } from '@material-ui/core';
@@ -18,12 +17,12 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { handleLogout } from 'api/stitch';
 import classNames from 'classnames';
 import React, { SFC, useContext, useState } from 'react';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { GamesContext } from 'ui/contexts/games';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
-import { TargetContext } from 'ui/contexts/target';
 
-interface ProfileProps extends WithStyles<typeof styles> {}
+interface ProfileProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
 const styles = createStyles({
   root: {
@@ -41,16 +40,11 @@ const styles = createStyles({
   }
 });
 
-const Profile: SFC<ProfileProps> = ({ classes }) => {
-  const { target, setTarget } = useContext(TargetContext);
+const Profile: SFC<ProfileProps> = ({ classes, location }) => {
   const { setLoading } = useContext(LoadingContext);
   const { user, profile, isAnonymous } = useContext(ProfileContext);
   const { gameInfo } = useContext(GamesContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
-
-  const handleClick = () => {
-    setTarget('profile', user!.id);
-  };
 
   const handleActionsClick = event => {
     event.stopPropagation();
@@ -71,41 +65,42 @@ const Profile: SFC<ProfileProps> = ({ classes }) => {
 
   return (
     <List disablePadding>
-      <ListItem
-        button
-        disableGutters
-        onClick={handleClick}
-        className={classNames(classes.root, {
-          [classes.selected]: target && target.key === 'profile' && user!.id === target.value
-        })}
-      >
-        <ListItemAvatar>
-          <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={isAnonymous ? 'Guest' : profile!.username}
-          secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
-        />
-        <ListItemSecondaryAction>
-          <IconButton
-            aria-owns={menuAnchor ? 'menu' : undefined}
-            aria-haspopup="true"
-            onClick={handleActionsClick}
-          >
-            <MoreHorizIcon color="action" />
-          </IconButton>
-          <Menu
-            id="menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleCloseMenu}
-          >
-            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-          </Menu>
-        </ListItemSecondaryAction>
-      </ListItem>
+      <Link style={{ textDecoration: 'none' }} to={`/users/${user!.id}`}>
+        <ListItem
+          button
+          disableGutters
+          className={classNames(classes.root, {
+            [classes.selected]: location.pathname === `/users/${user!.id}`
+          })}
+        >
+          <ListItemAvatar>
+            <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={isAnonymous ? 'Guest' : profile!.username}
+            secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
+          />
+          <ListItemSecondaryAction>
+            <IconButton
+              aria-owns={menuAnchor ? 'menu' : undefined}
+              aria-haspopup="true"
+              onClick={handleActionsClick}
+            >
+              <MoreHorizIcon color="action" />
+            </IconButton>
+            <Menu
+              id="menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+            </Menu>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </Link>
     </List>
   );
 };
 
-export default withStyles(styles)(Profile);
+export default withStyles(styles)(withRouter(Profile));
