@@ -1,13 +1,20 @@
 import { appDb, stitchClient } from './client';
 
+export interface EventData {
+  name: string;
+  data: any;
+  timestamp: Date;
+  video?: any;
+}
+
 export interface GameSession {
-  gameId: string;
+  gameId: number;
   matchId: string;
   userId: string;
   info: any;
-  events: any[];
-  createdAt: number;
-  updatedAt: number;
+  events: EventData[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const gameSessions = appDb.collection<GameSession>('gameSessions');
@@ -17,14 +24,14 @@ export const getGameSessions = userId => {
 };
 
 export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
-  console.log('setGameSessionInfo');
+  console.log('setGameSessionInfo', gameId, matchId);
   const userId = stitchClient.auth.user!.id;
-  const now = Date.now();
+  const now = new Date();
   return gameSessions.updateOne(
-    { gameId, matchId },
+    { userId, gameId, matchId },
     {
       $set: { info, updatedAt: now },
-      $setOnInsert: { gameId, matchId, userId, events: [], createdAt: now }
+      $setOnInsert: { userId, gameId, matchId, events: [], createdAt: now }
     },
     { upsert: true }
   );

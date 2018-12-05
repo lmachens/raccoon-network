@@ -4,8 +4,10 @@ import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
 import {
   addGameSessionEvent,
   addGameSessionEvents,
+  EventData,
   setGameSessionInfo
 } from 'api/stitch/gameSessions';
+import { uploadVideo } from 'api/video';
 import React from 'react';
 
 interface GamesContextValue {
@@ -20,17 +22,10 @@ export const GamesContext = React.createContext<GamesContextValue>({
 });
 
 type GameInfoState = ODKRunningGameInfo | null;
-interface Event {
-  name: string;
-  data: any;
-  timestamp: number;
-  screenshotUrld?: string;
-  replay?: any;
-}
 
 interface GamesProviderState {
   gameInfo: GameInfoState;
-  events: Event[];
+  events: EventData[];
   matchInfo: any;
 }
 
@@ -48,6 +43,7 @@ const defaultMatchInfo = {
 export class GamesProvider extends React.Component<{}, GamesProviderState> {
   stopCaptureTimeout: NodeJS.Timeout | null = null;
   highlightEvents: any[] = [];
+  fileInput = React.createRef<any>();
 
   replay: any = null;
 
@@ -68,7 +64,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   }
 
   handleInfoUpdate = newInfoUpdate => {
-    const timestamp = Date.now();
+    const timestamp = new Date();
     const infoUpdate = { ...newInfoUpdate, timestamp };
     const { game_info = {}, level = {}, summoner_info = {} } = infoUpdate.info;
 
@@ -99,14 +95,15 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   };
 
   handleNewEvents = eventUpdate => {
-    const timestamp = Date.now();
+    console.log('handleNewEvents', eventUpdate);
+    const timestamp = new Date();
 
     const events = eventUpdate.events.map(event => {
       const data =
         typeof event.data === 'string'
           ? JSON.parse(event.data.replace('\r', '').replace('\n', ''))
           : event.data;
-      return { ...data, timestamp };
+      return { name: event.name, ...data, timestamp };
     });
     const announcerEvents = events.filter(event => event.name === 'announcer');
     if (announcerEvents.length) {
@@ -178,15 +175,23 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
 
   saveHighlight = () => {
     overwolf.media.replays.stopCapture(this.replay.id, () => {
-      const event: Event = {
+      console.log('saveHighlight');
+      const event: EventData = {
         name: 'Highlight',
-        timestamp: Date.now(),
-        data: this.highlightEvents,
-        replay: this.replay
+        timestamp: new Date(),
+        data: this.highlightEvents
       };
+      const replayUrl = this.replay.url;
 
-      addGameSessionEvent(this.state.matchInfo!.matchId, event);
-      console.log(this.replay);
+      uploadVideo(replayUrl).then(video => {
+        console.log('uploaded video', video);
+        event.video = video;
+        addGameSessionEvent(this.state.matchInfo!.matchId, event);
+        overwolf.media.videos.deleteVideo(replayUrl, () => {
+          console.log('deleted local video');
+        });
+      });
+
       this.setState(state => ({
         events: [event, ...state.events]
       }));
@@ -262,7 +267,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
               ...game_info,
               ...level,
               ...summoner_info,
-              startedAt: Date.now()
+              startedAt: new Date()
             }
           },
           this.updateGameSession
@@ -345,6 +350,11 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   render() {
     const { children } = this.props;
 
-    return <GamesContext.Provider value={this.state}>{children}</GamesContext.Provider>;
+    return (
+      <GamesContext.Provider value={this.state}>
+        {children}
+        <input ref={this.fileInput} style={{ display: 'none ' }} type="file" />
+      </GamesContext.Provider>
+    );
   }
 }

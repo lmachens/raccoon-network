@@ -1,17 +1,16 @@
 import {
-  Avatar,
   createStyles,
   ListItem,
-  ListItemAvatar,
   ListItemText,
   Typography,
   withStyles,
   WithStyles
 } from '@material-ui/core';
+import { EventData } from 'api/stitch/gameSessions';
 import React, { SFC } from 'react';
 
 interface EventProps extends WithStyles<typeof styles> {
-  event: any;
+  event: EventData;
   startedAt: number;
 }
 
@@ -20,9 +19,6 @@ const styles = createStyles({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch'
-  },
-  screenshot: {
-    width: 300
   },
   inline: {
     display: 'inline'
@@ -53,7 +49,7 @@ const Event: SFC<EventProps> = ({ classes, event, startedAt }) => {
         primary={
           <>
             <Typography component="span" className={classes.inline} variant="overline">
-              {formatTime(event.timestamp - startedAt)}
+              {formatTime(event.timestamp.getTime() - startedAt)}
             </Typography>
             <Typography className={classes.inline} component="span">
               - {event.name}
@@ -62,12 +58,7 @@ const Event: SFC<EventProps> = ({ classes, event, startedAt }) => {
         }
         secondary={getDetails(event)}
       />
-      {event.screenshotUrl && <img src={event.screenshotUrl} className={classes.screenshot} />}
-      {event.replay && (
-        <video width="320" height="240" controls>
-          <source src={event.replay.url} type="video/mp4" />
-        </video>
-      )}
+      {event.video && <div dangerouslySetInnerHTML={{ __html: event.video.assets.iframe }} />}
     </ListItem>
   );
 };

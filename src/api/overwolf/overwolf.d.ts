@@ -1027,6 +1027,7 @@ export interface OverwolfMedia {
   onScreenshotTaken: OverwolfParameterlessListenable;
 
   replays: any;
+  videos: any;
 }
 
 export interface ScreenshotEventArgs extends OverwolfEventArgs {

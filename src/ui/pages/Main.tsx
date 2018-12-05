@@ -1,6 +1,7 @@
 import { createStyles, Hidden, withStyles, WithStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import React, { SFC, useContext, useState } from 'react';
+import Feed from 'ui/components/Feed';
 import Profile from 'ui/components/Profile';
 import Search from 'ui/components/Search';
 import User from 'ui/components/User';
@@ -53,7 +54,7 @@ const Main: SFC<MainProps> = ({ classes }) => {
           <div className={classNames(classes.root, classes.fixedRoot)}>
             <Core />
           </div>
-          <div className={classes.grow}>{target && <User />}</div>
+          <div className={classes.grow}>{target ? <User /> : <Feed />}</div>
         </div>
       </Hidden>
     </>
