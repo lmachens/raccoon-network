@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { GamesProvider } from 'ui/contexts/games';
 import { LoadingProvider } from 'ui/contexts/loading';
 import { ProfileProvider } from 'ui/contexts/profile';
-import MainLayout from 'ui/layouts/Main';
+import OverwolfLayout from 'ui/layouts/Overwolf';
 import Main from 'ui/pages/Main';
 import ThemeProvider from 'ui/themes/ThemeProvider';
 
@@ -13,11 +13,11 @@ const Root = (
     <LoadingProvider>
       <ProfileProvider>
         <HashRouter>
-          <MainLayout>
+          <OverwolfLayout>
             <GamesProvider>
               <Main />
             </GamesProvider>
-          </MainLayout>
+          </OverwolfLayout>
         </HashRouter>
       </ProfileProvider>
     </LoadingProvider>

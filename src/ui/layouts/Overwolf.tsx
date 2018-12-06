@@ -62,7 +62,7 @@ const minimizeWindow = () => {
   });
 };
 
-interface MainLayoutProps extends WithStyles<typeof styles> {}
+interface OverwolfLayoutProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
   root: {
@@ -119,7 +119,7 @@ const styles = createStyles({
   }
 });
 
-const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
+const OverwolfLayout: SFC<OverwolfLayoutProps> = ({ children, classes }) => {
   const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
   const { state } = useContext(LoadingContext);
   const loading = state && Object.values(state)[0];
@@ -167,4 +167,4 @@ const MainLayout: SFC<MainLayoutProps> = ({ children, classes }) => {
   );
 };
 
-export default withStyles(styles)(MainLayout);
+export default withStyles(styles)(OverwolfLayout);

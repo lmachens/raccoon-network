@@ -1,9 +1,14 @@
+import blue from '@material-ui/core/colors/blue';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 const light = () => {
   return createMuiTheme({
     palette: {
-      type: 'light'
+      type: 'light',
+      primary: blue,
+      action: {
+        selected: '#d0e6ec'
+      }
     },
     typography: {
       useNextVariants: true

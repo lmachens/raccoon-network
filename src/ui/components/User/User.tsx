@@ -1,6 +1,7 @@
 import {
   createStyles,
   Divider,
+  Hidden,
   IconButton,
   List,
   ListItem,
@@ -9,19 +10,18 @@ import {
   WithStyles,
   withStyles
 } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import { addContact, getProfile, removeContact, UserProfile } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { ProfileContext } from 'ui/contexts/profile';
 import Events from '../Events';
+import ExitButton from '../ExitButton';
 
 interface UserProps extends WithStyles<typeof styles> {
   userId: string;
-  showExit?: boolean;
 }
+
 const styles = createStyles({
   root: {
     display: 'flex',
@@ -30,7 +30,7 @@ const styles = createStyles({
   }
 });
 
-const User: SFC<UserProps> = ({ classes, showExit, userId }) => {
+const User: SFC<UserProps> = ({ classes, userId }) => {
   const { user, isAnonymous, refreshProfile, profile } = useContext(ProfileContext);
   const [targetUser, setTargetUser] = useState<UserProfile | null>(null);
 
@@ -59,13 +59,9 @@ const User: SFC<UserProps> = ({ classes, showExit, userId }) => {
     <div className={classes.root}>
       <List>
         <ListItem>
-          {showExit && (
-            <Link style={{ textDecoration: 'none' }} to="/">
-              <IconButton>
-                <ArrowBackIcon />
-              </IconButton>
-            </Link>
-          )}
+          <Hidden smUp>
+            <ExitButton />
+          </Hidden>
           <ListItemText primary={targetUser && targetUser.username} />
           {!isSelf && (
             <ListItemSecondaryAction>

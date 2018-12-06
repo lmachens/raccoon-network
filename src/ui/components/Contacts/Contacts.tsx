@@ -9,10 +9,12 @@ import {
 } from '@material-ui/core';
 import { getContacts, UserProfile } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
 import { ProfileContext } from 'ui/contexts/profile';
 import Contact from './Contact';
 
-interface ContactsProps extends WithStyles<typeof styles> {}
+interface ContactsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
 const styles = createStyles({
   subheader: {
@@ -25,7 +27,7 @@ const styles = createStyles({
   }
 });
 
-const Contacts: SFC<ContactsProps> = ({ classes }) => {
+const Contacts: SFC<ContactsProps> = ({ classes, history, location }) => {
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState<UserProfile[]>([]);
   const { profile } = useContext(ProfileContext);
@@ -42,13 +44,14 @@ const Contacts: SFC<ContactsProps> = ({ classes }) => {
     [profile && profile.contactUserIds && JSON.stringify(profile.contactUserIds)]
   );
 
+  const handleClick = contact => () => {
+    history.push(`/users/${contact.userId}`);
+  };
+
   return (
     <List
       className={classes.grow}
-      subheader={
-        <ListSubheader disableGutters className={classes.subheader}>
-          Contacts
-        </ListSubheader>}
+      subheader={<ListSubheader className={classes.subheader}>Contacts</ListSubheader>}
     >
       {!loading && contacts.length === 0 && (
         <ListItem>
@@ -56,9 +59,17 @@ const Contacts: SFC<ContactsProps> = ({ classes }) => {
         </ListItem>
       )}
       {contacts.map(contact => (
-        <Contact key={contact.userId} profile={contact} />
+        <Contact
+          key={contact.userId}
+          profile={contact}
+          selected={location.pathname === `/users/${contact.userId}`}
+          onClick={handleClick(contact)}
+        />
       ))}
     </List>
   );
 };
-export default withStyles(styles)(Contacts);
+export default compose(
+  withStyles(styles),
+  withRouter
+)(Contacts);

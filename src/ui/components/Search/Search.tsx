@@ -1,6 +1,5 @@
 import {
   createStyles,
-  Divider,
   IconButton,
   InputAdornment,
   Tab,
@@ -12,27 +11,32 @@ import {
 import ClearIcon from '@material-ui/icons/Clear';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { SFC, useRef, useState } from 'react';
-import Contacts from '../Contacts';
 import SearchResults from './SearchResults';
 
 interface SearchProps extends WithStyles<typeof styles> {}
 
-const styles = createStyles({
-  root: {
-    margin: 10
-  },
-  textField: {
-    height: 40,
-    backgroundColor: '#fff',
-    overflow: 'hidden'
-  },
-  button: {
-    borderRadius: 0
-  }
-});
+const styles = theme =>
+  createStyles({
+    root: {
+      margin: 10
+    },
+    textField: {
+      height: 40,
+      backgroundColor: '#fff',
+      overflow: 'hidden'
+    },
+    button: {
+      borderRadius: 0
+    },
+    tabMinWidth: {
+      [theme.breakpoints.up('md')]: {
+        minWidth: 'inherit'
+      }
+    }
+  });
 
 const tabs = ['all', 'contacts', 'games'];
-const Search: SFC<SearchProps> = ({ classes }) => {
+const Search: SFC<SearchProps> = ({ children, classes }) => {
   const inputElement = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [tab, setTab] = useState(0);
@@ -86,14 +90,13 @@ const Search: SFC<SearchProps> = ({ classes }) => {
 
       {isSearching && (
         <Tabs value={tab} onChange={handleTabChange} fullWidth>
-          <Tab label="All" />
-          <Tab label="Contacts" />
-          <Tab label="Games" />
+          <Tab classes={{ root: classes.tabMinWidth }} label="All" />
+          <Tab classes={{ root: classes.tabMinWidth }} label="Contacts" />
+          <Tab classes={{ root: classes.tabMinWidth }} label="Games" />
         </Tabs>
       )}
-      <Divider />
       {isSearching && <SearchResults search={tabs[tab]} query={searchQuery} />}
-      {!isSearching && <Contacts />}
+      {!isSearching && children}
     </>
   );
 };

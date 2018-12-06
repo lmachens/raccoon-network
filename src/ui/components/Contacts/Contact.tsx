@@ -9,56 +9,50 @@ import {
   WithStyles
 } from '@material-ui/core';
 import classNames from 'classnames';
-import React, { SFC, useContext } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import React, { SFC } from 'react';
 
-interface ContactProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {
+interface ContactProps extends WithStyles<typeof styles> {
   profile: any;
+  selected?: boolean;
+  onClick?(): void;
 }
 
-const styles = createStyles({
-  inline: {
-    display: 'inline'
-  },
-  listItem: {
-    padding: 8
-  },
-  selected: {
-    backgroundColor: '#d0e6ec'
-  },
-  notSelected: {
-    '&:hover': {
-      backgroundColor: '#e1edf1'
+const styles = theme =>
+  createStyles({
+    inline: {
+      display: 'inline'
+    },
+    listItem: {
+      padding: 8
+    },
+    selected: {
+      backgroundColor: `${theme.palette.action.selected} !important`
     }
-  }
-});
+  });
 
-const Contact: SFC<ContactProps> = ({ classes, profile, location }) => {
+const Contact: SFC<ContactProps> = ({ classes, profile, onClick, selected }) => {
   return (
-    <Link style={{ textDecoration: 'none' }} to={`/users/${profile.userId}`}>
-      <ListItem
-        button
-        disableGutters
-        className={classNames(
-          classes.listItem,
-          location.pathname === `/users/${profile.userId}` ? classes.selected : classes.notSelected
-        )}
-      >
-        <ListItemAvatar>
-          <Avatar>{profile.username.slice(0, 2)}</Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={profile.username}
-          secondary={
-            <>
-              <Typography component="span" className={classes.inline} color="textPrimary">
-                Playing League of Legends
-              </Typography>
-            </>
-          }
-        />
-      </ListItem>
-    </Link>
+    <ListItem
+      button
+      className={classNames(classes.listItem, {
+        [classes.selected]: selected
+      })}
+      onClick={onClick}
+    >
+      <ListItemAvatar>
+        <Avatar>{profile.username.slice(0, 2)}</Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={profile.username}
+        secondary={
+          <>
+            <Typography component="span" className={classes.inline} color="textPrimary">
+              Playing League of Legends
+            </Typography>
+          </>
+        }
+      />
+    </ListItem>
   );
 };
-export default withStyles(styles)(withRouter(Contact));
+export default withStyles(styles)(Contact);
