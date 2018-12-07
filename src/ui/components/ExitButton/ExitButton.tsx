@@ -3,11 +3,11 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import React, { SFC } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface ExitButtonProps extends RouteComponentProps<{}> {
+interface IExitButtonProps extends RouteComponentProps<{}> {
   to?: string;
 }
 
-const ExitButton: SFC<ExitButtonProps> = ({ history, to = '/' }) => {
+const ExitButton: SFC<IExitButtonProps> = ({ history, to = '/' }) => {
   const handleClick = () => {
     history.push(to);
   };

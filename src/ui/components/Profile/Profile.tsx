@@ -22,7 +22,7 @@ import { GamesContext } from 'ui/contexts/games';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 
-interface ProfileProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
+interface IProfileProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
 const styles = theme =>
   createStyles({
@@ -41,7 +41,7 @@ const styles = theme =>
     }
   });
 
-const Profile: SFC<ProfileProps> = ({ classes, history, location }) => {
+const Profile: SFC<IProfileProps> = ({ classes, history, location }) => {
   const { setLoading } = useContext(LoadingContext);
   const { user, profile, isAnonymous } = useContext(ProfileContext);
   const { gameInfo } = useContext(GamesContext);

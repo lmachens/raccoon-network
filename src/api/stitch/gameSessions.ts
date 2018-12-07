@@ -8,6 +8,7 @@ export interface IEvent {
 }
 
 export interface IGameSession {
+  _id?: string;
   gameId: number;
   matchId: string;
   userId: string;
@@ -21,6 +22,11 @@ const gameSessions = appDb.collection<IGameSession>('gameSessions');
 export const getGameSessions = userId => {
   console.log('getGameSessions');
   return gameSessions.find({ userId }, { sort: { createdAt: -1 } }).asArray();
+};
+
+export const findGameSessions = (query, options) => {
+  console.log('findGameSessions');
+  return gameSessions.find(query, { ...options, sort: { createdAt: -1 } }).asArray();
 };
 
 export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
