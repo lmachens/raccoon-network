@@ -4,6 +4,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Tooltip,
   withStyles,
   WithStyles
 } from '@material-ui/core';
@@ -32,18 +33,23 @@ const styles = theme =>
 
 const Game: SFC<IGameProps> = ({ classes, game, onClick, selected }) => {
   return (
-    <ListItem
-      button
-      className={classNames(classes.listItem, {
-        [classes.selected]: selected
-      })}
-      onClick={onClick}
-    >
-      <ListItemAvatar>
-        <Avatar>{game.name.slice(0, 2)}</Avatar>
-      </ListItemAvatar>
-      <ListItemText primary={game.name} />
-    </ListItem>
+    <Tooltip title="Coming soon">
+      <div>
+        <ListItem
+          button
+          className={classNames(classes.listItem, {
+            [classes.selected]: selected
+          })}
+          disabled
+          onClick={onClick}
+        >
+          <ListItemAvatar>
+            <Avatar>{game.name.slice(0, 2)}</Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={game.name} />
+        </ListItem>
+      </div>
+    </Tooltip>
   );
 };
 export default withStyles(styles)(Game);

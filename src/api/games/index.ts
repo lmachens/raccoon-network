@@ -1,4 +1,6 @@
 import { ODK } from 'api/overwolf/overwolf';
+import { csgo } from './csgo';
+import { heartstone } from './hearthstone';
 import { leagueOfLegends } from './leagueOfLegends';
 
 export interface IGame {
@@ -12,7 +14,9 @@ interface IGames {
 }
 
 const games: IGames = {
-  [leagueOfLegends.id]: leagueOfLegends
+  [leagueOfLegends.id]: leagueOfLegends,
+  [heartstone.id]: heartstone,
+  [csgo.id]: csgo
 };
 
 export default games;
