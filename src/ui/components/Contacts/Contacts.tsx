@@ -11,6 +11,7 @@ import { getContacts, UserProfile } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
+import { CacheContext } from 'ui/contexts/cache';
 import { ProfileContext } from 'ui/contexts/profile';
 import Contact from './Contact';
 
@@ -29,14 +30,18 @@ const styles = createStyles({
 
 const Contacts: SFC<ContactsProps> = ({ classes, history, location }) => {
   const [loading, setLoading] = useState(true);
-  const [contacts, setContacts] = useState<UserProfile[]>([]);
   const { profile } = useContext(ProfileContext);
+  const { state, setCache } = useContext(CacheContext);
+
+  const cacheKey = 'contacts';
+  const contacts: UserProfile[] = state[cacheKey] || [];
+
   useEffect(
     () => {
       if (profile && profile.contactUserIds) {
         setLoading(true);
         getContacts(profile.contactUserIds).then(result => {
-          setContacts(result);
+          setCache(cacheKey, result);
           setLoading(false);
         });
       }

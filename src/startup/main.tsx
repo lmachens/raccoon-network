@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
+import { CacheProvider } from 'ui/contexts/cache';
 import { GamesProvider } from 'ui/contexts/games';
 import { LoadingProvider } from 'ui/contexts/loading';
 import { ProfileProvider } from 'ui/contexts/profile';
@@ -13,11 +14,13 @@ const Root = (
     <LoadingProvider>
       <ProfileProvider>
         <HashRouter>
-          <OverwolfLayout>
-            <GamesProvider>
-              <Main />
-            </GamesProvider>
-          </OverwolfLayout>
+          <CacheProvider>
+            <OverwolfLayout>
+              <GamesProvider>
+                <Main />
+              </GamesProvider>
+            </OverwolfLayout>
+          </CacheProvider>
         </HashRouter>
       </ProfileProvider>
     </LoadingProvider>
