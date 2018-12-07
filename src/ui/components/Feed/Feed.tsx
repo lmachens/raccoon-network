@@ -10,7 +10,7 @@ import {
 import React, { SFC } from 'react';
 import ExitButton from '../ExitButton';
 
-interface FeedProps extends WithStyles<typeof styles> {}
+interface IFeedProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
   root: {
@@ -20,7 +20,7 @@ const styles = createStyles({
   }
 });
 
-const Feed: SFC<FeedProps> = ({ classes }) => {
+const Feed: SFC<IFeedProps> = ({ classes }) => {
   return (
     <div className={classes.root}>
       <List>

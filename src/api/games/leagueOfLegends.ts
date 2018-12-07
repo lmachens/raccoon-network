@@ -1,6 +1,6 @@
-import { Game } from '.';
+import { IGame } from '.';
 
-export const leagueOfLegends: Game = {
+export const leagueOfLegends: IGame = {
   id: 5426,
   name: 'League of Legends',
   interestedInFeatures: [

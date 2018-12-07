@@ -1,12 +1,12 @@
 import { stitchClient } from 'api/stitch';
-import { getProfile, UserProfile } from 'api/stitch/profile';
+import { getProfile, IUserProfile } from 'api/stitch/profile';
 import { StitchAuthListener, StitchUser } from 'mongodb-stitch-browser-sdk';
 import React from 'react';
 
-interface Profile extends ProfileState {
+interface IProfile extends IProfileState {
   refreshProfile(): void;
 }
-export const ProfileContext = React.createContext<Profile>({
+export const ProfileContext = React.createContext<IProfile>({
   isLoggingIn: false,
   isLoggedIn: false,
   isAnonymous: false,
@@ -17,15 +17,15 @@ export const ProfileContext = React.createContext<Profile>({
   }
 });
 
-interface ProfileState {
+interface IProfileState {
   isLoggingIn: boolean;
   isLoggedIn: boolean;
   isAnonymous: boolean;
   user?: StitchUser | null;
-  profile?: UserProfile | null;
+  profile?: IUserProfile | null;
 }
 
-export class ProfileProvider extends React.Component<{}, ProfileState> {
+export class ProfileProvider extends React.Component<{}, IProfileState> {
   state = {
     isLoggingIn: true,
     isLoggedIn: false,

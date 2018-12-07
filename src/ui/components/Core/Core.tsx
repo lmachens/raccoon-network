@@ -10,7 +10,7 @@ import IconTextButton from 'ui/components/IconTextButton';
 import Profile from 'ui/components/Profile';
 import Search from 'ui/components/Search';
 
-interface CoreProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
+interface ICoreProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
 const styles = createStyles({
   buttons: {
@@ -19,7 +19,7 @@ const styles = createStyles({
   }
 });
 
-const Core: SFC<CoreProps> = ({ classes, history, location }) => {
+const Core: SFC<ICoreProps> = ({ classes, history, location }) => {
   const handleClick = link => () => {
     history.push(link);
   };

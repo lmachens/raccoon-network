@@ -1,31 +1,109 @@
-import { findProfiles, UserProfile } from 'api/stitch/profile';
+import {
+  CircularProgress,
+  createStyles,
+  ListSubheader,
+  withStyles,
+  WithStyles
+} from '@material-ui/core';
+import { findGames, IGame } from 'api/games';
+import { findProfiles, IUserProfile } from 'api/stitch/profile';
 import React, { SFC, useEffect, useState } from 'react';
-import Contact from '../Contacts/Contact';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+import Contact from '../Contact';
+import Game from '../Game';
 
-interface SearchResultsProps {
+interface ISearchResultsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {
   search: string;
   query: string;
 }
 
-const SearchResults: SFC<SearchResultsProps> = ({ search, query }) => {
-  const [profiles, setProfiles] = useState<UserProfile[]>([]);
+const styles = createStyles({
+  container: {
+    position: 'relative',
+    height: '100%'
+  },
+  loading: {
+    position: 'absolute',
+    left: 'calc(50% - 20px)',
+    top: 'calc(50% - 20px)'
+  }
+});
+
+interface ISearchResultsState {
+  profiles?: IUserProfile[];
+  games?: IGame[];
+}
+
+const SearchResults: SFC<ISearchResultsProps> = ({ classes, history, search, query, location }) => {
+  const [loading, setLoading] = useState(true);
+  const [searchResults, setSearchResults] = useState<ISearchResultsState>({});
+
   useEffect(
     () => {
+      setLoading(true);
       if (search === 'all') {
-        findProfiles(query, { limit: 5 }).then(setProfiles);
-      } else if (search === 'contacts') {
-        findProfiles(query, { limit: 30 }).then(setProfiles);
+        Promise.all([findProfiles(query, { limit: 5 }), findGames(query)]).then(
+          ([foundProfiles, foundGames]) => {
+            setSearchResults({
+              profiles: foundProfiles,
+              games: foundGames
+            });
+            setLoading(false);
+          }
+        );
+      } else if (search === 'people') {
+        findProfiles(query, { limit: 30 }).then(foundProfiles => {
+          setSearchResults({
+            profiles: foundProfiles
+          });
+          setLoading(false);
+        });
+      } else if (search === 'games') {
+        findGames(query).then(foundGames => {
+          setSearchResults({
+            games: foundGames
+          });
+          setLoading(false);
+        });
       }
     },
     [search, query]
   );
+
+  const handleContactClick = contact => () => {
+    history.push(`/users/${contact.userId}`);
+  };
+
   return (
-    <div>
-      {profiles.map(profile => (
-        <Contact key={profile.userId} profile={profile} />
-      ))}
+    <div className={classes.container}>
+      {loading && <CircularProgress className={classes.loading} />}
+      {searchResults.games && (
+        <>
+          <ListSubheader>Games</ListSubheader>
+          {searchResults.games.map(game => (
+            <Game key={game.id} game={game} />
+          ))}
+        </>
+      )}
+      {searchResults.profiles && (
+        <>
+          <ListSubheader>People</ListSubheader>
+          {searchResults.profiles.map(profile => (
+            <Contact
+              key={profile.userId}
+              profile={profile}
+              onClick={handleContactClick(profile)}
+              selected={location.pathname === `/users/${profile.userId}`}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 };
 
-export default SearchResults;
+export default compose(
+  withStyles(styles),
+  withRouter
+)(SearchResults);

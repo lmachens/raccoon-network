@@ -11,13 +11,13 @@ import {
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import { GameSession, getGameSessions } from 'api/stitch/gameSessions';
+import { getGameSessions, IGameSession } from 'api/stitch/gameSessions';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import Event from './Event';
 import LeagueGame from './LeagueGame';
 
-interface EventsProps extends WithStyles<typeof styles> {
+interface IEventsProps extends WithStyles<typeof styles> {
   userId: string;
 }
 
@@ -51,13 +51,13 @@ const sortEvent = (a, b) => {
   return b.timestamp - a.timestamp;
 };
 
-const Events: SFC<EventsProps> = ({ classes, userId }) => {
+const Events: SFC<IEventsProps> = ({ classes, userId }) => {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState({});
 
   const { state, setCache } = useContext(CacheContext);
   const cacheKey = `${userId}-gameSessions`;
-  const gameSessions: GameSession[] = state[cacheKey] || [];
+  const gameSessions: IGameSession[] = state[cacheKey] || [];
 
   const handleExpand = index => () => {
     setOpen({ ...open, [index]: !open[index] });

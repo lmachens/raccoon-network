@@ -1,24 +1,24 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-interface Cache {
+interface ICache {
   state: {
     [key: string]: any;
   };
   setCache(key: string, value: any): void;
 }
 
-interface CacheState {
+interface ICacheState {
   [key: string]: any;
 }
 
-export const CacheContext = React.createContext<Cache>({
+export const CacheContext = React.createContext<ICache>({
   state: {},
   setCache: (key, value) => {
     // dummy
   }
 });
 
-export class CacheProvider extends React.Component<{}, CacheState> {
+export class CacheProvider extends React.Component<{}, ICacheState> {
   state = {};
 
   setCache = (key: string, value: any) => {

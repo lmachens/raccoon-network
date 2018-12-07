@@ -13,7 +13,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import React, { SFC, useRef, useState } from 'react';
 import SearchResults from './SearchResults';
 
-interface SearchProps extends WithStyles<typeof styles> {}
+interface ISearchProps extends WithStyles<typeof styles> {}
 
 const styles = theme =>
   createStyles({
@@ -35,8 +35,8 @@ const styles = theme =>
     }
   });
 
-const tabs = ['all', 'contacts', 'games'];
-const Search: SFC<SearchProps> = ({ children, classes }) => {
+const tabs = ['all', 'people', 'games'];
+const Search: SFC<ISearchProps> = ({ children, classes }) => {
   const inputElement = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [tab, setTab] = useState(0);
@@ -91,7 +91,7 @@ const Search: SFC<SearchProps> = ({ children, classes }) => {
       {isSearching && (
         <Tabs value={tab} onChange={handleTabChange} fullWidth>
           <Tab classes={{ root: classes.tabMinWidth }} label="All" />
-          <Tab classes={{ root: classes.tabMinWidth }} label="Contacts" />
+          <Tab classes={{ root: classes.tabMinWidth }} label="People" />
           <Tab classes={{ root: classes.tabMinWidth }} label="Games" />
         </Tabs>
       )}

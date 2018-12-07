@@ -4,18 +4,18 @@ import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
 import {
   addGameSessionEvent,
   addGameSessionEvents,
-  EventData,
+  IEvent,
   setGameSessionInfo
 } from 'api/stitch/gameSessions';
 import { uploadVideo } from 'api/video';
 import React from 'react';
 
-interface GamesContextValue {
+interface IGamesContextValue {
   events: any;
   gameInfo: any;
   matchInfo: any;
 }
-export const GamesContext = React.createContext<GamesContextValue>({
+export const GamesContext = React.createContext<IGamesContextValue>({
   events: null,
   gameInfo: null,
   matchInfo: null
@@ -23,9 +23,9 @@ export const GamesContext = React.createContext<GamesContextValue>({
 
 type GameInfoState = ODKRunningGameInfo | null;
 
-interface GamesProviderState {
+interface IGamesProviderState {
   gameInfo: GameInfoState;
-  events: EventData[];
+  events: IEvent[];
   matchInfo: any;
 }
 
@@ -40,14 +40,14 @@ const defaultMatchInfo = {
   startedAt: 0
 };
 
-export class GamesProvider extends React.Component<{}, GamesProviderState> {
+export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   stopCaptureTimeout: NodeJS.Timeout | null = null;
   highlightEvents: any[] = [];
   fileInput = React.createRef<any>();
 
   replay: any = null;
 
-  state: GamesProviderState = {
+  state: IGamesProviderState = {
     gameInfo: null,
     matchInfo: null,
     events: []
@@ -176,7 +176,7 @@ export class GamesProvider extends React.Component<{}, GamesProviderState> {
   saveHighlight = () => {
     overwolf.media.replays.stopCapture(this.replay.id, () => {
       console.log('saveHighlight');
-      const event: EventData = {
+      const event: IEvent = {
         name: 'Highlight',
         timestamp: new Date(),
         data: this.highlightEvents

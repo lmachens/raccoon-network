@@ -12,14 +12,14 @@ import {
 } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
-import { addContact, getProfile, removeContact, UserProfile } from 'api/stitch/profile';
+import { addContact, getProfile, IUserProfile, removeContact } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import { ProfileContext } from 'ui/contexts/profile';
 import Events from '../Events';
 import ExitButton from '../ExitButton';
 
-interface UserProps extends WithStyles<typeof styles> {
+interface IUserProps extends WithStyles<typeof styles> {
   userId: string;
 }
 
@@ -31,7 +31,7 @@ const styles = createStyles({
   }
 });
 
-const User: SFC<UserProps> = ({ classes, userId }) => {
+const User: SFC<IUserProps> = ({ classes, userId }) => {
   const [loading, setLoading] = useState(true);
   const { user, isAnonymous, refreshProfile, profile } = useContext(ProfileContext);
 
@@ -52,7 +52,7 @@ const User: SFC<UserProps> = ({ classes, userId }) => {
   const { state, setCache } = useContext(CacheContext);
 
   const cacheKey = `${userId}-user`;
-  const targetUser: UserProfile = state[cacheKey] || [];
+  const targetUser: IUserProfile = state[cacheKey] || [];
 
   useEffect(
     () => {

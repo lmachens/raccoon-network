@@ -1,23 +1,23 @@
 import { appDb, stitchClient } from './client';
 
-export interface EventData {
+export interface IEvent {
   name: string;
   data: any;
   timestamp: Date;
   video?: any;
 }
 
-export interface GameSession {
+export interface IGameSession {
   gameId: number;
   matchId: string;
   userId: string;
   info: any;
-  events: EventData[];
+  events: IEvent[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-const gameSessions = appDb.collection<GameSession>('gameSessions');
+const gameSessions = appDb.collection<IGameSession>('gameSessions');
 export const getGameSessions = userId => {
   console.log('getGameSessions');
   return gameSessions.find({ userId }, { sort: { createdAt: -1 } }).asArray();

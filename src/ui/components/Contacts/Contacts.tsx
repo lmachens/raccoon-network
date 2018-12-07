@@ -7,15 +7,15 @@ import {
   withStyles,
   WithStyles
 } from '@material-ui/core';
-import { getContacts, UserProfile } from 'api/stitch/profile';
+import { getContacts, IUserProfile } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { CacheContext } from 'ui/contexts/cache';
 import { ProfileContext } from 'ui/contexts/profile';
-import Contact from './Contact';
+import Contact from '../Contact';
 
-interface ContactsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
+interface IContactsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
 const styles = createStyles({
   subheader: {
@@ -28,13 +28,13 @@ const styles = createStyles({
   }
 });
 
-const Contacts: SFC<ContactsProps> = ({ classes, history, location }) => {
+const Contacts: SFC<IContactsProps> = ({ classes, history, location }) => {
   const [loading, setLoading] = useState(true);
   const { profile } = useContext(ProfileContext);
   const { state, setCache } = useContext(CacheContext);
 
   const cacheKey = 'contacts';
-  const contacts: UserProfile[] = state[cacheKey] || [];
+  const contacts: IUserProfile[] = state[cacheKey] || [];
 
   useEffect(
     () => {

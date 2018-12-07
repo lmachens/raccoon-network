@@ -6,11 +6,11 @@ import {
   withStyles,
   WithStyles
 } from '@material-ui/core';
-import { EventData } from 'api/stitch/gameSessions';
+import { IEvent } from 'api/stitch/gameSessions';
 import React, { SFC } from 'react';
 
-interface EventProps extends WithStyles<typeof styles> {
-  event: EventData;
+interface IEventProps extends WithStyles<typeof styles> {
+  event: IEvent;
   startedAt: number;
 }
 
@@ -42,7 +42,7 @@ const getDetails = event => {
   return '';
 };
 
-const Event: SFC<EventProps> = ({ classes, event, startedAt }) => {
+const Event: SFC<IEventProps> = ({ classes, event, startedAt }) => {
   return (
     <ListItem className={classes.listItem}>
       <ListItemText

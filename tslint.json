@@ -4,7 +4,6 @@
     "exclude": ["node_modules/**", "dist/**"]
   },
   "rules": {
-    "interface-name": false,
     "member-access": false,
     "no-implicit-dependencies": false,
     "jsx-no-multiline-js": false,
