@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { getGameSessions, IGameSession } from 'api/stitch/gameSessions';
 import { addContact, getProfile, IUserProfile, removeContact } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
@@ -90,13 +91,16 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
           <ListItemText
             primary={!loading && !targetUser ? 'User not found' : targetUser.username}
           />
-          {!loading && targetUser && !isSelf && (
-            <ListItemSecondaryAction>
+          <ListItemSecondaryAction>
+            {!loading && targetUser && !isSelf && (
               <IconButton onClick={toggleContact} disabled={isAnonymous || user!.id === userId}>
                 {isContact ? <PersonAddDisabledIcon /> : <PersonAddIcon />}
               </IconButton>
-            </ListItemSecondaryAction>
-          )}
+            )}
+            <IconButton onClick={handleRefresh} disabled={loading}>
+              <RefreshIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
         </ListItem>
       </List>
       <Divider />

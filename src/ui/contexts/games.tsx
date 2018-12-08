@@ -100,10 +100,17 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     const timestamp = new Date();
 
     const events = eventUpdate.events.map(event => {
-      const data =
-        typeof event.data === 'string'
-          ? JSON.parse(event.data.replace('\r', '').replace('\n', ''))
-          : event.data;
+      let data = {};
+      try {
+        if (event.data !== '') {
+          data =
+            typeof event.data === 'string'
+              ? JSON.parse(event.data.replace('\r', '').replace('\n', ''))
+              : event.data;
+        }
+      } catch (error) {
+        console.error(error, event);
+      }
       return { name: event.name, ...data, timestamp };
     });
     const announcerEvents = events.filter(event => event.name === 'announcer');
