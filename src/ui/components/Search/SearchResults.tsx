@@ -12,6 +12,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import Contact from '../Contact';
 import Game from '../Game';
+import Link from '../Link';
 
 interface ISearchResultsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {
   search: string;
@@ -71,10 +72,6 @@ const SearchResults: SFC<ISearchResultsProps> = ({ classes, history, search, que
     [search, query]
   );
 
-  const handleContactClick = contact => () => {
-    history.push(`/users/${contact.userId}`);
-  };
-
   return (
     <div className={classes.container}>
       {loading && <CircularProgress className={classes.loading} />}
@@ -90,12 +87,12 @@ const SearchResults: SFC<ISearchResultsProps> = ({ classes, history, search, que
         <>
           <ListSubheader>People</ListSubheader>
           {searchResults.profiles.map(profile => (
-            <Contact
-              key={profile.userId}
-              profile={profile}
-              onClick={handleContactClick(profile)}
-              selected={location.pathname === `/users/${profile.userId}`}
-            />
+            <Link key={profile.userId} to={`/users/${profile.userId}`}>
+              <Contact
+                profile={profile}
+                selected={location.pathname === `/users/${profile.userId}`}
+              />
+            </Link>
           ))}
         </>
       )}

@@ -1,4 +1,5 @@
 import { appDb, stitchClient } from './client';
+import { getProfile } from './profile';
 
 export interface IEvent {
   name: string;
@@ -12,6 +13,10 @@ export interface IGameSession {
   gameId: number;
   matchId: string;
   userId: string;
+  profile: {
+    username: string;
+    avatarSrc?: string;
+  };
   info: any;
   events: IEvent[];
   createdAt: Date;
@@ -33,11 +38,12 @@ export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
   console.log('setGameSessionInfo', gameId, matchId);
   const userId = stitchClient.auth.user!.id;
   const now = new Date();
+  const profile = await getProfile(userId, { projection: { username: 1, avatarSrc: 1 } });
   return gameSessions.updateOne(
     { userId, gameId, matchId },
     {
       $set: { info, updatedAt: now },
-      $setOnInsert: { userId, gameId, matchId, events: [], createdAt: now }
+      $setOnInsert: { userId, profile, gameId, matchId, events: [], createdAt: now }
     },
     { upsert: true }
   );

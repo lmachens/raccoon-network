@@ -14,6 +14,7 @@ import { compose } from 'recompose';
 import { CacheContext } from 'ui/contexts/cache';
 import { ProfileContext } from 'ui/contexts/profile';
 import Contact from '../Contact';
+import Link from '../Link';
 
 interface IContactsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
@@ -49,10 +50,6 @@ const Contacts: SFC<IContactsProps> = ({ classes, history, location }) => {
     [profile && profile.contactUserIds && JSON.stringify(profile.contactUserIds)]
   );
 
-  const handleClick = contact => () => {
-    history.push(`/users/${contact.userId}`);
-  };
-
   return (
     <List
       className={classes.grow}
@@ -64,12 +61,9 @@ const Contacts: SFC<IContactsProps> = ({ classes, history, location }) => {
         </ListItem>
       )}
       {contacts.map(contact => (
-        <Contact
-          key={contact.userId}
-          profile={contact}
-          selected={location.pathname === `/users/${contact.userId}`}
-          onClick={handleClick(contact)}
-        />
+        <Link key={contact.userId} to={`/users/${contact.userId}`}>
+          <Contact profile={contact} selected={location.pathname === `/users/${contact.userId}`} />
+        </Link>
       ))}
     </List>
   );

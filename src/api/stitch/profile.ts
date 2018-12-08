@@ -3,13 +3,14 @@ import { appDb, stitchClient } from './client';
 export interface IUserProfile {
   userId: string;
   username: string;
+  avatarSrc?: string;
   contactUserIds?: string[];
 }
 
 const profiles = appDb.collection<IUserProfile>('profiles');
-export const getProfile = async userId => {
+export const getProfile = async (userId, options?) => {
   console.log('getProfile');
-  const result = await profiles.find({ userId }, { limit: 1 }).asArray();
+  const result = await profiles.find({ userId }, { ...options, limit: 1 }).asArray();
   const profile = result ? result[0] : null;
   return profile;
 };

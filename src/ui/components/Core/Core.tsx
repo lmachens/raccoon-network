@@ -9,6 +9,7 @@ import Contacts from 'ui/components/Contacts';
 import IconTextButton from 'ui/components/IconTextButton';
 import Profile from 'ui/components/Profile';
 import Search from 'ui/components/Search';
+import Link from '../Link';
 
 interface ICoreProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
@@ -20,49 +21,39 @@ const styles = createStyles({
 });
 
 const Core: SFC<ICoreProps> = ({ classes, history, location }) => {
-  const handleClick = link => () => {
-    history.push(link);
-  };
-
   return (
     <>
       <Profile />
       <Search>
         <div className={classes.buttons}>
-          <Hidden smUp>
-            <IconTextButton
-              label="Home"
-              icon={<HomeIcon />}
-              onClick={handleClick('/feed')}
-              selected={location.pathname === '/feed'}
-            />
-          </Hidden>
-          <Hidden xsDown>
-            <IconTextButton
-              label="Home"
-              icon={<HomeIcon />}
-              onClick={handleClick('/feed')}
-              selected={location.pathname === '/feed' || location.pathname === '/'}
-            />
-          </Hidden>
+          <Link to={'/feed'}>
+            <Hidden smUp>
+              <IconTextButton
+                label="Home"
+                icon={<HomeIcon />}
+                selected={location.pathname === '/feed'}
+              />
+            </Hidden>
+            <Hidden xsDown>
+              <IconTextButton
+                label="Home"
+                icon={<HomeIcon />}
+                selected={location.pathname === '/feed' || location.pathname === '/'}
+              />
+            </Hidden>
+          </Link>
           <Tooltip title="Coming soon">
             <div>
-              <IconTextButton
-                label="Chat"
-                icon={<ChatIcon />}
-                onClick={handleClick('/chat')}
-                disabled
-              />
+              <Link to={'/chat'}>
+                <IconTextButton label="Chat" icon={<ChatIcon />} disabled />
+              </Link>
             </div>
           </Tooltip>
           <Tooltip title="Coming soon">
             <div>
-              <IconTextButton
-                label="Notifications"
-                icon={<NotificationsIcon />}
-                onClick={handleClick('/notifications')}
-                disabled
-              />
+              <Link to={'/notifications'}>
+                <IconTextButton label="Notifications" icon={<NotificationsIcon />} disabled />
+              </Link>
             </div>
           </Tooltip>
         </div>

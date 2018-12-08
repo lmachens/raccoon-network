@@ -21,6 +21,7 @@ import { compose } from 'recompose';
 import { GamesContext } from 'ui/contexts/games';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
+import Link from '../Link';
 
 interface IProfileProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
 
@@ -65,44 +66,41 @@ const Profile: SFC<IProfileProps> = ({ classes, history, location }) => {
     });
   };
 
-  const handleClick = () => {
-    history.push(`/users/${user!.id}`);
-  };
-
   return (
     <List disablePadding>
-      <ListItem
-        button
-        onClick={handleClick}
-        className={classNames(classes.root, {
-          [classes.selected]: location.pathname === `/users/${user!.id}`
-        })}
-      >
-        <ListItemAvatar>
-          <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={isAnonymous ? 'Guest' : profile!.username}
-          secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
-        />
-        <ListItemSecondaryAction>
-          <IconButton
-            aria-owns={menuAnchor ? 'menu' : undefined}
-            aria-haspopup="true"
-            onClick={handleActionsClick}
-          >
-            <MoreHorizIcon color="action" />
-          </IconButton>
-          <Menu
-            id="menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleCloseMenu}
-          >
-            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-          </Menu>
-        </ListItemSecondaryAction>
-      </ListItem>
+      <Link to={`/users/${user!.id}`}>
+        <ListItem
+          button
+          className={classNames(classes.root, {
+            [classes.selected]: location.pathname === `/users/${user!.id}`
+          })}
+        >
+          <ListItemAvatar>
+            <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={isAnonymous ? 'Guest' : profile!.username}
+            secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
+          />
+          <ListItemSecondaryAction>
+            <IconButton
+              aria-owns={menuAnchor ? 'menu' : undefined}
+              aria-haspopup="true"
+              onClick={handleActionsClick}
+            >
+              <MoreHorizIcon color="action" />
+            </IconButton>
+            <Menu
+              id="menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+            </Menu>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </Link>
     </List>
   );
 };
