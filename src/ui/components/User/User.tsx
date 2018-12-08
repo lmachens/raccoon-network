@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   createStyles,
   Divider,
   Hidden,
@@ -12,12 +13,13 @@ import {
 } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import { getGameSessions, IGameSession } from 'api/stitch/gameSessions';
 import { addContact, getProfile, IUserProfile, removeContact } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import { ProfileContext } from 'ui/contexts/profile';
-import Events from '../Events';
 import ExitButton from '../ExitButton';
+import GameSessionPreview from '../GameSessionPreview';
 
 interface IUserProps extends WithStyles<typeof styles> {
   userId: string;
@@ -28,6 +30,11 @@ const styles = createStyles({
     display: 'flex',
     flexDirection: 'column',
     height: '100%'
+  },
+  loading: {
+    position: 'absolute',
+    left: 'calc(50% - 20px)',
+    top: 'calc(50% - 20px)'
   }
 });
 
@@ -51,19 +58,28 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
 
   const { state, setCache } = useContext(CacheContext);
 
-  const cacheKey = `${userId}-user`;
-  const targetUser: IUserProfile = state[cacheKey] || [];
+  const profileCacheKey = `${userId}-user`;
+  const gameSessionsCacheKey = `${userId}-gameSessions`;
+  const targetUser: IUserProfile = state[profileCacheKey] || {};
+  const gameSessions: IGameSession[] = state[gameSessionsCacheKey] || [];
 
   useEffect(
     () => {
-      setLoading(true);
-      getProfile(userId).then(result => {
-        setCache(cacheKey, result);
-        setLoading(false);
-      });
+      handleRefresh();
     },
     [userId]
   );
+
+  const handleRefresh = () => {
+    setLoading(true);
+    Promise.all([getProfile(userId), getGameSessions(userId)]).then(
+      ([foundProfile, foundGameSessions]) => {
+        setCache(profileCacheKey, foundProfile);
+        setCache(gameSessionsCacheKey, foundGameSessions);
+        setLoading(false);
+      }
+    );
+  };
 
   return (
     <div className={classes.root}>
@@ -90,7 +106,15 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
         )}
       </List>
       <Divider />
-      <Events userId={userId} />
+      {loading && <CircularProgress className={classes.loading} />}
+      {gameSessions.map(gameSession => (
+        <GameSessionPreview key={gameSession._id} gameSession={gameSession} />
+      ))}
+      {!loading && gameSessions.length === 0 && (
+        <ListItem>
+          <ListItemText primary="No games found" />
+        </ListItem>
+      )}
     </div>
   );
 };

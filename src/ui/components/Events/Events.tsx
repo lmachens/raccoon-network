@@ -93,7 +93,7 @@ const Events: SFC<IEventsProps> = ({ classes, userId }) => {
             </ButtonBase>
             <Collapse in={open[index]} timeout="auto" unmountOnExit>
               {events.sort(sortEvent).map((event, i) => (
-                <Event key={i} event={event} startedAt={info.startedAt} />
+                <Event key={i} event={event} startedAt={info.startedAt!} />
               ))}
             </Collapse>
           </ul>

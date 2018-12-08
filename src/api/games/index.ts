@@ -1,4 +1,5 @@
 import { ODK } from 'api/overwolf/overwolf';
+import { IGameSessionPreviewComponent } from 'ui/components/GameSessionPreview/GameSessionPreview';
 import { csgo } from './csgo';
 import { heartstone } from './hearthstone';
 import { leagueOfLegends } from './leagueOfLegends';
@@ -7,6 +8,7 @@ export interface IGame {
   id: number;
   name: string;
   interestedInFeatures: ODK.GameEvents.LOL.TFeaturesLOL[];
+  GameSessionPreviewComponent: React.FunctionComponent<IGameSessionPreviewComponent>;
 }
 
 interface IGames {

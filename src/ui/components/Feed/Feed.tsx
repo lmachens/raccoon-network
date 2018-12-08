@@ -3,17 +3,20 @@ import {
   createStyles,
   Divider,
   Hidden,
+  IconButton,
   List,
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   withStyles,
   WithStyles
 } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { findGameSessions, IGameSession } from 'api/stitch/gameSessions';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import ExitButton from '../ExitButton';
-import GameSession from '../GameSession';
+import GameSessionPreview from '../GameSessionPreview';
 
 interface IFeedProps extends WithStyles<typeof styles> {}
 
@@ -42,6 +45,10 @@ const Feed: SFC<IFeedProps> = ({ classes }) => {
   const feedResults: IFeedResults = state[cacheKey] || {};
 
   useEffect(() => {
+    handleRefresh();
+  }, []);
+
+  const handleRefresh = () => {
     setLoading(true);
     findGameSessions({}, { limit: 10 }).then(result => {
       setCache(cacheKey, {
@@ -49,7 +56,7 @@ const Feed: SFC<IFeedProps> = ({ classes }) => {
       });
       setLoading(false);
     });
-  }, []);
+  };
 
   return (
     <div className={classes.root}>
@@ -60,12 +67,17 @@ const Feed: SFC<IFeedProps> = ({ classes }) => {
           </Hidden>
           <ListItemText primary="Feed" />
         </ListItem>
+        <ListItemSecondaryAction>
+          <IconButton onClick={handleRefresh} disabled={loading}>
+            <RefreshIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
       </List>
       <Divider />
       {loading && <CircularProgress className={classes.loading} />}
       {feedResults.gameSessions &&
         feedResults.gameSessions.map(gameSession => (
-          <GameSession key={gameSession._id} gameSession={gameSession} />
+          <GameSessionPreview key={gameSession._id} gameSession={gameSession} />
         ))}
     </div>
   );

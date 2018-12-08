@@ -8,6 +8,22 @@ export interface IEvent {
   video?: any;
 }
 
+export interface IMatchInfo {
+  matchId?: string;
+  startedAt?: Date;
+  endedAt?: Date;
+  outcome?: any;
+  alive?: boolean;
+  champion?: string;
+  gameMode?: string;
+  level?: number;
+  kills?: number;
+  deaths?: number;
+  assists?: number;
+  minionKills?: number;
+  [key: string]: any;
+}
+
 export interface IGameSession {
   _id?: string;
   gameId: number;
@@ -17,7 +33,7 @@ export interface IGameSession {
     username: string;
     avatarSrc?: string;
   };
-  info: any;
+  info: IMatchInfo;
   events: IEvent[];
   createdAt: Date;
   updatedAt: Date;

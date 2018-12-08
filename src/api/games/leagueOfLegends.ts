@@ -1,3 +1,4 @@
+import LeagueOfLegends from 'ui/components/GameSessionPreview/games/LeagueOfLegends';
 import { IGame } from '.';
 
 export const leagueOfLegends: IGame = {
@@ -17,5 +18,6 @@ export const leagueOfLegends: IGame = {
     'teams',
     'level',
     'announcer'
-  ]
+  ],
+  GameSessionPreviewComponent: LeagueOfLegends
 };

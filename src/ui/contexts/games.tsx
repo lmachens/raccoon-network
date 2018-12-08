@@ -5,6 +5,7 @@ import {
   addGameSessionEvent,
   addGameSessionEvents,
   IEvent,
+  IMatchInfo,
   setGameSessionInfo
 } from 'api/stitch/gameSessions';
 import { uploadVideo } from 'api/video';
@@ -13,12 +14,12 @@ import React from 'react';
 interface IGamesContextValue {
   events: any;
   gameInfo: any;
-  matchInfo: any;
+  matchInfo: IMatchInfo;
 }
 export const GamesContext = React.createContext<IGamesContextValue>({
   events: null,
   gameInfo: null,
-  matchInfo: null
+  matchInfo: {}
 });
 
 type GameInfoState = ODKRunningGameInfo | null;
@@ -26,7 +27,7 @@ type GameInfoState = ODKRunningGameInfo | null;
 interface IGamesProviderState {
   gameInfo: GameInfoState;
   events: IEvent[];
-  matchInfo: any;
+  matchInfo: IMatchInfo;
 }
 
 const defaultMatchInfo = {
@@ -49,7 +50,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
 
   state: IGamesProviderState = {
     gameInfo: null,
-    matchInfo: null,
+    matchInfo: {},
     events: []
   };
 

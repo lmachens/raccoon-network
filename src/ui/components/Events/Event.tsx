@@ -11,7 +11,7 @@ import React, { SFC } from 'react';
 
 interface IEventProps extends WithStyles<typeof styles> {
   event: IEvent;
-  startedAt: number;
+  startedAt: Date;
 }
 
 const styles = createStyles({
@@ -49,7 +49,7 @@ const Event: SFC<IEventProps> = ({ classes, event, startedAt }) => {
         primary={
           <>
             <Typography component="span" className={classes.inline} variant="overline">
-              {formatTime(event.timestamp.getTime() - startedAt)}
+              {formatTime(event.timestamp.getTime() - startedAt.getTime())}
             </Typography>
             <Typography className={classes.inline} component="span">
               - {event.name}

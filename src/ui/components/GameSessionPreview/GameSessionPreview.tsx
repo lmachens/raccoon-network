@@ -11,14 +11,17 @@ import {
   WithStyles
 } from '@material-ui/core';
 import games from 'api/games';
-import { IGameSession } from 'api/stitch/gameSessions';
+import { IGameSession, IMatchInfo } from 'api/stitch/gameSessions';
 import { timeAgo } from 'api/times';
 import classNames from 'classnames';
 import React, { SFC } from 'react';
-import LeagueGame from '../Events/LeagueGame';
 import Link from '../Link';
 
-interface IGameSessionProps extends WithStyles<typeof styles> {
+export interface IGameSessionPreviewComponent {
+  info: IMatchInfo;
+}
+
+interface IGameSessionPreviewProps extends WithStyles<typeof styles> {
   gameSession: IGameSession;
   selected?: boolean;
   onClick?(): void;
@@ -43,11 +46,23 @@ const styles = theme =>
     },
     selected: {
       backgroundColor: `${theme.palette.action.selected} !important`
+    },
+    gameSession: {
+      textTransform: 'none',
+      height: 100,
+      width: '100%',
+      position: 'relative'
     }
   });
 
-const GameSession: SFC<IGameSessionProps> = ({ classes, gameSession, onClick, selected }) => {
+const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({
+  classes,
+  gameSession,
+  onClick,
+  selected
+}) => {
   const game = games[gameSession.gameId];
+  const Component = game.GameSessionPreviewComponent;
   return (
     <ListItem
       className={classNames(classes.listItem, {
@@ -82,8 +97,8 @@ const GameSession: SFC<IGameSessionProps> = ({ classes, gameSession, onClick, se
         secondary={
           <Paper>
             <Link to={`#`}>
-              <Button>
-                <LeagueGame info={gameSession.info} />
+              <Button className={classes.gameSession}>
+                <Component info={gameSession.info} />
               </Button>
             </Link>
           </Paper>
@@ -92,4 +107,4 @@ const GameSession: SFC<IGameSessionProps> = ({ classes, gameSession, onClick, se
     </ListItem>
   );
 };
-export default withStyles(styles)(GameSession);
+export default withStyles(styles)(GameSessionPreview);
