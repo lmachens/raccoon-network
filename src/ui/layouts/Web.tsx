@@ -9,7 +9,6 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
-import overwolf from 'api/overwolf';
 import React, { SFC, useContext } from 'react';
 import Auth from 'ui/components/Auth';
 import Username from 'ui/components/Username';
@@ -17,51 +16,7 @@ import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 import Welcome from 'ui/pages/Welcome';
 
-const dragResize = edge => () => {
-  overwolf.windows.getCurrentWindow(result => {
-    if (result.status === 'success') {
-      overwolf.windows.dragResize(result.window.id, edge);
-    }
-  });
-};
-
-const dragMove = () => {
-  overwolf.windows.getCurrentWindow(result => {
-    if (result.status === 'success') {
-      overwolf.windows.dragMove(result.window.id);
-    }
-  });
-};
-
-const closeWindow = () => {
-  overwolf.windows.getCurrentWindow(result => {
-    if (result.status === 'success') {
-      overwolf.windows.close(result.window.id);
-    }
-  });
-};
-
-const maximizeWindow = () => {
-  overwolf.windows.getCurrentWindow(result => {
-    if (result.status === 'success') {
-      if (result.window.state === 'Maximized') {
-        overwolf.windows.restore(result.window.id);
-      } else {
-        overwolf.windows.maximize(result.window.id);
-      }
-    }
-  });
-};
-
-const minimizeWindow = () => {
-  overwolf.windows.getCurrentWindow(result => {
-    if (result.status === 'success') {
-      overwolf.windows.minimize(result.window.id);
-    }
-  });
-};
-
-interface IOverwolfLayoutProps extends WithStyles<typeof styles> {}
+interface IWebLayoutProps extends WithStyles<typeof styles> {}
 
 const styles = createStyles({
   root: {
@@ -118,29 +73,28 @@ const styles = createStyles({
   }
 });
 
-const OverwolfLayout: SFC<IOverwolfLayoutProps> = ({ children, classes }) => {
+const WebLayout: SFC<IWebLayoutProps> = ({ children, classes }) => {
   const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
   const { state } = useContext(LoadingContext);
   const loading = state && Object.values(state)[0];
   return (
     <div className={classes.root}>
-      <header className={classes.header} onMouseDown={dragMove}>
+      <header className={classes.header}>
         <img src="assets/logo.png" className={classes.logo} />
         <Typography component="h1" className={classes.title}>
           Raccoon Network
         </Typography>
         <div className={classes.grow} />
-        <ButtonBase className={classes.button} focusRipple onClick={minimizeWindow}>
+        <ButtonBase className={classes.button} focusRipple disabled>
           <MinimizeIcon color="action" />
         </ButtonBase>
-        <ButtonBase className={classes.button} focusRipple onClick={maximizeWindow}>
+        <ButtonBase className={classes.button} focusRipple disabled>
           <MaximizeIcon color="action" />
         </ButtonBase>
-        <ButtonBase className={classes.button} focusRipple onClick={closeWindow}>
+        <ButtonBase className={classes.button} focusRipple disabled>
           <CloseIcon color="action" />
         </ButtonBase>
       </header>
-      <div className={classes.dragResize} onMouseDown={dragResize('BottomRight')} />
       <main className={classes.main}>
         {(isLoggingIn || loading) && (
           <div className={classes.loading}>
@@ -166,4 +120,4 @@ const OverwolfLayout: SFC<IOverwolfLayoutProps> = ({ children, classes }) => {
   );
 };
 
-export default withStyles(styles)(OverwolfLayout);
+export default withStyles(styles)(WebLayout);

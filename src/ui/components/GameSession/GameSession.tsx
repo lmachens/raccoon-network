@@ -53,7 +53,8 @@ const styles = theme =>
       alignItems: 'center'
     },
     events: {
-      overflow: 'auto'
+      overflow: 'auto',
+      flex: 1
     }
   });
 

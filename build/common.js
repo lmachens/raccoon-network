@@ -11,7 +11,8 @@ module.exports = ({ outputPath, mode, ...other }) => ({
   target: 'web',
   entry: {
     main: 'startup/main.tsx',
-    overlay: 'startup/overlay.tsx'
+    overlay: 'startup/overlay.tsx',
+    web: 'startup/web.tsx'
   },
   devtool: mode === 'production' ? '' : 'source-map',
   output: {
@@ -50,13 +51,19 @@ module.exports = ({ outputPath, mode, ...other }) => ({
     new HtmlWebpackPlugin({
       filename: 'main.html',
       title: 'Raccoon Network - Main',
-      excludeChunks: ['overlay'],
+      excludeChunks: ['overlay', 'web'],
       template: path.resolve(__dirname, './template.html')
     }),
     new HtmlWebpackPlugin({
       filename: 'overlay.html',
       title: 'Raccoon Network - Overlay',
-      excludeChunks: ['main'],
+      excludeChunks: ['main', 'web'],
+      template: path.resolve(__dirname, './template.html')
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'web.html',
+      title: 'Raccoon Network',
+      excludeChunks: ['main', 'overlay'],
       template: path.resolve(__dirname, './template.html')
     })
   ],

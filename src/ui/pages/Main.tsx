@@ -32,54 +32,45 @@ const styles = theme =>
   });
 
 const Main: SFC<IMainProps> = ({ classes }) => {
-  return (
+  const routes = (
     <>
-      <Hidden smUp>
-        <div className={classes.root}>
-          <Switch>
-            <Route exact path="/" component={Core} />
-            <Route exact path="/feed" render={() => <Feed />} />
-            <Route
-              exact
-              path="/users/:userId"
-              render={({ match }) => <User userId={match.params.userId} />}
-            />
-            <Route
-              exact
-              path="/users/:userId/matches/:matchId"
-              render={({ match }) => (
-                <GameSession userId={match.params.userId} matchId={match.params.matchId} />
-              )}
-            />
-          </Switch>
-        </div>
-      </Hidden>
-      <Hidden xsDown>
-        <div className={classes.flex}>
-          <div className={classNames(classes.root, classes.fixedRoot)}>
-            <Core />
-          </div>
-          <div className={classes.grow}>
-            <Switch>
-              <Route exact path="/" component={Feed} />
-              <Route exact path="/feed" component={Feed} />
-              <Route
-                exact
-                path="/users/:userId"
-                render={({ match }) => <User userId={match.params.userId} />}
-              />
-              <Route
-                exact
-                path="/users/:userId/matches/:matchId"
-                render={({ match }) => (
-                  <GameSession userId={match.params.userId} matchId={match.params.matchId} />
-                )}
-              />
-            </Switch>
-          </div>
-        </div>
-      </Hidden>
+      <Route exact path="/feed" render={() => <Feed />} />
+      <Route
+        exact
+        path="/users/:userId"
+        render={({ match }) => <User userId={match.params.userId} />}
+      />
+      <Route
+        exact
+        path="/users/:userId/matches/:matchId"
+        render={({ match }) => (
+          <GameSession userId={match.params.userId} matchId={match.params.matchId} />
+        )}
+      />
     </>
+  );
+  return (
+    <Switch>
+      <>
+        <Hidden smUp>
+          <div className={classes.root}>
+            <Route exact path="/" component={Core} />
+            {routes}
+          </div>
+        </Hidden>
+        <Hidden xsDown>
+          <div className={classes.flex}>
+            <div className={classNames(classes.root, classes.fixedRoot)}>
+              <Core />
+            </div>
+            <div className={classes.grow}>
+              <Route exact path="/" component={Feed} />
+              {routes}
+            </div>
+          </div>
+        </Hidden>
+      </>
+    </Switch>
   );
 };
 

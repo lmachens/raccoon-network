@@ -18,7 +18,6 @@ import classNames from 'classnames';
 import React, { SFC, useContext, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-import { GamesContext } from 'ui/contexts/games';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 import Link from '../Link';
@@ -30,7 +29,6 @@ const styles = theme =>
     root: {
       padding: 8
     },
-
     grow: {
       flexGrow: 1
     },
@@ -42,10 +40,9 @@ const styles = theme =>
     }
   });
 
-const Profile: SFC<IProfileProps> = ({ classes, history, location }) => {
+const Profile: SFC<IProfileProps> = ({ classes, location }) => {
   const { setLoading } = useContext(LoadingContext);
   const { user, profile, isAnonymous } = useContext(ProfileContext);
-  const { gameInfo } = useContext(GamesContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   const handleActionsClick = event => {
@@ -78,10 +75,7 @@ const Profile: SFC<IProfileProps> = ({ classes, history, location }) => {
           <ListItemAvatar>
             <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
           </ListItemAvatar>
-          <ListItemText
-            primary={isAnonymous ? 'Guest' : profile!.username}
-            secondary={(gameInfo && `Playing ${gameInfo.title}`) || 'Not playing a game'}
-          />
+          <ListItemText primary={isAnonymous ? 'Guest' : profile!.username} secondary={'TBA'} />
           <ListItemSecondaryAction>
             <IconButton
               aria-owns={menuAnchor ? 'menu' : undefined}

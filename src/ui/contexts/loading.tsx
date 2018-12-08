@@ -1,25 +1,25 @@
 import React, { useContext } from 'react';
 
-interface Loading {
+interface ILoading {
   state?: {
     [key: string]: string;
   };
   setLoading(key: string, message?: string): void;
 }
 
-interface LoadingState {
+interface ILoadingState {
   loading: {
     [key: string]: string;
   };
 }
 
-export const LoadingContext = React.createContext<Loading>({
+export const LoadingContext = React.createContext<ILoading>({
   setLoading: message => {
     // dummy
   }
 });
 
-export class LoadingProvider extends React.Component<{}, LoadingState> {
+export class LoadingProvider extends React.Component<{}, ILoadingState> {
   state = {
     loading: {}
   };

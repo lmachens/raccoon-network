@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "dist/dev/vendors~main~overlay.js", "use": "@now/static" },
+    { "src": "dist/dev/vendors~main.js", "use": "@now/static" },
+    { "src": "dist/dev/main.js", "use": "@now/static" },
+    { "src": "dist/dev/main.html", "use": "@now/static" },
+    { "src": "dist/dev/assets/logo.png", "use": "@now/static" }
+  ]
+}

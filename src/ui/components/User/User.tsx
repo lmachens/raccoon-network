@@ -47,7 +47,7 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
   const { user, isAnonymous, refreshProfile, profile } = useContext(ProfileContext);
 
   const isSelf = userId === user!.id;
-  const isContact = profile!.contactUserIds && profile!.contactUserIds!.includes(userId);
+  const isContact = profile && profile!.contactUserIds && profile!.contactUserIds!.includes(userId);
   const toggleContact = () => {
     if (isContact) {
       removeContact(userId).then(() => {

@@ -31,6 +31,9 @@ const styles = createStyles({
     position: 'absolute',
     left: 'calc(50% - 20px)',
     top: 'calc(50% - 20px)'
+  },
+  results: {
+    overflow: 'auto'
   }
 });
 
@@ -75,10 +78,12 @@ const Feed: SFC<IFeedProps> = ({ classes }) => {
       </List>
       <Divider />
       {loading && <CircularProgress className={classes.loading} />}
-      {feedResults.gameSessions &&
-        feedResults.gameSessions.map(gameSession => (
-          <GameSessionPreview key={gameSession._id} gameSession={gameSession} />
-        ))}
+      <List className={classes.results}>
+        {feedResults.gameSessions &&
+          feedResults.gameSessions.map(gameSession => (
+            <GameSessionPreview key={gameSession._id} gameSession={gameSession} />
+          ))}
+      </List>
     </div>
   );
 };

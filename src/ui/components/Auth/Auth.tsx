@@ -43,6 +43,11 @@ const styles = theme =>
     },
     submit: {
       marginTop: theme.spacing.unit * 3
+    },
+    skip: {
+      display: 'inline',
+      textDecoration: 'underline',
+      cursor: 'pointer'
     }
   });
 
@@ -110,9 +115,14 @@ const Auth: SFC<AuthProps> = ({ classes }) => {
       <Typography variant="subtitle1">
         Welcome! Glad to see that you like to become part of the <i>Raccoon Network</i>! If you want
         to try out this app, you can simply{' '}
-        <a href="# " onClick={handleAnonymousLoginClick}>
+        <Typography
+          component="span"
+          variant="subtitle1"
+          className={classes.skip}
+          onClick={handleAnonymousLoginClick}
+        >
           skip the authentication
-        </a>
+        </Typography>
         .
       </Typography>
       <Tabs
