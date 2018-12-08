@@ -45,6 +45,13 @@ export const getGameSessions = userId => {
   return gameSessions.find({ userId }, { sort: { createdAt: -1 } }).asArray();
 };
 
+export const getGameSession = async ({ userId, matchId }) => {
+  console.log('getGameSession');
+  const result = await gameSessions.find({ userId, matchId }, { limit: 1 }).asArray();
+  const gameSession = result ? result[0] : null;
+  return gameSession;
+};
+
 export const findGameSessions = (query, options) => {
   console.log('findGameSessions');
   return gameSessions.find(query, { ...options, sort: { createdAt: -1 } }).asArray();

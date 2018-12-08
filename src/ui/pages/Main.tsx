@@ -4,9 +4,10 @@ import React, { SFC } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Core from 'ui/components/Core';
 import Feed from 'ui/components/Feed';
+import GameSession from 'ui/components/GameSession';
 import User from 'ui/components/User';
 
-interface MainProps extends WithStyles<typeof styles> {}
+interface IMainProps extends WithStyles<typeof styles> {}
 
 const styles = theme =>
   createStyles({
@@ -30,18 +31,25 @@ const styles = theme =>
     }
   });
 
-const Main: SFC<MainProps> = ({ classes }) => {
+const Main: SFC<IMainProps> = ({ classes }) => {
   return (
     <>
       <Hidden smUp>
         <div className={classes.root}>
           <Switch>
-            <Route exact={true} path="/" component={Core} />
-            <Route exact={true} path="/feed" render={() => <Feed />} />
+            <Route exact path="/" component={Core} />
+            <Route exact path="/feed" render={() => <Feed />} />
             <Route
-              exact={true}
+              exact
               path="/users/:userId"
               render={({ match }) => <User userId={match.params.userId} />}
+            />
+            <Route
+              exact
+              path="/users/:userId/matches/:matchId"
+              render={({ match }) => (
+                <GameSession userId={match.params.userId} matchId={match.params.matchId} />
+              )}
             />
           </Switch>
         </div>
@@ -53,12 +61,19 @@ const Main: SFC<MainProps> = ({ classes }) => {
           </div>
           <div className={classes.grow}>
             <Switch>
-              <Route exact={true} path="/" component={Feed} />
-              <Route exact={true} path="/feed" component={Feed} />
+              <Route exact path="/" component={Feed} />
+              <Route exact path="/feed" component={Feed} />
               <Route
-                exact={true}
+                exact
                 path="/users/:userId"
                 render={({ match }) => <User userId={match.params.userId} />}
+              />
+              <Route
+                exact
+                path="/users/:userId/matches/:matchId"
+                render={({ match }) => (
+                  <GameSession userId={match.params.userId} matchId={match.params.matchId} />
+                )}
               />
             </Switch>
           </div>

@@ -21,3 +21,7 @@ export const timeAgo = (date: Date) => {
     }
   }
 };
+
+export const sortEvent = (a, b) => {
+  return b.timestamp - a.timestamp;
+};

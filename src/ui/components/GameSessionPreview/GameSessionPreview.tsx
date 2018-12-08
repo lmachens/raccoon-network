@@ -12,10 +12,14 @@ import {
 } from '@material-ui/core';
 import games from 'api/games';
 import { IGameSession, IMatchInfo } from 'api/stitch/gameSessions';
-import { timeAgo } from 'api/times';
+import { timeAgo } from 'api/utilities';
 import classNames from 'classnames';
 import React, { SFC } from 'react';
 import Link from '../Link';
+
+export interface IGameSessionComponent {
+  info: IMatchInfo;
+}
 
 export interface IGameSessionPreviewComponent {
   info: IMatchInfo;
@@ -96,7 +100,7 @@ const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({
           </Typography>}
         secondary={
           <Paper>
-            <Link to={`#`}>
+            <Link to={`/users/${gameSession.userId}/matches/${gameSession.matchId}`}>
               <Button className={classes.gameSession}>
                 <Component info={gameSession.info} />
               </Button>

@@ -80,30 +80,24 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
       }
     );
   };
-
   return (
     <div className={classes.root}>
       <List>
-        {!loading && !targetUser && (
-          <ListItem>
-            <ListItemText primary="User not found" />
-          </ListItem>
-        )}
-        {targetUser && (
-          <ListItem>
-            <Hidden smUp>
-              <ExitButton />
-            </Hidden>
-            <ListItemText primary={targetUser.username} />
-            {!isSelf && (
-              <ListItemSecondaryAction>
-                <IconButton onClick={toggleContact} disabled={isAnonymous || user!.id === userId}>
-                  {isContact ? <PersonAddDisabledIcon /> : <PersonAddIcon />}
-                </IconButton>
-              </ListItemSecondaryAction>
-            )}
-          </ListItem>
-        )}
+        <ListItem>
+          <Hidden smUp>
+            <ExitButton />
+          </Hidden>
+          <ListItemText
+            primary={!loading && !targetUser ? 'User not found' : targetUser.username}
+          />
+          {!loading && targetUser && !isSelf && (
+            <ListItemSecondaryAction>
+              <IconButton onClick={toggleContact} disabled={isAnonymous || user!.id === userId}>
+                {isContact ? <PersonAddDisabledIcon /> : <PersonAddIcon />}
+              </IconButton>
+            </ListItemSecondaryAction>
+          )}
+        </ListItem>
       </List>
       <Divider />
       {loading && <CircularProgress className={classes.loading} />}
