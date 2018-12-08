@@ -111,7 +111,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
       } catch (error) {
         console.error(error, event);
       }
-      return { name: event.name, ...data, timestamp };
+      return { name: event.name, data, timestamp };
     });
     const announcerEvents = events.filter(event => event.name === 'announcer');
     if (announcerEvents.length) {
@@ -135,6 +135,15 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
       this.setState(
         state => ({
           matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome }
+        }),
+        this.updateGameSession
+      );
+    }
+    const matchEnded = !!events.find(event => event.name === 'matchEnd');
+    if (matchEnded) {
+      this.setState(
+        state => ({
+          matchInfo: { ...state.matchInfo, endedAt: timestamp }
         }),
         this.updateGameSession
       );

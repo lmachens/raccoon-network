@@ -48,7 +48,7 @@ const Contact: SFC<IContactProps> = ({ classes, profile, onClick, selected }) =>
         secondary={
           <>
             <Typography component="span" className={classes.inline} color="textPrimary">
-              Playing League of Legends
+              TBA
             </Typography>
           </>
         }

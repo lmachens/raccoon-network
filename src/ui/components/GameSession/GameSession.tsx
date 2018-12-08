@@ -51,6 +51,9 @@ const styles = theme =>
       verticalAlign: 'middle',
       justifyContent: 'center',
       alignItems: 'center'
+    },
+    events: {
+      overflow: 'auto'
     }
   });
 
@@ -98,7 +101,7 @@ const GameSession: SFC<IGameSessionProps> = ({ classes, userId, matchId }) => {
         </Paper>
       )}
       {gameSession && (
-        <List>
+        <List className={classes.events}>
           {gameSession.events.sort(sortEvent).map((event, i) => (
             <Event key={i} event={event} startedAt={gameSession.info.startedAt!} />
           ))}

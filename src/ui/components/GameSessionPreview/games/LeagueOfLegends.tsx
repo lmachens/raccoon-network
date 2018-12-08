@@ -43,7 +43,9 @@ const LeagueOfLegends: SFC<ILeagueOfLegendsProps> = ({ classes, info }) => {
           {info.minionKills} CS
         </Typography>
       </Typography>
-      <Typography className={classes.outcome}>{info.outcome || 'In Progress'}</Typography>
+      <Typography className={classes.outcome}>
+        {info.endedAt ? info.outcome || 'Ended' : 'In Progress'}
+      </Typography>
     </>
   );
 };

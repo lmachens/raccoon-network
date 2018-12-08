@@ -36,6 +36,9 @@ const styles = createStyles({
     position: 'absolute',
     left: 'calc(50% - 20px)',
     top: 'calc(50% - 20px)'
+  },
+  gameSessions: {
+    overflow: 'auto'
   }
 });
 
@@ -105,14 +108,16 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
       </List>
       <Divider />
       {loading && <CircularProgress className={classes.loading} />}
-      {gameSessions.map(gameSession => (
-        <GameSessionPreview key={gameSession._id} gameSession={gameSession} />
-      ))}
-      {!loading && gameSessions.length === 0 && (
-        <ListItem>
-          <ListItemText primary="No games found" />
-        </ListItem>
-      )}
+      <List className={classes.gameSessions}>
+        {gameSessions.map(gameSession => (
+          <GameSessionPreview key={gameSession._id} gameSession={gameSession} />
+        ))}
+        {!loading && gameSessions.length === 0 && (
+          <ListItem>
+            <ListItemText primary="No games found" />
+          </ListItem>
+        )}
+      </List>
     </div>
   );
 };
