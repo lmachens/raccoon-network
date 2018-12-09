@@ -16,8 +16,8 @@ import { getGameSession, IGameSession, IMatchInfo } from 'api/stitch/gameSession
 import { sortEvent } from 'api/utilities';
 import React, { SFC, useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
-import Event from '../Event';
 import ExitButton from '../ExitButton';
+import GameSessionEvent from '../GameSessionEvent';
 
 export interface IGameSessionComponent {
   info: IMatchInfo;
@@ -102,7 +102,7 @@ const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
       {gameSession && (
         <List className={classes.events}>
           {gameSession.events.sort(sortEvent).map((event, i) => (
-            <Event key={i} event={event} startedAt={gameSession.info.startedAt!} />
+            <GameSessionEvent key={i} event={event} startedAt={gameSession.info.startedAt!} />
           ))}
         </List>
       )}

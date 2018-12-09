@@ -1,7 +1,7 @@
 import { appDb, stitchClient } from './client';
 import { getProfile } from './profile';
 
-export interface IEvent {
+export interface IGameSessionEvent {
   name: string;
   data: any;
   timestamp: Date;
@@ -34,7 +34,7 @@ export interface IGameSession {
     avatarSrc?: string;
   };
   info: IMatchInfo;
-  events: IEvent[];
+  events: IGameSessionEvent[];
   createdAt: Date;
   updatedAt: Date;
 }

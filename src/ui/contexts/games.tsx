@@ -4,7 +4,7 @@ import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
 import {
   addGameSessionEvent,
   addGameSessionEvents,
-  IEvent,
+  IGameSessionEvent,
   IMatchInfo,
   setGameSessionInfo
 } from 'api/stitch/gameSessions';
@@ -26,7 +26,7 @@ type GameInfoState = ODKRunningGameInfo | null;
 
 interface IGamesProviderState {
   gameInfo: GameInfoState;
-  events: IEvent[];
+  events: IGameSessionEvent[];
   matchInfo: IMatchInfo;
 }
 
@@ -193,7 +193,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   saveHighlight = () => {
     overwolf.media.replays.stopCapture(this.replay.id, () => {
       console.log('saveHighlight');
-      const event: IEvent = {
+      const event: IGameSessionEvent = {
         name: 'Highlight',
         timestamp: new Date(),
         data: this.highlightEvents
