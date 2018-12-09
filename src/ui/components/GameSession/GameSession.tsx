@@ -17,6 +17,7 @@ import React, { SFC, useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import ExitButton from '../ExitButton';
 import GameSessionEvent from '../GameSessionEvent';
+import { allEventDetails } from '../GameSessionEvent/GameSessionEvent';
 import Loading from '../Loading';
 
 export interface IGameSessionComponent {
@@ -49,6 +50,16 @@ const useStyles = makeStyles({
     flex: 1
   }
 });
+
+const filterEvents = event => {
+  if (event.name === 'highlight') {
+    return true;
+  }
+  if (allEventDetails[event.name] && allEventDetails[event.name][event.data.name]) {
+    return true;
+  }
+  return false;
+};
 
 const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
   const classes = useStyles({});
@@ -96,9 +107,12 @@ const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
       )}
       {gameSession && (
         <List className={classes.events}>
-          {gameSession.events.sort(sortEvent).map((event, i) => (
-            <GameSessionEvent key={i} event={event} startedAt={gameSession.info.startedAt!} />
-          ))}
+          {gameSession.events
+            .filter(filterEvents)
+            .sort(sortEvent)
+            .map((event, i) => (
+              <GameSessionEvent key={i} event={event} startedAt={gameSession.info.startedAt!} />
+            ))}
         </List>
       )}
     </div>

@@ -8,7 +8,7 @@ import {
   IMatchInfo,
   setGameSessionInfo
 } from 'api/stitch/gameSessions';
-import { uploadVideo } from 'api/video';
+import { createTitle, uploadVideo } from 'api/video';
 import React from 'react';
 
 interface IGamesContextValue {
@@ -87,6 +87,14 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     const { matchInfo, gameInfo } = this.state;
     console.log('updateGameSession', matchInfo);
     if (matchInfo && matchInfo.matchId) {
+      if (matchInfo.teams) {
+        try {
+          matchInfo.teams = JSON.parse(decodeURI(matchInfo.teams));
+        } catch (error) {
+          console.error('Team parser error', error, matchInfo.teams);
+        }
+      }
+
       setGameSessionInfo({
         gameId: Math.floor(gameInfo!.id / 10),
         matchId: matchInfo.matchId,
@@ -178,29 +186,30 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   recordHighlight = highlightEvent => {
     this.highlightEvents = [...this.highlightEvents, highlightEvent];
 
-    console.log('record highlight', !!this.stopCaptureTimeout, this.replay, highlightEvent);
-    if (this.stopCaptureTimeout) {
+    console.log('record highlight', !!this.stopCaptureTimeout, this.replay, this.highlightEvents);
+    if (!!this.stopCaptureTimeout) {
       clearTimeout(this.stopCaptureTimeout);
-      this.stopCaptureTimeout = setTimeout(this.saveHighlight, 3000);
     } else {
-      overwolf.media.replays.startCapture(6000, replay => {
+      overwolf.media.replays.startCapture(8000, replay => {
         this.replay = replay;
-        this.stopCaptureTimeout = setTimeout(this.saveHighlight, 3000);
       });
     }
+    this.stopCaptureTimeout = setTimeout(this.saveHighlight, 4000);
   };
 
   saveHighlight = () => {
+    console.log('saveHighlight', this.replay);
+    const replayUrl = this.replay.url;
+    const highlightEvents = this.highlightEvents;
     overwolf.media.replays.stopCapture(this.replay.id, () => {
-      console.log('saveHighlight');
       const event: IGameSessionEvent = {
-        name: 'Highlight',
+        name: 'highlight',
+        title: createTitle(highlightEvents),
         timestamp: new Date(),
-        data: this.highlightEvents
+        data: highlightEvents
       };
-      const replayUrl = this.replay.url;
 
-      uploadVideo(replayUrl).then(video => {
+      uploadVideo(replayUrl, 'Raccoon Network', event.title).then(video => {
         console.log('uploaded video', video);
         event.video = video;
         addGameSessionEvent(this.state.matchInfo!.matchId, event);
@@ -212,10 +221,10 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
       this.setState(state => ({
         events: [event, ...state.events]
       }));
-      delete this.stopCaptureTimeout;
-      this.highlightEvents = [];
-      delete this.replay;
     });
+    delete this.stopCaptureTimeout;
+    this.highlightEvents = [];
+    delete this.replay;
   };
 
   handleError = error => {
@@ -254,13 +263,14 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
           video: { buffer_length: 20000 },
           audio: {
             mic: {
-              volume: 0,
-              enabled: false
+              volume: 100,
+              enabled: true
             },
             game: {
               volume: 100,
               enabled: true
-            }
+            },
+            game_volume: 100
           },
           peripherals: { capture_mouse_cursor: 'both' }
         }

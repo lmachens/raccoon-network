@@ -3,6 +3,7 @@ import { getProfile } from './profile';
 
 export interface IGameSessionEvent {
   name: string;
+  title: string;
   data: any;
   timestamp: Date;
   video?: any;

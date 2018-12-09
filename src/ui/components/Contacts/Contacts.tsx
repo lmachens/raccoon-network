@@ -22,8 +22,8 @@ const useStyles = makeStyles({
 
 const Contacts: SFC<IContactsProps> = ({ location }) => {
   const classes = useStyles({});
-  const [loading, setLoading] = useState(true);
-  const { profile } = useContext(ProfileContext);
+  const [loading, setLoading] = useState(false);
+  const { profile, isAnonymous } = useContext(ProfileContext);
   const { state, setCache } = useContext(CacheContext);
 
   const cacheKey = 'contacts';
@@ -49,7 +49,9 @@ const Contacts: SFC<IContactsProps> = ({ location }) => {
     >
       {!loading && contacts.length === 0 && (
         <ListItem>
-          <ListItemText primary="No contacts found" />
+          <ListItemText
+            primary={isAnonymous ? 'You can not have contacts as guest' : 'No contacts found'}
+          />
         </ListItem>
       )}
       {contacts.map(contact => (
