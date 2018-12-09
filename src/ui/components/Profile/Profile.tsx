@@ -15,9 +15,9 @@ import { handleLogout } from 'api/stitch';
 import classNames from 'classnames';
 import React, { SFC, useContext, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 import Link from '../Link';
+import Loading from '../Loading';
 
 interface IProfileProps extends RouteComponentProps<{}> {}
 
@@ -36,9 +36,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Profile: SFC<IProfileProps> = ({ location }) => {
+const Profile: SFC<IProfileProps> = ({ location, history }) => {
   const classes = useStyles({});
-  const { setLoading } = useContext(LoadingContext);
+  const [loading, setLoading] = useState(false);
   const { user, profile, isAnonymous } = useContext(ProfileContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
 
@@ -52,16 +52,23 @@ const Profile: SFC<IProfileProps> = ({ location }) => {
     setMenuAnchor(null);
   };
 
-  const handleLogoutClick = () => {
-    setLoading('logout', 'Logging out');
+  const handleLogoutClick = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    setLoading(true);
     setMenuAnchor(null);
-    handleLogout().then(() => {
-      setLoading('logout');
-    });
+    handleLogout()
+      .then(() => {
+        history.push('/');
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   return (
     <List disablePadding>
+      {loading && <Loading />}
       <Link to={`/users/${user!.id}`}>
         <ListItem
           button
@@ -87,7 +94,9 @@ const Profile: SFC<IProfileProps> = ({ location }) => {
               open={Boolean(menuAnchor)}
               onClose={handleCloseMenu}
             >
-              <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+              <MenuItem disabled={loading} onClick={handleLogoutClick}>
+                Logout
+              </MenuItem>
             </Menu>
           </ListItemSecondaryAction>
         </ListItem>

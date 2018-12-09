@@ -2,8 +2,8 @@ import { Button, FormControl, Input, InputLabel, Typography } from '@material-ui
 import { makeStyles } from '@material-ui/styles';
 import { setProfile } from 'api/stitch/profile';
 import React, { useContext, useState } from 'react';
-import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
+import Loading from '../Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,29 +28,34 @@ const useStyles = makeStyles(theme => ({
 const Username = () => {
   const classes = useStyles({});
   const { refreshProfile } = useContext(ProfileContext);
-  const { setLoading } = useContext(LoadingContext);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const handleSubmit = async event => {
     event.preventDefault();
+    if (loading) {
+      return;
+    }
+
     setError(null);
 
     const { username } = event.target;
     const usernameValue = username && username.value.trim();
 
     try {
-      setLoading('username', 'Set username');
+      setLoading(true);
       await setProfile({ username: usernameValue });
       refreshProfile();
     } catch (error) {
       setError(error);
       console.error(error);
     }
-    setLoading('username');
+    setLoading(false);
   };
 
   return (
     <div className={classes.root}>
+      {loading && <Loading />}
       <form className={classes.form} onSubmit={handleSubmit}>
         <Typography>Please select a username</Typography>
         <FormControl margin="normal" required fullWidth>
@@ -64,6 +69,7 @@ const Username = () => {
           variant="contained"
           color="primary"
           className={classes.submit}
+          disabled={loading}
         >
           Save
         </Button>

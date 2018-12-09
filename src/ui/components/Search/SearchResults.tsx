@@ -1,4 +1,4 @@
-import { CircularProgress, ListSubheader } from '@material-ui/core';
+import { ListSubheader } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { findGames, IGame } from 'api/games';
 import { findProfiles, IUserProfile } from 'api/stitch/profile';
@@ -7,6 +7,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import Contact from '../Contact';
 import Game from '../Game';
 import Link from '../Link';
+import Loading from '../Loading';
 
 interface ISearchResultsProps extends RouteComponentProps<{}> {
   search: string;
@@ -17,11 +18,6 @@ const useStyles = makeStyles({
   container: {
     position: 'relative',
     height: '100%'
-  },
-  loading: {
-    position: 'absolute',
-    left: 'calc(50% - 20px)',
-    top: 'calc(50% - 20px)'
   }
 });
 
@@ -69,7 +65,7 @@ const SearchResults: SFC<ISearchResultsProps> = ({ search, query, location }) =>
 
   return (
     <div className={classes.container}>
-      {loading && <CircularProgress className={classes.loading} />}
+      {loading && <Loading />}
       {searchResults.games && (
         <>
           <ListSubheader>Games</ListSubheader>

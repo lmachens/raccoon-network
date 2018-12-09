@@ -1,5 +1,4 @@
 import {
-  CircularProgress,
   Divider,
   Hidden,
   IconButton,
@@ -15,6 +14,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import ExitButton from '../ExitButton';
 import GameSessionPreview from '../GameSessionPreview';
+import Loading from '../Loading';
 
 const useStyles = makeStyles({
   root: {
@@ -22,11 +22,6 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     height: '100%',
     position: 'relative'
-  },
-  loading: {
-    position: 'absolute',
-    left: 'calc(50% - 20px)',
-    top: 'calc(50% - 20px)'
   },
   results: {
     overflow: 'auto'
@@ -74,7 +69,7 @@ const Feed = () => {
         </ListItemSecondaryAction>
       </List>
       <Divider />
-      {loading && <CircularProgress className={classes.loading} />}
+      {loading && <Loading />}
       <List className={classes.results}>
         {feedResults.gameSessions &&
           feedResults.gameSessions.map(gameSession => (

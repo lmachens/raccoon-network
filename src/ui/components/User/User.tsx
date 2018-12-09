@@ -1,5 +1,4 @@
 import {
-  CircularProgress,
   Divider,
   Hidden,
   IconButton,
@@ -19,6 +18,7 @@ import { CacheContext } from 'ui/contexts/cache';
 import { ProfileContext } from 'ui/contexts/profile';
 import ExitButton from '../ExitButton';
 import GameSessionPreview from '../GameSessionPreview';
+import Loading from '../Loading';
 
 interface IUserProps {
   userId: string;
@@ -29,11 +29,6 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     height: '100%'
-  },
-  loading: {
-    position: 'absolute',
-    left: 'calc(50% - 20px)',
-    top: 'calc(50% - 20px)'
   },
   gameSessions: {
     overflow: 'auto'
@@ -106,7 +101,7 @@ const User: SFC<IUserProps> = ({ userId }) => {
         </ListItem>
       </List>
       <Divider />
-      {loading && <CircularProgress className={classes.loading} />}
+      {loading && <Loading />}
       <List className={classes.gameSessions}>
         {gameSessions.map(gameSession => (
           <GameSessionPreview key={gameSession._id} gameSession={gameSession} />

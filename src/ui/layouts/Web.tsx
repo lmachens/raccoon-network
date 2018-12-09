@@ -1,12 +1,12 @@
-import { ButtonBase, CircularProgress, Typography } from '@material-ui/core';
+import { ButtonBase, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
 import { makeStyles } from '@material-ui/styles';
 import React, { useContext } from 'react';
 import Auth from 'ui/components/Auth';
+import Loading from 'ui/components/Loading';
 import Username from 'ui/components/Username';
-import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 import Welcome from 'ui/pages/Welcome';
 
@@ -53,13 +53,6 @@ const useStyles = makeStyles({
   main: {
     height: 'calc(100% - 28px)'
   },
-  loading: {
-    zIndex: 1,
-    position: 'fixed',
-    top: 'calc(50% - 20px)',
-    left: 'calc(50% - 20px)',
-    textAlign: 'center'
-  },
   loadingText: {
     marginTop: 8
   }
@@ -68,8 +61,6 @@ const useStyles = makeStyles({
 const WebLayout = ({ children }) => {
   const classes = useStyles({});
   const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
-  const { state } = useContext(LoadingContext);
-  const loading = state && Object.values(state)[0];
   return (
     <div className={classes.root}>
       <header className={classes.header}>
@@ -89,14 +80,7 @@ const WebLayout = ({ children }) => {
         </ButtonBase>
       </header>
       <main className={classes.main}>
-        {(isLoggingIn || loading) && (
-          <div className={classes.loading}>
-            <CircularProgress />
-            <Typography className={classes.loadingText} variant="overline">
-              {isLoggingIn ? 'Logging in' : loading}
-            </Typography>
-          </div>
-        )}
+        {isLoggingIn && <Loading />}
         {!isLoggingIn && !isLoggedIn && (
           <Welcome>
             <Auth />

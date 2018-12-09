@@ -7,8 +7,8 @@ import {
   handleResendConfirmation,
   handleSignup
 } from 'api/stitch';
-import React, { useContext, useState } from 'react';
-import { LoadingContext } from 'ui/contexts/loading';
+import React, { useState } from 'react';
+import Loading from '../Loading';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,12 +43,12 @@ const lables = ['Sign in', 'Sign up', 'Reset', 'Verify'];
 
 const Auth = () => {
   const classes = useStyles({});
-  const { setLoading } = useContext(LoadingContext);
+  const [loading, setLoading] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
   const [error, setError] = useState<Error | null>(null);
 
   const handleSubmit = async event => {
-    setLoading('auth', lables[tabIndex]);
+    setLoading(true);
     setError(null);
     event.preventDefault();
 
@@ -80,7 +80,7 @@ const Auth = () => {
       setError(error);
       console.error(error);
     }
-    setLoading('auth');
+    setLoading(false);
   };
 
   const handleTabChange = (event, value) => {
@@ -91,14 +91,15 @@ const Auth = () => {
   const handleAnonymousLoginClick = event => {
     event.preventDefault();
 
-    setLoading('auth', 'Anonymous login');
+    setLoading(true);
     handleAnonymousLogin().then(() => {
-      setLoading('auth');
+      setLoading(false);
     });
   };
 
   return (
     <div className={classes.root}>
+      {loading && <Loading />}
       <Typography variant="subtitle1">
         Welcome! Glad to see that you like to become part of the <i>Raccoon Network</i>! If you want
         to try out this app, you can simply{' '}
@@ -171,6 +172,7 @@ const Auth = () => {
           variant="contained"
           color="primary"
           className={classes.submit}
+          disabled={loading}
         >
           {lables[tabIndex]}
         </Button>
