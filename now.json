@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "alias": ["raccoon-network.now.sh"],
   "builds": [
     { "src": "dist/dev/vendors~main~overlay~web.js", "use": "@now/static" },
     { "src": "dist/dev/vendors~main~web.js", "use": "@now/static" },
@@ -7,5 +8,9 @@
     { "src": "dist/dev/web.js", "use": "@now/static" },
     { "src": "dist/dev/web.html", "use": "@now/static" },
     { "src": "dist/dev/assets/logo.png", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "/", "dest": "/dist/dev/web.html" },
+    { "src": "/(?<path>.*)", "dest": "/dist/dev/$path" }
   ]
 }
