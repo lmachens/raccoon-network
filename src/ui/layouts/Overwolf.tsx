@@ -1,16 +1,10 @@
-import {
-  ButtonBase,
-  CircularProgress,
-  createStyles,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { ButtonBase, CircularProgress, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
+import { makeStyles } from '@material-ui/styles';
 import overwolf from 'api/overwolf';
-import React, { SFC, useContext } from 'react';
+import React, { useContext } from 'react';
 import Auth from 'ui/components/Auth';
 import Username from 'ui/components/Username';
 import { LoadingContext } from 'ui/contexts/loading';
@@ -61,9 +55,7 @@ const minimizeWindow = () => {
   });
 };
 
-interface IOverwolfLayoutProps extends WithStyles<typeof styles> {}
-
-const styles = createStyles({
+const useStyles = makeStyles({
   root: {
     userSelect: 'none',
     height: '100vh',
@@ -118,7 +110,8 @@ const styles = createStyles({
   }
 });
 
-const OverwolfLayout: SFC<IOverwolfLayoutProps> = ({ children, classes }) => {
+const OverwolfLayout = ({ children }) => {
+  const classes = useStyles({});
   const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
   const { state } = useContext(LoadingContext);
   const loading = state && Object.values(state)[0];
@@ -166,4 +159,4 @@ const OverwolfLayout: SFC<IOverwolfLayoutProps> = ({ children, classes }) => {
   );
 };
 
-export default withStyles(styles)(OverwolfLayout);
+export default OverwolfLayout;

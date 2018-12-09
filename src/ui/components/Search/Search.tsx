@@ -1,42 +1,32 @@
-import {
-  createStyles,
-  IconButton,
-  InputAdornment,
-  Tab,
-  Tabs,
-  TextField,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { IconButton, InputAdornment, Tab, Tabs, TextField } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import SearchIcon from '@material-ui/icons/Search';
-import React, { SFC, useRef, useState } from 'react';
+import { makeStyles } from '@material-ui/styles';
+import React, { useRef, useState } from 'react';
 import SearchResults from './SearchResults';
 
-interface ISearchProps extends WithStyles<typeof styles> {}
-
-const styles = theme =>
-  createStyles({
-    root: {
-      margin: 10
-    },
-    textField: {
-      height: 40,
-      backgroundColor: '#fff',
-      overflow: 'hidden'
-    },
-    button: {
-      borderRadius: 0
-    },
-    tabMinWidth: {
-      [theme.breakpoints.up('md')]: {
-        minWidth: 'inherit'
-      }
+const useStyles = makeStyles(theme => ({
+  root: {
+    margin: 10
+  },
+  textField: {
+    height: 40,
+    backgroundColor: '#fff',
+    overflow: 'hidden'
+  },
+  button: {
+    borderRadius: 0
+  },
+  tabMinWidth: {
+    [theme.breakpoints.up('md')]: {
+      minWidth: 'inherit'
     }
-  });
+  }
+}));
 
 const tabs = ['all', 'people', 'games'];
-const Search: SFC<ISearchProps> = ({ children, classes }) => {
+const Search = ({ children }) => {
+  const classes = useStyles({});
   const inputElement = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [tab, setTab] = useState(0);
@@ -101,4 +91,4 @@ const Search: SFC<ISearchProps> = ({ children, classes }) => {
   );
 };
 
-export default withStyles(styles)(Search);
+export default Search;

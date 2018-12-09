@@ -1,6 +1,5 @@
 import {
   Avatar,
-  createStyles,
   IconButton,
   List,
   ListItem,
@@ -8,39 +7,37 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Menu,
-  MenuItem,
-  withStyles,
-  WithStyles
+  MenuItem
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { makeStyles } from '@material-ui/styles';
 import { handleLogout } from 'api/stitch';
 import classNames from 'classnames';
 import React, { SFC, useContext, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 import Link from '../Link';
 
-interface IProfileProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
+interface IProfileProps extends RouteComponentProps<{}> {}
 
-const styles = theme =>
-  createStyles({
-    root: {
-      padding: 8
-    },
-    grow: {
-      flexGrow: 1
-    },
-    inline: {
-      display: 'inline'
-    },
-    selected: {
-      backgroundColor: `${theme.palette.action.selected} !important`
-    }
-  });
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: 8
+  },
+  grow: {
+    flexGrow: 1
+  },
+  inline: {
+    display: 'inline'
+  },
+  selected: {
+    backgroundColor: `${theme.palette.action.selected} !important`
+  }
+}));
 
-const Profile: SFC<IProfileProps> = ({ classes, location }) => {
+const Profile: SFC<IProfileProps> = ({ location }) => {
+  const classes = useStyles({});
   const { setLoading } = useContext(LoadingContext);
   const { user, profile, isAnonymous } = useContext(ProfileContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -99,7 +96,4 @@ const Profile: SFC<IProfileProps> = ({ classes, location }) => {
   );
 };
 
-export default compose(
-  withStyles(styles),
-  withRouter
-)(Profile);
+export default withRouter(Profile);

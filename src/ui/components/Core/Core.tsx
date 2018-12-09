@@ -1,26 +1,27 @@
-import { createStyles, Divider, Hidden, Tooltip, withStyles, WithStyles } from '@material-ui/core';
+import { Divider, Hidden, Tooltip } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
 import HomeIcon from '@material-ui/icons/Home';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { makeStyles } from '@material-ui/styles';
 import React, { SFC } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
 import Contacts from 'ui/components/Contacts';
 import IconTextButton from 'ui/components/IconTextButton';
 import Profile from 'ui/components/Profile';
 import Search from 'ui/components/Search';
 import Link from '../Link';
 
-interface ICoreProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {}
+interface ICoreProps extends RouteComponentProps<{}> {}
 
-const styles = createStyles({
+const useStyles = makeStyles({
   buttons: {
     display: 'flex',
     justifyContent: 'space-around'
   }
 });
 
-const Core: SFC<ICoreProps> = ({ classes, history, location }) => {
+const Core: SFC<ICoreProps> = ({ location }) => {
+  const classes = useStyles({});
   return (
     <>
       <Profile />
@@ -64,7 +65,4 @@ const Core: SFC<ICoreProps> = ({ classes, history, location }) => {
   );
 };
 
-export default compose(
-  withStyles(styles),
-  withRouter
-)(Core);
+export default withRouter(Core);

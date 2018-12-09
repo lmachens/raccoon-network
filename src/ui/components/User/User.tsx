@@ -1,19 +1,17 @@
 import {
   CircularProgress,
-  createStyles,
   Divider,
   Hidden,
   IconButton,
   List,
   ListItem,
   ListItemSecondaryAction,
-  ListItemText,
-  WithStyles,
-  withStyles
+  ListItemText
 } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { makeStyles } from '@material-ui/styles';
 import { getGameSessions, IGameSession } from 'api/stitch/gameSessions';
 import { addContact, getProfile, IUserProfile, removeContact } from 'api/stitch/profile';
 import React, { SFC, useContext, useEffect, useState } from 'react';
@@ -22,11 +20,11 @@ import { ProfileContext } from 'ui/contexts/profile';
 import ExitButton from '../ExitButton';
 import GameSessionPreview from '../GameSessionPreview';
 
-interface IUserProps extends WithStyles<typeof styles> {
+interface IUserProps {
   userId: string;
 }
 
-const styles = createStyles({
+const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -42,7 +40,8 @@ const styles = createStyles({
   }
 });
 
-const User: SFC<IUserProps> = ({ classes, userId }) => {
+const User: SFC<IUserProps> = ({ userId }) => {
+  const classes = useStyles({});
   const [loading, setLoading] = useState(true);
   const { user, isAnonymous, refreshProfile, profile } = useContext(ProfileContext);
 
@@ -122,4 +121,4 @@ const User: SFC<IUserProps> = ({ classes, userId }) => {
   );
 };
 
-export default withStyles(styles)(User);
+export default User;

@@ -1,37 +1,30 @@
-import {
-  Avatar,
-  createStyles,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Tooltip,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { Avatar, ListItem, ListItemAvatar, ListItemText, Tooltip } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import { IGame } from 'api/games';
 import classNames from 'classnames';
 import React, { SFC } from 'react';
 
-interface IGameProps extends WithStyles<typeof styles> {
+interface IGameProps {
   game: IGame;
   selected?: boolean;
   onClick?(): void;
 }
 
-const styles = theme =>
-  createStyles({
-    inline: {
-      display: 'inline'
-    },
-    listItem: {
-      padding: 8
-    },
-    selected: {
-      backgroundColor: `${theme.palette.action.selected} !important`
-    }
-  });
+const useStyles = makeStyles(theme => ({
+  inline: {
+    display: 'inline'
+  },
+  listItem: {
+    padding: 8
+  },
+  selected: {
+    backgroundColor: `${theme.palette.action.selected} !important`
+  }
+}));
 
-const Game: SFC<IGameProps> = ({ classes, game, onClick, selected }) => {
+const Game: SFC<IGameProps> = ({ game, onClick, selected }) => {
+  const classes = useStyles({});
+
   return (
     <Tooltip title="Coming soon">
       <div>
@@ -52,4 +45,4 @@ const Game: SFC<IGameProps> = ({ classes, game, onClick, selected }) => {
     </Tooltip>
   );
 };
-export default withStyles(styles)(Game);
+export default Game;

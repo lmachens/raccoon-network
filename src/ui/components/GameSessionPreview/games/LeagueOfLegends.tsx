@@ -1,10 +1,9 @@
-import { createStyles, Typography, withStyles, WithStyles } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import React, { SFC } from 'react';
 import { IGameSessionPreviewComponent } from '../GameSessionPreview';
 
-interface ILeagueOfLegendsProps extends IGameSessionPreviewComponent, WithStyles<typeof styles> {}
-
-const styles = createStyles({
+const useStyles = makeStyles({
   champion: {
     position: 'absolute',
     left: 8,
@@ -30,7 +29,8 @@ const styles = createStyles({
   }
 });
 
-const LeagueOfLegends: SFC<ILeagueOfLegendsProps> = ({ classes, info }) => {
+const LeagueOfLegends: SFC<IGameSessionPreviewComponent> = ({ info }) => {
+  const classes = useStyles({});
   return (
     <>
       <Typography className={classes.champion}>{info.champion}</Typography>
@@ -50,6 +50,4 @@ const LeagueOfLegends: SFC<ILeagueOfLegendsProps> = ({ classes, info }) => {
   );
 };
 
-export default withStyles(styles)(LeagueOfLegends) as React.FunctionComponent<
-  IGameSessionPreviewComponent
->;
+export default LeagueOfLegends;

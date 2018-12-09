@@ -1,22 +1,25 @@
-import { createStyles, withStyles, WithStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import React, { SFC } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 
-interface ILinkProps extends WithStyles<typeof styles> {
+interface ILinkProps {
   to: string;
 }
 
-const styles = createStyles({
+const useStyles = makeStyles({
   link: {
     textDecoration: 'inherit',
     color: 'inherit'
   }
 });
 
-const Link: SFC<ILinkProps> = ({ children, classes, to }) => (
-  <ReactRouterLink className={classes.link} to={to}>
-    {children}
-  </ReactRouterLink>
-);
+const Link: SFC<ILinkProps> = ({ children, to }) => {
+  const classes = useStyles({});
+  return (
+    <ReactRouterLink className={classes.link} to={to}>
+      {children}
+    </ReactRouterLink>
+  );
+};
 
-export default withStyles(styles)(Link);
+export default Link;

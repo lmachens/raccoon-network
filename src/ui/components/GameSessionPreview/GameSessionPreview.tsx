@@ -1,15 +1,13 @@
 import {
   Avatar,
   Button,
-  createStyles,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Paper,
-  Typography,
-  withStyles,
-  WithStyles
+  Typography
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import games from 'api/games';
 import { IGameSession, IMatchInfo } from 'api/stitch/gameSessions';
 import { timeAgo } from 'api/utilities';
@@ -25,46 +23,41 @@ export interface IGameSessionPreviewComponent {
   info: IMatchInfo;
 }
 
-interface IGameSessionPreviewProps extends WithStyles<typeof styles> {
+interface IGameSessionPreviewProps {
   gameSession: IGameSession;
   selected?: boolean;
   onClick?(): void;
 }
 
-const styles = theme =>
-  createStyles({
-    primary: {
-      marginBottom: 4
-    },
-    link: {
-      display: 'inline',
-      fontWeight: 500
-    },
-    timeAgo: {
-      display: 'inline',
-      marginLeft: 8,
-      fontWeight: 300
-    },
-    listItem: {
-      padding: 8
-    },
-    selected: {
-      backgroundColor: `${theme.palette.action.selected} !important`
-    },
-    gameSession: {
-      textTransform: 'none',
-      height: 100,
-      width: '100%',
-      position: 'relative'
-    }
-  });
+const useStyles = makeStyles(theme => ({
+  primary: {
+    marginBottom: 4
+  },
+  link: {
+    display: 'inline',
+    fontWeight: 500
+  },
+  timeAgo: {
+    display: 'inline',
+    marginLeft: 8,
+    fontWeight: 300
+  },
+  listItem: {
+    padding: 8
+  },
+  selected: {
+    backgroundColor: `${theme.palette.action.selected} !important`
+  },
+  gameSession: {
+    textTransform: 'none',
+    height: 100,
+    width: '100%',
+    position: 'relative'
+  }
+}));
 
-const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({
-  classes,
-  gameSession,
-  onClick,
-  selected
-}) => {
+const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({ gameSession, onClick, selected }) => {
+  const classes = useStyles({});
   const game = games[gameSession.gameId];
   const Component = game.GameSessionPreviewComponent;
   return (
@@ -111,4 +104,4 @@ const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({
     </ListItem>
   );
 };
-export default withStyles(styles)(GameSessionPreview);
+export default GameSessionPreview;

@@ -1,6 +1,5 @@
 import {
   CircularProgress,
-  createStyles,
   Divider,
   Hidden,
   IconButton,
@@ -8,11 +7,10 @@ import {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-  Paper,
-  withStyles,
-  WithStyles
+  Paper
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { makeStyles } from '@material-ui/styles';
 import games from 'api/games';
 import { getGameSession, IGameSession, IMatchInfo } from 'api/stitch/gameSessions';
 import { sortEvent } from 'api/utilities';
@@ -25,40 +23,40 @@ export interface IGameSessionComponent {
   info: IMatchInfo;
 }
 
-interface IGameSessionProps extends WithStyles<typeof styles> {
+interface IGameSessionProps {
   userId: string;
   matchId: string;
 }
 
-const styles = theme =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      position: 'relative'
-    },
-    loading: {
-      position: 'absolute',
-      left: 'calc(50% - 20px)',
-      top: 'calc(50% - 20px)'
-    },
-    gameSession: {
-      height: 100,
-      margin: 20,
-      position: 'relative',
-      display: 'inline-flex',
-      verticalAlign: 'middle',
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    events: {
-      overflow: 'auto',
-      flex: 1
-    }
-  });
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    position: 'relative'
+  },
+  loading: {
+    position: 'absolute',
+    left: 'calc(50% - 20px)',
+    top: 'calc(50% - 20px)'
+  },
+  gameSession: {
+    height: 100,
+    margin: 20,
+    position: 'relative',
+    display: 'inline-flex',
+    verticalAlign: 'middle',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  events: {
+    overflow: 'auto',
+    flex: 1
+  }
+});
 
-const GameSession: SFC<IGameSessionProps> = ({ classes, userId, matchId }) => {
+const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
+  const classes = useStyles({});
   const [loading, setLoading] = useState(true);
   const { state, setCache } = useContext(CacheContext);
 
@@ -111,4 +109,4 @@ const GameSession: SFC<IGameSessionProps> = ({ classes, userId, matchId }) => {
     </div>
   );
 };
-export default withStyles(styles)(GameSession);
+export default GameSession;

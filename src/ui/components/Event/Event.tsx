@@ -1,20 +1,14 @@
-import {
-  createStyles,
-  ListItem,
-  ListItemText,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { ListItem, ListItemText, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import { IEvent } from 'api/stitch/gameSessions';
 import React, { SFC } from 'react';
 
-interface IEventProps extends WithStyles<typeof styles> {
+interface IEventProps {
   event: IEvent;
   startedAt: Date;
 }
 
-const styles = createStyles({
+const useStyles = makeStyles({
   listItem: {
     display: 'flex',
     flexDirection: 'column',
@@ -42,7 +36,8 @@ const getDetails = event => {
   return '';
 };
 
-const Event: SFC<IEventProps> = ({ classes, event, startedAt }) => {
+const Event: SFC<IEventProps> = ({ event, startedAt }) => {
+  const classes = useStyles({});
   return (
     <ListItem className={classes.listItem}>
       <ListItemText
@@ -63,4 +58,4 @@ const Event: SFC<IEventProps> = ({ classes, event, startedAt }) => {
   );
 };
 
-export default withStyles(styles)(Event);
+export default Event;

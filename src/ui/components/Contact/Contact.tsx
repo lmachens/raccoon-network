@@ -1,37 +1,29 @@
-import {
-  Avatar,
-  createStyles,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { Avatar, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import { IUserProfile } from 'api/stitch/profile';
 import classNames from 'classnames';
 import React, { SFC } from 'react';
 
-interface IContactProps extends WithStyles<typeof styles> {
+interface IContactProps {
   profile: IUserProfile;
   selected?: boolean;
   onClick?(): void;
 }
 
-const styles = theme =>
-  createStyles({
-    inline: {
-      display: 'inline'
-    },
-    listItem: {
-      padding: 8
-    },
-    selected: {
-      backgroundColor: `${theme.palette.action.selected} !important`
-    }
-  });
+const useStyles = makeStyles(theme => ({
+  inline: {
+    display: 'inline'
+  },
+  listItem: {
+    padding: 8
+  },
+  selected: {
+    backgroundColor: `${theme.palette.action.selected} !important`
+  }
+}));
 
-const Contact: SFC<IContactProps> = ({ classes, profile, onClick, selected }) => {
+const Contact: SFC<IContactProps> = ({ profile, onClick, selected }) => {
+  const classes = useStyles({});
   return (
     <ListItem
       button
@@ -56,4 +48,4 @@ const Contact: SFC<IContactProps> = ({ classes, profile, onClick, selected }) =>
     </ListItem>
   );
 };
-export default withStyles(styles)(Contact);
+export default Contact;

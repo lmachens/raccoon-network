@@ -1,15 +1,5 @@
-import {
-  Button,
-  createStyles,
-  FormControl,
-  Input,
-  InputLabel,
-  Tab,
-  Tabs,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { Button, FormControl, Input, InputLabel, Tab, Tabs, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import {
   handleAnonymousLogin,
   handleConfirmUser,
@@ -17,45 +7,42 @@ import {
   handleResendConfirmation,
   handleSignup
 } from 'api/stitch';
-import React, { SFC, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { LoadingContext } from 'ui/contexts/loading';
 
-const styles = theme =>
-  createStyles({
-    root: {
-      marginTop: 8,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit *
-        3}px`,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      width: '100%'
-    },
-    avatar: {
-      margin: theme.spacing.unit,
-      backgroundColor: theme.palette.primary.main
-    },
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing.unit
-    },
-    submit: {
-      marginTop: theme.spacing.unit * 3
-    },
-    skip: {
-      display: 'inline',
-      textDecoration: 'underline',
-      cursor: 'pointer'
-    }
-  });
-
-type AuthProps = WithStyles<typeof styles>;
+const useStyles = makeStyles(theme => ({
+  root: {
+    marginTop: 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '100%'
+  },
+  avatar: {
+    margin: theme.spacing.unit,
+    backgroundColor: theme.palette.primary.main
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  },
+  skip: {
+    display: 'inline',
+    textDecoration: 'underline',
+    cursor: 'pointer'
+  }
+}));
 
 const lables = ['Sign in', 'Sign up', 'Reset', 'Verify'];
 
-const Auth: SFC<AuthProps> = ({ classes }) => {
+const Auth = () => {
+  const classes = useStyles({});
   const { setLoading } = useContext(LoadingContext);
   const [tabIndex, setTabIndex] = useState(0);
   const [error, setError] = useState<Error | null>(null);
@@ -192,4 +179,4 @@ const Auth: SFC<AuthProps> = ({ classes }) => {
   );
 };
 
-export default withStyles(styles)(Auth);
+export default Auth;

@@ -1,43 +1,32 @@
-import {
-  Button,
-  createStyles,
-  FormControl,
-  Input,
-  InputLabel,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { Button, FormControl, Input, InputLabel, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import { setProfile } from 'api/stitch/profile';
-import React, { SFC, useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 
-interface UsernameProps extends WithStyles<typeof styles> {}
+const useStyles = makeStyles(theme => ({
+  root: {
+    marginTop: 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '100%'
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing.unit
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3
+  }
+}));
 
-const styles = theme =>
-  createStyles({
-    root: {
-      marginTop: 8,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit *
-        3}px`,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      width: '100%'
-    },
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing.unit
-    },
-    submit: {
-      marginTop: theme.spacing.unit * 3
-    }
-  });
-
-const Username: SFC<UsernameProps> = ({ classes }) => {
+const Username = () => {
+  const classes = useStyles({});
   const { refreshProfile } = useContext(ProfileContext);
   const { setLoading } = useContext(LoadingContext);
   const [error, setError] = useState<Error | null>(null);
@@ -83,4 +72,4 @@ const Username: SFC<UsernameProps> = ({ classes }) => {
   );
 };
 
-export default withStyles(styles)(Username);
+export default Username;

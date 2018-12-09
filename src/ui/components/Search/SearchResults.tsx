@@ -1,25 +1,19 @@
-import {
-  CircularProgress,
-  createStyles,
-  ListSubheader,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { CircularProgress, ListSubheader } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import { findGames, IGame } from 'api/games';
 import { findProfiles, IUserProfile } from 'api/stitch/profile';
 import React, { SFC, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
 import Contact from '../Contact';
 import Game from '../Game';
 import Link from '../Link';
 
-interface ISearchResultsProps extends WithStyles<typeof styles>, RouteComponentProps<{}> {
+interface ISearchResultsProps extends RouteComponentProps<{}> {
   search: string;
   query: string;
 }
 
-const styles = createStyles({
+const useStyles = makeStyles({
   container: {
     position: 'relative',
     height: '100%'
@@ -36,7 +30,8 @@ interface ISearchResultsState {
   games?: IGame[];
 }
 
-const SearchResults: SFC<ISearchResultsProps> = ({ classes, history, search, query, location }) => {
+const SearchResults: SFC<ISearchResultsProps> = ({ search, query, location }) => {
+  const classes = useStyles({});
   const [loading, setLoading] = useState(true);
   const [searchResults, setSearchResults] = useState<ISearchResultsState>({});
 
@@ -100,7 +95,4 @@ const SearchResults: SFC<ISearchResultsProps> = ({ classes, history, search, que
   );
 };
 
-export default compose(
-  withStyles(styles),
-  withRouter
-)(SearchResults);
+export default withRouter(SearchResults);

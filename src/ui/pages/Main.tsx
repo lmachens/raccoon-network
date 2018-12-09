@@ -1,37 +1,37 @@
-import { createStyles, Hidden, withStyles, WithStyles } from '@material-ui/core';
+import { Hidden } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import classNames from 'classnames';
-import React, { SFC } from 'react';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Core from 'ui/components/Core';
 import Feed from 'ui/components/Feed';
 import GameSession from 'ui/components/GameSession';
 import User from 'ui/components/User';
 
-interface IMainProps extends WithStyles<typeof styles> {}
+const useStyles = makeStyles(theme => ({
+  root: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#f3f3f3'
+  },
+  fixedRoot: {
+    width: 360,
+    minWidth: 360,
+    borderRight: `1px solid ${theme.palette.divider}`
+  },
+  flex: {
+    display: 'flex',
+    height: '100%'
+  },
+  grow: {
+    flexGrow: 1
+  }
+}));
 
-const styles = theme =>
-  createStyles({
-    root: {
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: '#f3f3f3'
-    },
-    fixedRoot: {
-      width: 360,
-      minWidth: 360,
-      borderRight: `1px solid ${theme.palette.divider}`
-    },
-    flex: {
-      display: 'flex',
-      height: '100%'
-    },
-    grow: {
-      flexGrow: 1
-    }
-  });
+const Main = () => {
+  const classes = useStyles({});
 
-const Main: SFC<IMainProps> = ({ classes }) => {
   const routes = (
     <>
       <Route exact path="/feed" render={() => <Feed />} />
@@ -74,4 +74,4 @@ const Main: SFC<IMainProps> = ({ classes }) => {
   );
 };
 
-export default withStyles(styles)(Main);
+export default Main;

@@ -1,26 +1,22 @@
 import {
   CircularProgress,
-  createStyles,
   Divider,
   Hidden,
   IconButton,
   List,
   ListItem,
   ListItemSecondaryAction,
-  ListItemText,
-  withStyles,
-  WithStyles
+  ListItemText
 } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { makeStyles } from '@material-ui/styles';
 import { findGameSessions, IGameSession } from 'api/stitch/gameSessions';
-import React, { SFC, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { CacheContext } from 'ui/contexts/cache';
 import ExitButton from '../ExitButton';
 import GameSessionPreview from '../GameSessionPreview';
 
-interface IFeedProps extends WithStyles<typeof styles> {}
-
-const styles = createStyles({
+const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -41,7 +37,8 @@ interface IFeedResults {
   gameSessions?: IGameSession[];
 }
 
-const Feed: SFC<IFeedProps> = ({ classes }) => {
+const Feed = () => {
+  const classes = useStyles({});
   const [loading, setLoading] = useState(true);
   const { state, setCache } = useContext(CacheContext);
   const cacheKey = `feed`;
@@ -88,4 +85,4 @@ const Feed: SFC<IFeedProps> = ({ classes }) => {
   );
 };
 
-export default withStyles(styles)(Feed);
+export default Feed;

@@ -1,24 +1,16 @@
-import {
-  ButtonBase,
-  CircularProgress,
-  createStyles,
-  Typography,
-  withStyles,
-  WithStyles
-} from '@material-ui/core';
+import { ButtonBase, CircularProgress, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MaximizeIcon from '@material-ui/icons/CropSquare';
 import MinimizeIcon from '@material-ui/icons/Minimize';
-import React, { SFC, useContext } from 'react';
+import { makeStyles } from '@material-ui/styles';
+import React, { useContext } from 'react';
 import Auth from 'ui/components/Auth';
 import Username from 'ui/components/Username';
 import { LoadingContext } from 'ui/contexts/loading';
 import { ProfileContext } from 'ui/contexts/profile';
 import Welcome from 'ui/pages/Welcome';
 
-interface IWebLayoutProps extends WithStyles<typeof styles> {}
-
-const styles = createStyles({
+const useStyles = makeStyles({
   root: {
     userSelect: 'none',
     height: '100vh',
@@ -73,7 +65,8 @@ const styles = createStyles({
   }
 });
 
-const WebLayout: SFC<IWebLayoutProps> = ({ children, classes }) => {
+const WebLayout = ({ children }) => {
+  const classes = useStyles({});
   const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
   const { state } = useContext(LoadingContext);
   const loading = state && Object.values(state)[0];
@@ -120,4 +113,4 @@ const WebLayout: SFC<IWebLayoutProps> = ({ children, classes }) => {
   );
 };
 
-export default withStyles(styles)(WebLayout);
+export default WebLayout;
