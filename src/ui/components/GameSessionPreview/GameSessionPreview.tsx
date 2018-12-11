@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Button,
   ListItem,
   ListItemAvatar,
@@ -14,6 +13,7 @@ import { timeAgo } from 'api/utilities';
 import classNames from 'classnames';
 import React, { SFC } from 'react';
 import Link from '../Link';
+import ProfilePicture from '../ProfilePicture';
 
 export interface IGameSessionComponent {
   info: IMatchInfo;
@@ -69,7 +69,7 @@ const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({ gameSession, onClic
     >
       <ListItemAvatar>
         <Link to={`/users/${gameSession.userId}`}>
-          <Avatar>{gameSession.profile.username.slice(0, 2)}</Avatar>
+          <ProfilePicture username={gameSession.profile.username.slice(0, 2)} />
         </Link>
       </ListItemAvatar>
       <ListItemText

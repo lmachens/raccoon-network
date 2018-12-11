@@ -1,5 +1,4 @@
 import {
-  Avatar,
   IconButton,
   List,
   ListItem,
@@ -18,6 +17,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ProfileContext } from 'ui/contexts/profile';
 import Link from '../Link';
 import Loading from '../Loading';
+import ProfilePicture from '../ProfilePicture';
 
 interface IProfileProps extends RouteComponentProps<{}> {}
 
@@ -79,7 +79,7 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
           })}
         >
           <ListItemAvatar>
-            <Avatar>{profile ? profile.username.slice(0, 2) : '?'}</Avatar>
+            <ProfilePicture username={profile ? profile.username.slice(0, 2) : '?'} />
           </ListItemAvatar>
           <ListItemText primary={isAnonymous ? 'Guest' : profile!.username} secondary={'TBA'} />
           <ListItemSecondaryAction>

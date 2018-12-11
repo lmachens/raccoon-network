@@ -1,8 +1,9 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
+import { ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { IUserProfile } from 'api/stitch/profile';
 import classNames from 'classnames';
 import React, { SFC } from 'react';
+import ProfilePicture from '../ProfilePicture';
 
 interface IContactProps {
   profile: IUserProfile;
@@ -33,7 +34,7 @@ const Contact: SFC<IContactProps> = ({ profile, onClick, selected }) => {
       onClick={onClick}
     >
       <ListItemAvatar>
-        <Avatar>{profile.username.slice(0, 2)}</Avatar>
+        <ProfilePicture username={profile.username.slice(0, 2)} />
       </ListItemAvatar>
       <ListItemText
         primary={profile.username}

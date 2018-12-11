@@ -26,6 +26,7 @@
     "@material-ui/icons": "^3.0.1",
     "@material-ui/styles": "^3.0.0-alpha.3",
     "classnames": "^2.2.6",
+    "jdenticon": "^2.1.0",
     "mongodb-stitch-browser-sdk": "^4.1.1",
     "react": "^16.7.0-alpha.2",
     "react-dom": "^16.7.0-alpha.2",
