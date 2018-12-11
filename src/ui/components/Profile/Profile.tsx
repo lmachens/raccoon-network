@@ -48,7 +48,9 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
     setMenuAnchor(event.currentTarget);
   };
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = event => {
+    event.stopPropagation();
+    event.preventDefault();
     setMenuAnchor(null);
   };
 

@@ -14,6 +14,10 @@ import Link from '../Link';
 interface ICoreProps extends RouteComponentProps<{}> {}
 
 const useStyles = makeStyles({
+  root: {
+    backgroundColor: '#f3f3f3',
+    height: '100%'
+  },
   buttons: {
     display: 'flex',
     justifyContent: 'space-around'
@@ -23,7 +27,7 @@ const useStyles = makeStyles({
 const Core: SFC<ICoreProps> = ({ location }) => {
   const classes = useStyles({});
   return (
-    <>
+    <div className={classes.root}>
       <Profile />
       <Search>
         <div className={classes.buttons}>
@@ -61,7 +65,7 @@ const Core: SFC<ICoreProps> = ({ location }) => {
         <Divider />
         <Contacts />
       </Search>
-    </>
+    </div>
   );
 };
 

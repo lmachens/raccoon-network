@@ -12,8 +12,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
     display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: '#f3f3f3'
+    flexDirection: 'column'
   },
   fixedRoot: {
     width: 360,

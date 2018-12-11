@@ -1,5 +1,5 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import light from './light';
 
