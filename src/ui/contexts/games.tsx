@@ -38,7 +38,7 @@ const defaultMatchInfo = {
   assists: 0,
   minionKills: 0,
   gold: 0,
-  startedAt: 0
+  startedAt: new Date()
 };
 
 export class GamesProvider extends React.Component<{}, IGamesProviderState> {
@@ -87,14 +87,6 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     const { matchInfo, gameInfo } = this.state;
     console.log('updateGameSession', matchInfo);
     if (matchInfo && matchInfo.matchId) {
-      if (matchInfo.teams) {
-        try {
-          matchInfo.teams = JSON.parse(decodeURI(matchInfo.teams));
-        } catch (error) {
-          console.error('Team parser error', error, matchInfo.teams);
-        }
-      }
-
       setGameSessionInfo({
         gameId: Math.floor(gameInfo!.id / 10),
         matchId: matchInfo.matchId,
@@ -241,6 +233,12 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   };
 
   registerEvents = () => {
+    this.setState({
+      gameInfo: null,
+      matchInfo: {},
+      events: []
+    });
+
     console.log('registerEvents');
     this.unregisterEvents();
     this.getInfo();
@@ -263,16 +261,12 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
           video: { buffer_length: 20000 },
           audio: {
             mic: {
-              volume: 100,
-              enabled: true
+              enable: false,
+              volume: 0
             },
-            game: {
-              volume: 100,
-              enabled: true
-            },
+            mic_volume: 0,
             game_volume: 100
-          },
-          peripherals: { capture_mouse_cursor: 'both' }
+          }
         }
       },
       result => {
@@ -288,15 +282,15 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
         const { game_info = {}, level = {}, summoner_info = {} } = result.res || {};
 
         this.setState(
-          {
+          state => ({
             matchInfo: {
               ...defaultMatchInfo,
               ...game_info,
               ...level,
               ...summoner_info,
-              startedAt: new Date()
+              startedAt: state.matchInfo.startedAt
             }
-          },
+          }),
           this.updateGameSession
         );
       }
