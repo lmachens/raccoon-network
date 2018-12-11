@@ -1,19 +1,8 @@
 import { Typography } from '@material-ui/core';
 import { handleConfirmUser } from 'api/stitch';
+import { getQueryVariable } from 'api/utilities';
 import React, { SFC, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-
-const getQueryVariable = (variable, search) => {
-  const query = search.substring(1);
-  const vars = query.split('&');
-  for (let i = 0; i < vars.length; i++) {
-    const pair = vars[i].split('=');
-    if (decodeURIComponent(pair[0]) === variable) {
-      return decodeURIComponent(pair[1]);
-    }
-  }
-  console.log('Query variable %s not found', variable);
-};
 
 const ConfirmEmail: SFC<RouteComponentProps<{}>> = ({ location }) => {
   const token = getQueryVariable('token', location.search);
