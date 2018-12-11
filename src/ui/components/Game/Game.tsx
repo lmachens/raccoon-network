@@ -19,6 +19,9 @@ const useStyles = makeStyles(theme => ({
   },
   selected: {
     backgroundColor: `${theme.palette.action.selected} !important`
+  },
+  gameIcon: {
+    padding: 5
   }
 }));
 
@@ -37,7 +40,7 @@ const Game: SFC<IGameProps> = ({ game, onClick, selected }) => {
           onClick={onClick}
         >
           <ListItemAvatar>
-            <Avatar>{game.name.slice(0, 2)}</Avatar>
+            <Avatar src={game.iconSrc} className={classes.gameIcon} />
           </ListItemAvatar>
           <ListItemText primary={game.name} />
         </ListItem>

@@ -5,6 +5,7 @@ import { IGame } from '.';
 export const leagueOfLegends: IGame = {
   id: 5426,
   name: 'League of Legends',
+  iconSrc: 'assets/games/league_of_legends.png',
   interestedInFeatures: [
     'matchState',
     'death',

@@ -3,13 +3,12 @@ import {
   IGameSessionComponent,
   IGameSessionPreviewComponent
 } from 'ui/components/GameSessionPreview/GameSessionPreview';
-import { csgo } from './csgo';
-import { heartstone } from './hearthstone';
 import { leagueOfLegends } from './leagueOfLegends';
 
 export interface IGame {
   id: number;
   name: string;
+  iconSrc: string;
   interestedInFeatures: ODK.GameEvents.LOL.TFeaturesLOL[];
   GameSessionComponent: React.FunctionComponent<IGameSessionComponent>;
   GameSessionPreviewComponent: React.FunctionComponent<IGameSessionPreviewComponent>;
@@ -20,9 +19,7 @@ interface IGames {
 }
 
 const games: IGames = {
-  [leagueOfLegends.id]: leagueOfLegends,
-  [heartstone.id]: heartstone,
-  [csgo.id]: csgo
+  [leagueOfLegends.id]: leagueOfLegends
 };
 
 export default games;
