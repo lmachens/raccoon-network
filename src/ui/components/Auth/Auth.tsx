@@ -4,6 +4,7 @@ import {
   handleAnonymousLogin,
   handleLogin,
   handleResendConfirmation,
+  handleResetPassword,
   handleSignup
 } from 'api/stitch';
 import React, { useState } from 'react';
@@ -26,7 +27,8 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit
   },
   submit: {
     marginTop: theme.spacing.unit * 3
@@ -35,40 +37,43 @@ const useStyles = makeStyles(theme => ({
     display: 'inline',
     textDecoration: 'underline',
     cursor: 'pointer'
+  },
+  mailAction: {
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    margin: 2
   }
 }));
 
-const lables = ['Sign in', 'Sign up', 'Reset'];
+const lables = ['Sign in', 'Sign up'];
 
 const Auth = () => {
   const classes = useStyles({});
   const [loading, setLoading] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
   const [error, setError] = useState<Error | null>(null);
+  const [email, setEmail] = useState('');
 
   const handleSubmit = async event => {
     setLoading(true);
     setError(null);
     event.preventDefault();
 
-    const { email, password, repeatPassword, token, tokenId } = event.target;
+    const { password, repeatPassword } = event.target;
 
-    const emailValue = email && email.value.trim();
     const passwordValue = password && password.value.trim();
     const repeatPasswordValue = repeatPassword && repeatPassword.value.trim();
 
     try {
       if (tabIndex === 0) {
-        await handleLogin(emailValue, passwordValue);
+        await handleLogin(email, passwordValue);
       } else if (tabIndex === 1) {
         if (passwordValue !== repeatPasswordValue) {
           throw new Error("Password doesn't match");
         } else {
-          await handleSignup(emailValue, passwordValue);
+          await handleSignup(email, passwordValue);
           setTabIndex(0);
         }
-      } else if (tabIndex === 2) {
-        await handleResendConfirmation(emailValue);
       }
     } catch (error) {
       setError(error);
@@ -89,6 +94,38 @@ const Auth = () => {
     handleAnonymousLogin().then(() => {
       setLoading(false);
     });
+  };
+
+  const handleResendConfimationClick = async () => {
+    if (!email) {
+      return setError(new Error('Please enter an Email address'));
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      await handleResendConfirmation(email);
+    } catch (error) {
+      setError(error);
+    }
+    setLoading(false);
+  };
+
+  const handleResetPasswordClick = async () => {
+    if (!email) {
+      return setError(new Error('Please enter an Email address'));
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      await handleResetPassword(email);
+    } catch (error) {
+      setError(error);
+    }
+    setLoading(false);
+  };
+
+  const handleEmailChange = event => {
+    setEmail(event.target.value);
   };
 
   return (
@@ -115,23 +152,25 @@ const Auth = () => {
       >
         <Tab label={lables[0]} />
         <Tab label={lables[1]} />
-        <Tab label={lables[2]} />
-        <Tab label={lables[3]} />
       </Tabs>
 
       <form className={classes.form} onSubmit={handleSubmit}>
-        {tabIndex !== 3 && (
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="email">Email Address</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus type="email" />
-          </FormControl>
-        )}
-        {tabIndex < 2 && (
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" />
-          </FormControl>
-        )}
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="email">Email Address</InputLabel>
+          <Input
+            id="email"
+            name="email"
+            value={email}
+            onChange={handleEmailChange}
+            autoComplete="email"
+            autoFocus
+            type="email"
+          />
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="password">Password</InputLabel>
+          <Input name="password" type="password" id="password" autoComplete="current-password" />
+        </FormControl>
         {tabIndex === 1 && (
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="repeat-password">Repeat Password</InputLabel>
@@ -155,6 +194,16 @@ const Auth = () => {
           {lables[tabIndex]}
         </Button>
       </form>
+      {tabIndex !== 1 && (
+        <>
+          <Typography className={classes.mailAction} onClick={handleResetPasswordClick}>
+            Reset password
+          </Typography>
+          <Typography className={classes.mailAction} onClick={handleResendConfimationClick}>
+            Resend confirmation mail
+          </Typography>
+        </>
+      )}
     </div>
   );
 };
