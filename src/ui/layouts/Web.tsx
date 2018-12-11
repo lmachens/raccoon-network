@@ -6,7 +6,6 @@ import { makeStyles } from '@material-ui/styles';
 import React, { useContext } from 'react';
 import Auth from 'ui/components/Auth';
 import Loading from 'ui/components/Loading';
-import Username from 'ui/components/Username';
 import { ProfileContext } from 'ui/contexts/profile';
 import Welcome from 'ui/pages/Welcome';
 
@@ -60,7 +59,7 @@ const useStyles = makeStyles({
 
 const WebLayout = ({ children }) => {
   const classes = useStyles({});
-  const { profile, isAnonymous, isLoggedIn, isLoggingIn } = useContext(ProfileContext);
+  const { isLoggedIn, isLoggingIn } = useContext(ProfileContext);
   return (
     <div className={classes.root}>
       <header className={classes.header}>
@@ -86,12 +85,7 @@ const WebLayout = ({ children }) => {
             <Auth />
           </Welcome>
         )}
-        {!isLoggingIn && isLoggedIn && !profile && !isAnonymous && (
-          <Welcome>
-            <Username />
-          </Welcome>
-        )}
-        {!isLoggingIn && isLoggedIn && (profile || isAnonymous) && children}
+        {!isLoggingIn && isLoggedIn && children}
       </main>
     </div>
   );

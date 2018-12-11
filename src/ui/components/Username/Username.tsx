@@ -25,8 +25,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Username = () => {
+const Username = ({ onClose }) => {
   const classes = useStyles({});
+  const { profile } = useContext(ProfileContext);
   const { refreshProfile } = useContext(ProfileContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -46,6 +47,7 @@ const Username = () => {
       setLoading(true);
       await setProfile({ username: usernameValue });
       refreshProfile();
+      onClose();
     } catch (error) {
       setError(error);
       console.error(error);
@@ -60,7 +62,13 @@ const Username = () => {
         <Typography>Please select a username</Typography>
         <FormControl margin="normal" required fullWidth>
           <InputLabel htmlFor="username">Username</InputLabel>
-          <Input name="username" id="username" autoComplete="username" />
+          <Input
+            name="username"
+            id="username"
+            defaultValue={profile ? profile.username : ''}
+            autoComplete="username"
+            autoFocus
+          />
         </FormControl>
         {error && <Typography color="error">{error.message}</Typography>}
         <Button

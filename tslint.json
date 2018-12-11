@@ -12,6 +12,7 @@
     "no-console": false,
     "no-require-imports": false,
     "jsx-boolean-value": false,
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "prefer-for-of": false
   }
 }

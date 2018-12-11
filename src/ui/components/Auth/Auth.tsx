@@ -2,7 +2,6 @@ import { Button, FormControl, Input, InputLabel, Tab, Tabs, Typography } from '@
 import { makeStyles } from '@material-ui/styles';
 import {
   handleAnonymousLogin,
-  handleConfirmUser,
   handleLogin,
   handleResendConfirmation,
   handleSignup
@@ -39,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const lables = ['Sign in', 'Sign up', 'Reset', 'Verify'];
+const lables = ['Sign in', 'Sign up', 'Reset'];
 
 const Auth = () => {
   const classes = useStyles({});
@@ -57,8 +56,6 @@ const Auth = () => {
     const emailValue = email && email.value.trim();
     const passwordValue = password && password.value.trim();
     const repeatPasswordValue = repeatPassword && repeatPassword.value.trim();
-    const tokenValue = token && token.value.trim();
-    const tokenIdValue = tokenId && tokenId.value.trim();
 
     try {
       if (tabIndex === 0) {
@@ -68,13 +65,10 @@ const Auth = () => {
           throw new Error("Password doesn't match");
         } else {
           await handleSignup(emailValue, passwordValue);
-          setTabIndex(3);
+          setTabIndex(0);
         }
       } else if (tabIndex === 2) {
         await handleResendConfirmation(emailValue);
-      } else if (tabIndex === 3) {
-        await handleConfirmUser(tokenValue, tokenIdValue);
-        setTabIndex(0);
       }
     } catch (error) {
       setError(error);
@@ -148,22 +142,6 @@ const Auth = () => {
               autoComplete="repeat-password"
             />
           </FormControl>
-        )}
-        {tabIndex === 3 && (
-          <>
-            <Typography>
-              This is a temporary solution! Please extract the token and tokenId from the
-              confirmation email.
-            </Typography>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="token">Token</InputLabel>
-              <Input name="token" id="token" autoComplete="token" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="token-id">Token ID</InputLabel>
-              <Input name="tokenId" id="token-id" autoComplete="token-id" />
-            </FormControl>
-          </>
         )}
         {error && <Typography color="error">{error.message}</Typography>}
         <Button

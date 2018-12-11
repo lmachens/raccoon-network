@@ -30,13 +30,16 @@ export const findProfiles = (keyword, options) => {
 
 export const setProfile = async ({ username }) => {
   console.log('setProfile');
-  const existingProfiles = await profiles.find({ username }, { limit: 1 }).asArray();
+  const userId = stitchClient.auth.user!.id;
+
+  const existingProfiles = await profiles
+    .find({ username, userId: { $ne: userId } }, { limit: 1 })
+    .asArray();
 
   if (existingProfiles.length > 0) {
     throw new Error('An user with the username already exists');
   }
-  const userId = stitchClient.auth.user!.id;
-  return profiles.updateOne({ userId }, { userId, username }, { upsert: true });
+  return profiles.updateOne({ userId }, { $set: { userId, username } });
 };
 
 export const getContacts = userIds => {

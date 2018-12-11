@@ -25,12 +25,12 @@ module.exports = {
         resizable: true,
         show_in_taskbar: true,
         size: {
-          width: 400,
+          width: 410,
           height: 700
         },
         min_size: {
-          width: 400,
-          height: 500
+          width: 410,
+          height: 600
         }
       }
     },

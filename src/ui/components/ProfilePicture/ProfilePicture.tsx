@@ -24,7 +24,6 @@ jdenticon.config = {
 const ProfilePicture = ({ username }) => {
   const classes = useStyles({});
   const svg = jdenticon.toSvg(username, 32);
-  console.log(svg);
   return <Avatar className={classes.avatar} dangerouslySetInnerHTML={{ __html: svg }} />;
 };
 

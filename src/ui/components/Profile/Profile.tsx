@@ -1,4 +1,5 @@
 import {
+  Dialog,
   IconButton,
   List,
   ListItem,
@@ -18,6 +19,7 @@ import { ProfileContext } from 'ui/contexts/profile';
 import Link from '../Link';
 import Loading from '../Loading';
 import ProfilePicture from '../ProfilePicture';
+import Username from '../Username';
 
 interface IProfileProps extends RouteComponentProps<{}> {}
 
@@ -38,9 +40,23 @@ const useStyles = makeStyles(theme => ({
 
 const Profile: SFC<IProfileProps> = ({ location, history }) => {
   const classes = useStyles({});
+  const [openUsernameDialog, setOpenUsernameDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user, profile, isAnonymous } = useContext(ProfileContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
+
+  const needToSetUsername = !profile && !isAnonymous;
+
+  const handleOpenUsernameDialog = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    setMenuAnchor(null);
+    setOpenUsernameDialog(true);
+  };
+
+  const handleCloseUsernameDialog = () => {
+    setOpenUsernameDialog(false);
+  };
 
   const handleActionsClick = event => {
     event.stopPropagation();
@@ -96,13 +112,24 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
               open={Boolean(menuAnchor)}
               onClose={handleCloseMenu}
             >
+              <MenuItem disabled={loading || isAnonymous} onClick={handleOpenUsernameDialog}>
+                Change username
+              </MenuItem>
               <MenuItem disabled={loading} onClick={handleLogoutClick}>
-                Logout
+                Sign out
               </MenuItem>
             </Menu>
           </ListItemSecondaryAction>
         </ListItem>
       </Link>
+      <Dialog
+        open={openUsernameDialog || needToSetUsername}
+        onClose={handleCloseUsernameDialog}
+        disableBackdropClick={needToSetUsername}
+        disableEscapeKeyDown={needToSetUsername}
+      >
+        <Username onClose={handleCloseUsernameDialog} />
+      </Dialog>
     </List>
   );
 };
