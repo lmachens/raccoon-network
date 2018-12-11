@@ -45,7 +45,7 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
   const { user, profile, isAnonymous } = useContext(ProfileContext);
   const [menuAnchor, setMenuAnchor] = useState(null);
 
-  const needToSetUsername = !profile && !isAnonymous;
+  const needToSetUsername = !isAnonymous && !!profile && !profile.username;
 
   const handleOpenUsernameDialog = event => {
     event.stopPropagation();
@@ -95,9 +95,14 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
           })}
         >
           <ListItemAvatar>
-            <ProfilePicture username={profile ? profile.username.slice(0, 2) : '?'} />
+            <ProfilePicture
+              username={profile && profile.username ? profile.username.slice(0, 2) : '?'}
+            />
           </ListItemAvatar>
-          <ListItemText primary={isAnonymous ? 'Guest' : profile!.username} secondary={'TBA'} />
+          <ListItemText
+            primary={isAnonymous || !profile || !profile.username ? 'Guest' : profile.username}
+            secondary={'TBA'}
+          />
           <ListItemSecondaryAction>
             <IconButton
               aria-owns={menuAnchor ? 'menu' : undefined}

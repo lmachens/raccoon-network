@@ -3,11 +3,9 @@ import { makeStyles } from '@material-ui/styles';
 import classNames from 'classnames';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import ConfirmEmail from 'ui/components/ConfirmEmail';
 import Core from 'ui/components/Core';
 import Feed from 'ui/components/Feed';
 import GameSession from 'ui/components/GameSession';
-import ResetPassword from 'ui/components/ResetPassword';
 import User from 'ui/components/User';
 
 const useStyles = makeStyles(theme => ({
@@ -35,8 +33,6 @@ const Main = () => {
 
   const routes = (
     <>
-      <Route exact path="/confirm-email" component={ConfirmEmail} />
-      <Route exact path="/reset-password" component={ResetPassword} />
       <Route exact path="/feed" render={() => <Feed />} />
       <Route
         exact

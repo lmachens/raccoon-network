@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { CacheProvider } from 'ui/contexts/cache';
 import { ProfileProvider } from 'ui/contexts/profile';
 import WebLayout from 'ui/layouts/Web';
@@ -10,13 +10,13 @@ import ThemeProvider from 'ui/themes/ThemeProvider';
 const Root = (
   <ThemeProvider>
     <ProfileProvider>
-      <BrowserRouter>
+      <HashRouter>
         <CacheProvider>
           <WebLayout>
             <Main />
           </WebLayout>
         </CacheProvider>
-      </BrowserRouter>
+      </HashRouter>
     </ProfileProvider>
   </ThemeProvider>
 );

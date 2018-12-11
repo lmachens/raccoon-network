@@ -65,7 +65,7 @@ const Username = ({ onClose }) => {
           <Input
             name="username"
             id="username"
-            defaultValue={profile ? profile.username : ''}
+            defaultValue={profile && profile.username ? profile.username : ''}
             autoComplete="username"
             autoFocus
           />

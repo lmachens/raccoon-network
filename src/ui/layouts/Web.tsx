@@ -1,11 +1,11 @@
-import { ButtonBase, Typography } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import MaximizeIcon from '@material-ui/icons/CropSquare';
-import MinimizeIcon from '@material-ui/icons/Minimize';
+import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import React, { useContext } from 'react';
+import React, { SFC, useContext } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import Auth from 'ui/components/Auth';
+import ConfirmEmail from 'ui/components/ConfirmEmail';
 import Loading from 'ui/components/Loading';
+import ResetPassword from 'ui/components/ResetPassword';
 import { ProfileContext } from 'ui/contexts/profile';
 import Welcome from 'ui/pages/Welcome';
 
@@ -57,9 +57,13 @@ const useStyles = makeStyles({
   }
 });
 
-const WebLayout = ({ children }) => {
+const WebLayout: SFC<RouteComponentProps<{}>> = ({ children, location }) => {
   const classes = useStyles({});
   const { isLoggedIn, isLoggingIn } = useContext(ProfileContext);
+  const isConfirmEmailPage = location.pathname === '/confirm-email';
+  const isResetPasswordPage = location.pathname === '/reset-password';
+  const isActionPage = isConfirmEmailPage || isResetPasswordPage;
+
   return (
     <div className={classes.root}>
       <header className={classes.header}>
@@ -67,28 +71,20 @@ const WebLayout = ({ children }) => {
         <Typography component="h1" className={classes.title}>
           Raccoon Network
         </Typography>
-        <div className={classes.grow} />
-        <ButtonBase className={classes.button} focusRipple disabled>
-          <MinimizeIcon color="action" />
-        </ButtonBase>
-        <ButtonBase className={classes.button} focusRipple disabled>
-          <MaximizeIcon color="action" />
-        </ButtonBase>
-        <ButtonBase className={classes.button} focusRipple disabled>
-          <CloseIcon color="action" />
-        </ButtonBase>
       </header>
       <main className={classes.main}>
-        {isLoggingIn && <Loading />}
-        {!isLoggingIn && !isLoggedIn && (
+        {isConfirmEmailPage && <ConfirmEmail />}
+        {isResetPasswordPage && <ResetPassword />}
+        {!isActionPage && isLoggingIn && <Loading />}
+        {!isActionPage && !isLoggingIn && !isLoggedIn && (
           <Welcome>
             <Auth />
           </Welcome>
         )}
-        {!isLoggingIn && isLoggedIn && children}
+        {!isActionPage && !isLoggingIn && isLoggedIn && children}
       </main>
     </div>
   );
 };
 
-export default WebLayout;
+export default withRouter(WebLayout);
