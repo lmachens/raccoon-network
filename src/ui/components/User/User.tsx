@@ -58,7 +58,7 @@ const User: SFC<IUserProps> = ({ userId }) => {
 
   const profileCacheKey = `${userId}-user`;
   const gameSessionsCacheKey = `${userId}-gameSessions`;
-  const targetUser: IUserProfile = state[profileCacheKey] || {};
+  const targetUser: IUserProfile = state[profileCacheKey] || { username: 'Guest' };
   const gameSessions: IGameSession[] = state[gameSessionsCacheKey] || [];
 
   useEffect(

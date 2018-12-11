@@ -46,7 +46,7 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   const needToSetUsername = !isAnonymous && !!profile && !profile.username;
-
+  console.log(needToSetUsername, profile, isAnonymous);
   const handleOpenUsernameDialog = event => {
     event.stopPropagation();
     event.preventDefault();

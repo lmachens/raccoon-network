@@ -90,7 +90,15 @@ const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
           <Hidden smUp>
             <ExitButton />
           </Hidden>
-          <ListItemText primary={!loading && !gameSession ? 'Match not found' : matchId} />
+          <ListItemText
+            primary={
+              !loading && !gameSession
+                ? 'Match not found'
+                : gameSession && game
+                ? `${gameSession.profile.username} played ${game.name}`
+                : ''
+            }
+          />
         </ListItem>
         <ListItemSecondaryAction>
           <IconButton onClick={handleRefresh} disabled={loading}>

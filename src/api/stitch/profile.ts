@@ -5,6 +5,8 @@ export interface IUserProfile {
   username: string;
   avatarSrc?: string;
   contactUserIds?: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const profiles = appDb.collection<IUserProfile>('profiles');
@@ -31,7 +33,7 @@ export const findProfiles = (keyword, options) => {
 export const setProfile = async ({ username }) => {
   console.log('setProfile');
   const userId = stitchClient.auth.user!.id;
-
+  const now = new Date();
   const existingProfiles = await profiles
     .find({ username, userId: { $ne: userId } }, { limit: 1 })
     .asArray();
@@ -39,7 +41,7 @@ export const setProfile = async ({ username }) => {
   if (existingProfiles.length > 0) {
     throw new Error('An user with the username already exists');
   }
-  return profiles.updateOne({ userId }, { $set: { userId, username } });
+  return profiles.updateOne({ userId }, { $set: { userId, username, updatedAt: now } });
 };
 
 export const getContacts = userIds => {
@@ -51,12 +53,20 @@ export const getContacts = userIds => {
 
 export const addContact = async contactUserId => {
   console.log('addContact');
+  const now = new Date();
   const userId = stitchClient.auth.user!.id;
-  return profiles.updateOne({ userId }, { $addToSet: { contactUserIds: contactUserId } });
+  return profiles.updateOne(
+    { userId },
+    { $set: { updatedAt: now }, $addToSet: { contactUserIds: contactUserId } }
+  );
 };
 
 export const removeContact = async contactUserId => {
   console.log('removeContact');
+  const now = new Date();
   const userId = stitchClient.auth.user!.id;
-  return profiles.updateOne({ userId }, { $pull: { contactUserIds: contactUserId } });
+  return profiles.updateOne(
+    { userId },
+    { $set: { updatedAt: now }, $pull: { contactUserIds: contactUserId } }
+  );
 };

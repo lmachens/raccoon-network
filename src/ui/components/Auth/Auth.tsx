@@ -1,4 +1,15 @@
-import { Button, FormControl, Input, InputLabel, Tab, Tabs, Typography } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  IconButton,
+  Input,
+  InputLabel,
+  Snackbar,
+  Tab,
+  Tabs,
+  Typography
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
 import {
   handleAnonymousLogin,
@@ -7,7 +18,8 @@ import {
   handleResetPassword,
   handleSignup
 } from 'api/stitch';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { ProfileContext } from 'ui/contexts/profile';
 import Loading from '../Loading';
 
 const useStyles = makeStyles(theme => ({
@@ -53,6 +65,8 @@ const Auth = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [error, setError] = useState<Error | null>(null);
   const [email, setEmail] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const { refreshProfile } = useContext(ProfileContext);
 
   const handleSubmit = async event => {
     setLoading(true);
@@ -67,12 +81,14 @@ const Auth = () => {
     try {
       if (tabIndex === 0) {
         await handleLogin(email, passwordValue);
+        refreshProfile();
       } else if (tabIndex === 1) {
         if (passwordValue !== repeatPasswordValue) {
           throw new Error("Password doesn't match");
         } else {
           await handleSignup(email, passwordValue);
           setTabIndex(0);
+          setSnackbarMessage('Please check your E-mails');
         }
       }
     } catch (error) {
@@ -104,6 +120,7 @@ const Auth = () => {
     setError(null);
     try {
       await handleResendConfirmation(email);
+      setSnackbarMessage('Please check your E-mails');
     } catch (error) {
       setError(error);
     }
@@ -118,6 +135,7 @@ const Auth = () => {
     setError(null);
     try {
       await handleResetPassword(email);
+      setSnackbarMessage('Please check your E-mails');
     } catch (error) {
       setError(error);
     }
@@ -126,6 +144,10 @@ const Auth = () => {
 
   const handleEmailChange = event => {
     setEmail(event.target.value);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarMessage('');
   };
 
   return (
@@ -204,6 +226,23 @@ const Auth = () => {
           </Typography>
         </>
       )}
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        open={Boolean(snackbarMessage)}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        ContentProps={{
+          'aria-describedby': 'message-id'
+        }}
+        message={<span id="message-id">{snackbarMessage}</span>}
+        action={
+          <IconButton aria-label="Close" color="inherit" onClick={handleCloseSnackbar}>
+            <CloseIcon />
+          </IconButton>}
+      />
     </div>
   );
 };
