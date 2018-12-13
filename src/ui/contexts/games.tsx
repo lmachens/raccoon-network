@@ -133,9 +133,10 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     }
     const matchOutcome = events.find(event => event.name === 'matchOutcome');
     if (matchOutcome) {
+      console.log('matchOutcome', matchOutcome);
       this.setState(
         state => ({
-          matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome }
+          matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome.data }
         }),
         this.updateGameSession
       );

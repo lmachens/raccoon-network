@@ -67,7 +67,6 @@ const getEventDetails = event => {
   if (event.name === 'highlight') {
     const primary = 'Recorded Highlight';
     const secondary = event.title;
-    console.log(event.video.assets);
     return {
       primary,
       secondary,

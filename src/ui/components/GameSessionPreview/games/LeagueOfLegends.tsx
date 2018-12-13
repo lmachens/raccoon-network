@@ -91,7 +91,7 @@ const LeagueOfLegends: SFC<IGameSessionPreviewComponent> = ({ info }) => {
 
         <Outcome
           className={classes.outcome}
-          outcome={info.endedAt ? info.outcome || 'ended' : 'inProgress'}
+          outcome={info.endedAt ? info.matchOutcome || 'ended' : 'inProgress'}
         />
       </div>
     </>

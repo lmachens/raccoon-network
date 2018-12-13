@@ -22,6 +22,7 @@ export interface IMatchInfo {
   deaths: number;
   assists: number;
   minionKills: number;
+  matchOutcome?: 'lose' | 'win';
   [key: string]: any;
 }
 
