@@ -16,19 +16,6 @@ interface IGamesContextValue {
   gameInfo: any;
   matchInfo: IMatchInfo;
 }
-export const GamesContext = React.createContext<IGamesContextValue>({
-  events: null,
-  gameInfo: null,
-  matchInfo: {}
-});
-
-type GameInfoState = ODKRunningGameInfo | null;
-
-interface IGamesProviderState {
-  gameInfo: GameInfoState;
-  events: IGameSessionEvent[];
-  matchInfo: IMatchInfo;
-}
 
 const defaultMatchInfo = {
   alive: true,
@@ -41,6 +28,20 @@ const defaultMatchInfo = {
   startedAt: new Date()
 };
 
+export const GamesContext = React.createContext<IGamesContextValue>({
+  events: null,
+  gameInfo: null,
+  matchInfo: defaultMatchInfo
+});
+
+type GameInfoState = ODKRunningGameInfo | null;
+
+interface IGamesProviderState {
+  gameInfo: GameInfoState;
+  events: IGameSessionEvent[];
+  matchInfo: IMatchInfo;
+}
+
 export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   stopCaptureTimeout: NodeJS.Timeout | null = null;
   highlightEvents: any[] = [];
@@ -50,7 +51,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
 
   state: IGamesProviderState = {
     gameInfo: null,
-    matchInfo: {},
+    matchInfo: defaultMatchInfo,
     events: []
   };
 
@@ -235,7 +236,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   registerEvents = () => {
     this.setState({
       gameInfo: null,
-      matchInfo: {},
+      matchInfo: defaultMatchInfo,
       events: []
     });
 

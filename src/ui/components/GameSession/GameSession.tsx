@@ -40,10 +40,7 @@ const useStyles = makeStyles({
     height: 100,
     margin: 20,
     position: 'relative',
-    display: 'inline-flex',
-    verticalAlign: 'middle',
-    justifyContent: 'center',
-    alignItems: 'center'
+    textAlign: 'center'
   },
   events: {
     overflow: 'auto',

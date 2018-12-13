@@ -1,31 +1,56 @@
-import { Typography } from '@material-ui/core';
+import { Avatar, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import React, { SFC } from 'react';
 import { IGameSessionPreviewComponent } from '../GameSessionPreview';
+import Outcome from '../partials/Outcome';
 
 const useStyles = makeStyles({
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'black',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center 15%'
+  },
+  foreground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 1,
+    color: 'white',
+    textShadow: '0 -1px #000000, 1px 0 #000000, 0 1px #000000, -1px 0 #000000'
+  },
   champion: {
     position: 'absolute',
     left: 8,
-    top: 4
+    top: 8,
+    boxShadow: '1px 1px #ffffff52'
   },
   gameMode: {
     position: 'absolute',
     left: 8,
-    top: 22
+    bottom: 4,
+    textTransform: 'capitalize'
   },
   outcome: {
     position: 'absolute',
     right: 8,
     bottom: 4
   },
-  stats: {},
-  kda: {
-    display: 'inline'
+  kdaBox: {
+    position: 'absolute',
+    left: 70,
+    top: 10
   },
-  cs: {
-    display: 'inline',
-    marginLeft: 8
+  csBox: {
+    position: 'absolute',
+    left: 160,
+    top: 10
   }
 });
 
@@ -33,19 +58,42 @@ const LeagueOfLegends: SFC<IGameSessionPreviewComponent> = ({ info }) => {
   const classes = useStyles({});
   return (
     <>
-      <Typography className={classes.champion}>{info.champion}</Typography>
-      <Typography className={classes.gameMode}>{info.gameMode}</Typography>
-      <Typography className={classes.stats}>
-        <Typography component="span" className={classes.kda}>
-          {info.kills}/{info.deaths}/{info.assists} KDA
+      <div
+        className={classes.background}
+        style={{
+          backgroundImage: `url(https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${
+            info.champion
+          }_0.jpg)`
+        }}
+      />
+      <div className={classes.foreground}>
+        <Avatar
+          className={classes.champion}
+          src={`https://ddragon.leagueoflegends.com/cdn/8.24.1/img/champion/${info.champion}.png`}
+        />
+
+        <Typography className={classes.gameMode} color="inherit">
+          {info.gameMode}
         </Typography>
-        <Typography component="span" className={classes.cs}>
-          {info.minionKills} CS
-        </Typography>
-      </Typography>
-      <Typography className={classes.outcome}>
-        {info.endedAt ? info.outcome || 'Ended' : 'In Progress'}
-      </Typography>
+
+        <div className={classes.kdaBox}>
+          <Typography color="inherit">
+            {info.kills}/{info.deaths}/{info.assists}
+          </Typography>
+          <Typography color="inherit" variant="caption">
+            {(Math.round(((info.kills + info.assists) / info.deaths) * 100) / 100).toFixed(2)} KDA
+          </Typography>
+        </div>
+
+        <div className={classes.csBox}>
+          <Typography color="inherit">{info.minionKills} CS</Typography>
+        </div>
+
+        <Outcome
+          className={classes.outcome}
+          outcome={info.endedAt ? info.outcome || 'ended' : 'inProgress'}
+        />
+      </div>
     </>
   );
 };

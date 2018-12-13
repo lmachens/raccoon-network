@@ -31,6 +31,10 @@ module.exports = {
         min_size: {
           width: 410,
           height: 600
+        },
+        max_size: {
+          width: 1000,
+          height: 900
         }
       }
     },

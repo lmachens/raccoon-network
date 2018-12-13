@@ -1,6 +1,7 @@
 import { ListItem, ListItemText, Typography } from '@material-ui/core';
 import { IGameSessionEvent } from 'api/stitch/gameSessions';
 import React, { SFC } from 'react';
+import VideoAction from './VideoAction';
 
 interface IGameSessionEventProps {
   event: IGameSessionEvent;
@@ -64,11 +65,13 @@ export const allEventDetails: IEventDetails = {
 
 const getEventDetails = event => {
   if (event.name === 'highlight') {
-    const primary = event.title;
-    const secondary = <span dangerouslySetInnerHTML={{ __html: event.video.assets.iframe }} />;
+    const primary = 'Recorded Highlight';
+    const secondary = event.title;
+    console.log(event.video.assets);
     return {
       primary,
-      secondary
+      secondary,
+      video: event.video.assets
     };
   }
 
@@ -85,12 +88,15 @@ const getEventDetails = event => {
 };
 
 const GameSessionEvent: SFC<IGameSessionEventProps> = ({ event, startedAt }) => {
+  const { primary, secondary, video } = getEventDetails(event);
+
   return (
     <ListItem>
       <Typography variant="overline">
         {formatTime(event.timestamp.getTime() - startedAt.getTime())}
       </Typography>
-      <ListItemText {...getEventDetails(event)} />
+      <ListItemText primary={primary} secondary={secondary} />
+      {video && <VideoAction video={video} />}
     </ListItem>
   );
 };

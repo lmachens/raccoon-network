@@ -18,10 +18,10 @@ export interface IMatchInfo {
   champion?: string;
   gameMode?: string;
   level?: number;
-  kills?: number;
-  deaths?: number;
-  assists?: number;
-  minionKills?: number;
+  kills: number;
+  deaths: number;
+  assists: number;
+  minionKills: number;
   [key: string]: any;
 }
 
