@@ -15,7 +15,9 @@ const useStyles = makeStyles({
     height: '100vh',
     width: '100vw',
     border: '1px solid #a7a7a7',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    maxWidth: 1000,
+    margin: '0 auto'
   },
   dragResize: {
     width: 20,
