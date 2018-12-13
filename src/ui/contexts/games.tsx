@@ -333,6 +333,8 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
 
       if (info.status === 'error') {
         window.setTimeout(() => this.setFeatures(gameInfo), 2000);
+      } else {
+        this.getInfo();
       }
     });
   };
