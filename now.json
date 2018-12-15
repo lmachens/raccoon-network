@@ -10,11 +10,11 @@
     { "src": "dist/dev/assets/logo.png", "use": "@now/static" }
   ],
   "routes": [
-    { "src": "^/vendors~main~overlay~web.js", "dest": "/dist/dev/vendors~main~overlay~web.js" },
-    { "src": "^/vendors~main~web.js", "dest": "/dist/dev/vendors~main~web.js" },
-    { "src": "^/main~web.js", "dest": "/dist/dev/main~web.js" },
-    { "src": "^/web.js", "dest": "/dist/dev/web.js" },
-    { "src": "^/assets/logo.png", "dest": "/dist/dev/assets/logo.png" },
+    { "src": "/vendors~main~overlay~web.js", "dest": "/dist/dev/vendors~main~overlay~web.js" },
+    { "src": "/vendors~main~web.js", "dest": "/dist/dev/vendors~main~web.js" },
+    { "src": "/main~web.js", "dest": "/dist/dev/main~web.js" },
+    { "src": "/web.js", "dest": "/dist/dev/web.js" },
+    { "src": "/assets/logo.png", "dest": "/dist/dev/assets/logo.png" },
     { "src": "^/(.*)", "dest": "/dist/dev/web.html" }
   ]
 }
