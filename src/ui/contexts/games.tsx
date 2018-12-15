@@ -58,12 +58,30 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   componentDidMount() {
     overwolf.games.onGameInfoUpdated.addListener(this.handleGameInfoUpdated);
     overwolf.games.getRunningGameInfo(this.handleRunningGameInfo);
+
+    overwolf.settings.registerHotKey('replay_save', this.handleReplaySaveHotkey);
   }
 
   componentWillUnmount() {
     overwolf.games.onGameInfoUpdated.removeListener(this.handleGameInfoUpdated);
     this.unregisterEvents();
   }
+
+  handleReplaySaveHotkey = async arg => {
+    const { gameInfo, matchInfo } = this.state;
+    console.log('handleReplaySaveHotkey', arg, matchInfo, gameInfo);
+    if (arg.status !== 'success' || !matchInfo || !gameInfo) {
+      return;
+    }
+
+    const timestamp = new Date();
+    const highlightEvent = {
+      timestamp,
+      events: [{ name: 'hotkey', timestamp }]
+    };
+
+    this.recordHighlight(highlightEvent);
+  };
 
   handleInfoUpdate = newInfoUpdate => {
     const timestamp = new Date();
@@ -325,6 +343,17 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     const game = games[gameId];
     if (!game || !game.interestedInFeatures) {
       console.log('No features for game');
+      const matchId = gameInfo.sessionId;
+      this.setState(
+        {
+          matchInfo: {
+            ...defaultMatchInfo,
+            matchId
+          }
+        },
+        this.updateGameSession
+      );
+
       return;
     }
 

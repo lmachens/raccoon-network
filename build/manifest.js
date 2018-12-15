@@ -11,7 +11,7 @@ module.exports = {
     launcher_icon: 'assets/favicon.ico',
     description: ''
   },
-  permissions: ['FileSystem', 'GameInfo', 'Media', 'VideoCaptureSettings'],
+  permissions: ['FileSystem', 'GameInfo', 'Hotkeys', 'Media', 'VideoCaptureSettings'],
   data: {
     game_targeting: {
       type: 'all'
@@ -42,6 +42,13 @@ module.exports = {
     externally_connectable: {
       matches: []
     },
+    hotkeys: {
+      replay_save: {
+        title: 'Save replay',
+        'action-type': 'custom',
+        default: 'Shift+F12'
+      }
+    },
     launch_events: [
       {
         event: 'AllGamesLaunch',
@@ -49,7 +56,7 @@ module.exports = {
           game_ids: [],
           wait_for_stable_framerate: 30
         },
-        start_minimized: false
+        start_minimized: true
       }
     ]
   }

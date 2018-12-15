@@ -1,3 +1,4 @@
+import { supportedGameIds } from 'api/games';
 import { appDb, stitchClient } from './client';
 import { getProfile } from './profile';
 
@@ -44,19 +45,25 @@ export interface IGameSession {
 const gameSessions = appDb.collection<IGameSession>('gameSessions');
 export const getGameSessions = userId => {
   console.log('getGameSessions');
-  return gameSessions.find({ userId }, { sort: { createdAt: -1 } }).asArray();
+  return gameSessions
+    .find({ userId, gameId: { $in: supportedGameIds } }, { sort: { createdAt: -1 } })
+    .asArray();
 };
 
 export const getGameSession = async ({ userId, matchId }) => {
   console.log('getGameSession');
-  const result = await gameSessions.find({ userId, matchId }, { limit: 1 }).asArray();
+  const result = await gameSessions
+    .find({ userId, matchId, gameId: { $in: supportedGameIds } }, { limit: 1 })
+    .asArray();
   const gameSession = result ? result[0] : null;
   return gameSession;
 };
 
 export const findGameSessions = (query, options) => {
   console.log('findGameSessions');
-  return gameSessions.find(query, { ...options, sort: { createdAt: -1 } }).asArray();
+  return gameSessions
+    .find({ ...query, gameId: { $in: supportedGameIds } }, { ...options, sort: { createdAt: -1 } })
+    .asArray();
 };
 
 export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
