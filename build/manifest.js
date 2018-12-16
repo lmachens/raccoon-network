@@ -24,6 +24,8 @@ module.exports = {
         transparent: true,
         resizable: true,
         show_in_taskbar: true,
+        desktop_only: true,
+        native_window: true,
         size: {
           width: 410,
           height: 700

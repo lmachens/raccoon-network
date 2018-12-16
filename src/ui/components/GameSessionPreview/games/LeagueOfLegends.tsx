@@ -81,7 +81,8 @@ const LeagueOfLegends: SFC<IGameSessionPreviewComponent> = ({ info }) => {
             {info.kills}/{info.deaths}/{info.assists}
           </Typography>
           <Typography color="inherit" variant="caption">
-            {(Math.round(((info.kills + info.assists) / info.deaths) * 100) / 100).toFixed(2)} KDA
+            {(Math.round(((info.kills + info.assists) / info.deaths) * 100) / 100 || 0).toFixed(2)}{' '}
+            KDA
           </Typography>
         </div>
 

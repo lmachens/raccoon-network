@@ -1,4 +1,5 @@
 import { supportedGameIds } from 'api/games';
+import { getUserId } from './auth';
 import { appDb, stitchClient } from './client';
 import { getProfile } from './profile';
 
@@ -68,7 +69,11 @@ export const findGameSessions = (query, options) => {
 
 export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
   console.log('setGameSessionInfo', gameId, matchId);
-  const userId = stitchClient.auth.user!.id;
+  const userId = getUserId();
+  if (!userId) {
+    console.error('Not logged in');
+    return null;
+  }
   const now = new Date();
   const profile = await getProfile(userId, { projection: { username: 1, avatarSrc: 1 } });
   return gameSessions.updateOne(
@@ -83,10 +88,20 @@ export const setGameSessionInfo = async ({ gameId, matchId, info }) => {
 
 export const addGameSessionEvent = async (matchId, event) => {
   console.log('addGameSessionEvent', matchId, event);
-  return gameSessions.updateOne({ matchId }, { $addToSet: { events: event } });
+  const userId = getUserId();
+  if (!userId) {
+    console.error('Not logged in');
+    return null;
+  }
+  return gameSessions.updateOne({ userId, matchId }, { $addToSet: { events: event } });
 };
 
 export const addGameSessionEvents = async (matchId, events) => {
   console.log('addGameSessionEvents', matchId, events);
-  return gameSessions.updateOne({ matchId }, { $addToSet: { events: { $each: events } } });
+  const userId = getUserId();
+  if (!userId) {
+    console.error('Not logged in');
+    return null;
+  }
+  return gameSessions.updateOne({ userId, matchId }, { $addToSet: { events: { $each: events } } });
 };

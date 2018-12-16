@@ -42,3 +42,13 @@ export const handleResetPassword = email => {
 export const handleConfirmUser = (token, tokenId) => {
   return emailPasswordClient.confirmUser(token, tokenId);
 };
+
+export const getUserId = () => {
+  const {
+    auth: { user }
+  } = stitchClient;
+  if (!user || user.loggedInProviderName === 'anon-user') {
+    return null;
+  }
+  return user.id;
+};

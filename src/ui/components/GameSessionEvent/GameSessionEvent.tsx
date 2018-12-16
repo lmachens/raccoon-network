@@ -1,7 +1,7 @@
 import { ListItem, ListItemText, Typography } from '@material-ui/core';
 import { IGameSessionEvent } from 'api/stitch/gameSessions';
 import React, { SFC } from 'react';
-import VideoAction from './VideoAction';
+import VideoEmbed from './VideoEmbed';
 
 interface IGameSessionEventProps {
   event: IGameSessionEvent;
@@ -65,8 +65,8 @@ export const allEventDetails: IEventDetails = {
 
 const getEventDetails = event => {
   if (event.name === 'highlight') {
-    const primary = 'Recorded Highlight';
-    const secondary = event.title;
+    const primary = `Recorded Highlight (${event.title})`;
+    const secondary = <VideoEmbed video={event.video.assets} />;
     return {
       primary,
       secondary,
@@ -95,7 +95,6 @@ const GameSessionEvent: SFC<IGameSessionEventProps> = ({ event, startedAt }) => 
         {formatTime(event.timestamp.getTime() - startedAt.getTime())}
       </Typography>
       <ListItemText primary={primary} secondary={secondary} />
-      {video && <VideoAction video={video} />}
     </ListItem>
   );
 };

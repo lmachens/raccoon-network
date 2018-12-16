@@ -12,7 +12,6 @@ import { createTitle, uploadVideo } from 'api/video';
 import React from 'react';
 
 interface IGamesContextValue {
-  events: any;
   gameInfo: any;
   matchInfo: IMatchInfo;
 }
@@ -24,12 +23,10 @@ const defaultMatchInfo = {
   deaths: 0,
   assists: 0,
   minionKills: 0,
-  gold: 0,
-  startedAt: new Date()
+  gold: 0
 };
 
 export const GamesContext = React.createContext<IGamesContextValue>({
-  events: null,
   gameInfo: null,
   matchInfo: defaultMatchInfo
 });
@@ -38,7 +35,6 @@ type GameInfoState = ODKRunningGameInfo | null;
 
 interface IGamesProviderState {
   gameInfo: GameInfoState;
-  events: IGameSessionEvent[];
   matchInfo: IMatchInfo;
 }
 
@@ -51,8 +47,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
 
   state: IGamesProviderState = {
     gameInfo: null,
-    matchInfo: defaultMatchInfo,
-    events: []
+    matchInfo: defaultMatchInfo
   };
 
   componentDidMount() {
@@ -104,12 +99,28 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
 
   updateGameSession = () => {
     const { matchInfo, gameInfo } = this.state;
-    console.log('updateGameSession', matchInfo);
+    console.log('updateGameSession', matchInfo, gameInfo);
+    if (matchInfo && matchInfo.matchId && gameInfo) {
+      setGameSessionInfo({
+        gameId: Math.floor(gameInfo.id / 10),
+        matchId: matchInfo.matchId,
+        info: matchInfo
+      });
+    }
+  };
+
+  endGameSession = () => {
+    const { matchInfo, gameInfo } = this.state;
+    console.log('endGameSession', matchInfo);
     if (matchInfo && matchInfo.matchId) {
       setGameSessionInfo({
         gameId: Math.floor(gameInfo!.id / 10),
         matchId: matchInfo.matchId,
-        info: matchInfo
+        info: { ...matchInfo, endedAt: new Date() }
+      });
+      this.setState({
+        gameInfo: null,
+        matchInfo: defaultMatchInfo
       });
     }
   };
@@ -135,13 +146,11 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     const announcerEvents = events.filter(event => event.name === 'announcer');
     if (announcerEvents.length) {
       addGameSessionEvents(this.state.matchInfo!.matchId, announcerEvents);
-      this.setState(state => ({
-        events: [...announcerEvents, ...state.events]
-      }));
     }
 
-    const matchStarted = !!events.find(event => event.name === 'matchStart');
+    const matchStarted = events.find(event => event.name === 'matchStart');
     if (matchStarted) {
+      console.log('matchStarted', matchStarted);
       this.setState(
         state => ({
           matchInfo: { ...state.matchInfo, startedAt: timestamp }
@@ -154,19 +163,15 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
       console.log('matchOutcome', matchOutcome);
       this.setState(
         state => ({
-          matchInfo: { ...state.matchInfo, endedAt: timestamp, outcome: matchOutcome.data }
+          matchInfo: { ...state.matchInfo, outcome: matchOutcome.data }
         }),
-        this.updateGameSession
+        this.endGameSession
       );
     }
-    const matchEnded = !!events.find(event => event.name === 'matchEnd');
+    const matchEnded = events.find(event => event.name === 'matchEnd');
     if (matchEnded) {
-      this.setState(
-        state => ({
-          matchInfo: { ...state.matchInfo, endedAt: timestamp }
-        }),
-        this.updateGameSession
-      );
+      console.log('matchEnded', matchEnded);
+      this.endGameSession();
     }
 
     const died = events.find(event => event.name === 'death');
@@ -229,10 +234,6 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
           console.log('deleted local video');
         });
       });
-
-      this.setState(state => ({
-        events: [event, ...state.events]
-      }));
     });
     delete this.stopCaptureTimeout;
     this.highlightEvents = [];
@@ -253,12 +254,6 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   };
 
   registerEvents = () => {
-    this.setState({
-      gameInfo: null,
-      matchInfo: defaultMatchInfo,
-      events: []
-    });
-
     console.log('registerEvents');
     this.unregisterEvents();
     this.getInfo();
@@ -308,7 +303,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
               ...game_info,
               ...level,
               ...summoner_info,
-              startedAt: state.matchInfo.startedAt
+              startedAt: state.matchInfo.startedAt || new Date()
             }
           }),
           this.updateGameSession
@@ -319,23 +314,26 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
 
   handleGameInfoUpdated = gameInfoResult => {
     console.log('handleGameInfoUpdated', gameInfoResult);
-    if (this.gameLaunched(gameInfoResult)) {
-      this.registerEvents();
-      setTimeout(() => this.setFeatures(gameInfoResult.gameInfo), 1000);
-    }
-
-    this.setState({ gameInfo: gameInfoResult.gameInfo });
+    this.setState({ gameInfo: gameInfoResult.gameInfo }, () => {
+      if (this.gameLaunched(gameInfoResult)) {
+        this.registerEvents();
+        setTimeout(() => this.setFeatures(gameInfoResult.gameInfo), 1000);
+      } else {
+        this.endGameSession();
+      }
+    });
   };
 
   handleRunningGameInfo = gameInfo => {
     console.log('handleRunningGameInfo', gameInfo);
-    if (this.gameRunning(gameInfo)) {
-      this.registerEvents();
-      setTimeout(() => this.setFeatures(gameInfo), 1000);
-    }
-    if (gameInfo) {
-      this.setState({ gameInfo });
-    }
+    this.setState({ gameInfo }, () => {
+      if (this.gameRunning(gameInfo)) {
+        this.registerEvents();
+        setTimeout(() => this.setFeatures(gameInfo), 1000);
+      } else {
+        this.endGameSession();
+      }
+    });
   };
 
   setFeatures = gameInfo => {
