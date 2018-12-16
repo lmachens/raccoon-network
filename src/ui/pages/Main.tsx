@@ -1,6 +1,5 @@
 import { Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import classNames from 'classnames';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Core from 'ui/components/Core';
@@ -11,17 +10,12 @@ import User from 'ui/components/User';
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
-    display: 'flex',
-    flexDirection: 'column'
+    display: 'flex'
   },
   fixedRoot: {
     width: 360,
     minWidth: 360,
     borderRight: `1px solid ${theme.palette.divider}`
-  },
-  flex: {
-    display: 'flex',
-    height: '100%'
   },
   grow: {
     flexGrow: 1
@@ -50,25 +44,22 @@ const Main = () => {
   );
   return (
     <Switch>
-      <>
-        <Hidden smUp>
-          <div className={classes.root}>
-            <Route exact path="/" component={Core} />
-            {routes}
-          </div>
-        </Hidden>
+      <div className={classes.root}>
         <Hidden xsDown>
-          <div className={classes.flex}>
-            <div className={classNames(classes.root, classes.fixedRoot)}>
-              <Core />
-            </div>
-            <div className={classes.grow}>
-              <Route exact path="/" component={Feed} />
-              {routes}
-            </div>
+          <div className={classes.fixedRoot}>
+            <Core />
           </div>
         </Hidden>
-      </>
+        <div className={classes.grow}>
+          <Hidden smUp>
+            <Route exact path="/" component={Core} />
+          </Hidden>
+          <Hidden xsDown>
+            <Route exact path="/" component={Feed} />
+          </Hidden>
+          {routes}
+        </div>
+      </div>
     </Switch>
   );
 };

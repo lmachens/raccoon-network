@@ -16,7 +16,8 @@ interface ICoreProps extends RouteComponentProps<{}> {}
 const useStyles = makeStyles({
   root: {
     backgroundColor: '#f3f3f3',
-    height: '100%'
+    height: '100%',
+    width: '100%'
   },
   buttons: {
     display: 'flex',
