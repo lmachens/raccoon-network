@@ -1,4 +1,4 @@
-import games from 'api/games';
+import games, { gameLaunched, gameRunning } from 'api/games';
 import overwolf from 'api/overwolf';
 import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
 import {
@@ -11,11 +11,6 @@ import {
 import { createTitle, uploadVideo } from 'api/video';
 import React from 'react';
 
-interface IGamesContextValue {
-  gameInfo: any;
-  matchInfo: IMatchInfo;
-}
-
 const defaultMatchInfo = {
   level: 1,
   kills: 0,
@@ -25,11 +20,6 @@ const defaultMatchInfo = {
   gold: 0
 };
 
-export const GamesContext = React.createContext<IGamesContextValue>({
-  gameInfo: null,
-  matchInfo: defaultMatchInfo
-});
-
 type GameInfoState = ODKRunningGameInfo | null;
 
 interface IGamesProviderState {
@@ -37,7 +27,7 @@ interface IGamesProviderState {
   matchInfo: IMatchInfo;
 }
 
-export class GamesProvider extends React.Component<{}, IGamesProviderState> {
+class GamesProvider extends React.PureComponent<{}, IGamesProviderState> {
   stopCaptureTimeout: NodeJS.Timeout | null = null;
   highlightEvents: any[] = [];
   fileInput = React.createRef<any>();
@@ -142,6 +132,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
       }
       return { name: event.name, data, timestamp };
     });
+
     const announcerEvents = events.filter(event => event.name === 'announcer');
     if (announcerEvents.length) {
       addGameSessionEvents(this.state.matchInfo!.matchId, announcerEvents);
@@ -303,7 +294,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   handleGameInfoUpdated = gameInfoResult => {
     console.log('handleGameInfoUpdated', gameInfoResult);
     this.setState({ gameInfo: gameInfoResult.gameInfo }, () => {
-      if (this.gameLaunched(gameInfoResult)) {
+      if (gameLaunched(gameInfoResult)) {
         this.registerEvents();
         setTimeout(() => this.setFeatures(gameInfoResult.gameInfo), 1000);
       } else {
@@ -316,7 +307,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   handleRunningGameInfo = gameInfo => {
     console.log('handleRunningGameInfo', gameInfo);
     this.setState({ gameInfo }, () => {
-      if (this.gameRunning(gameInfo)) {
+      if (gameRunning(gameInfo)) {
         this.registerEvents();
         this.setFeatures(gameInfo);
       } else {
@@ -357,41 +348,9 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     });
   };
 
-  gameLaunched = gameInfoResult => {
-    if (!gameInfoResult) {
-      return false;
-    }
-
-    if (!gameInfoResult.gameInfo) {
-      return false;
-    }
-
-    if (!gameInfoResult.runningChanged && !gameInfoResult.gameChanged) {
-      return false;
-    }
-
-    if (!gameInfoResult.gameInfo.isRunning) {
-      return false;
-    }
-
-    return true;
-  };
-
-  gameRunning = gameInfo => {
-    if (!gameInfo) {
-      return false;
-    }
-
-    if (!gameInfo.isRunning) {
-      return false;
-    }
-
-    return true;
-  };
-
   render() {
-    const { children } = this.props;
-
-    return <GamesContext.Provider value={this.state}>{children}</GamesContext.Provider>;
+    return null;
   }
 }
+
+export default GamesProvider;

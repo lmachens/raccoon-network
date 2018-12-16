@@ -34,3 +34,35 @@ export const findGames = keyword => {
     resolve(filtered);
   });
 };
+
+export const gameLaunched = gameInfoResult => {
+  if (!gameInfoResult) {
+    return false;
+  }
+
+  if (!gameInfoResult.gameInfo) {
+    return false;
+  }
+
+  if (!gameInfoResult.runningChanged && !gameInfoResult.gameChanged) {
+    return false;
+  }
+
+  if (!gameInfoResult.gameInfo.isRunning) {
+    return false;
+  }
+
+  return true;
+};
+
+export const gameRunning = gameInfo => {
+  if (!gameInfo) {
+    return false;
+  }
+
+  if (!gameInfo.isRunning) {
+    return false;
+  }
+
+  return true;
+};

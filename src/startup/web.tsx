@@ -5,7 +5,7 @@ import { CacheProvider } from 'ui/contexts/cache';
 import { ProfileProvider } from 'ui/contexts/profile';
 import WebLayout from 'ui/layouts/Web';
 import Main from 'ui/pages/Main';
-import ThemeProvider from 'ui/themes/ThemeProvider';
+import ThemeProvider from 'ui/providers/ThemeProvider';
 
 const Root = (
   <ThemeProvider>

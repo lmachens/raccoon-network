@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { CacheProvider } from 'ui/contexts/cache';
-import { GamesProvider } from 'ui/contexts/games';
 import { ProfileProvider } from 'ui/contexts/profile';
 import OverwolfLayout from 'ui/layouts/Overwolf';
 import Main from 'ui/pages/Main';
-import ThemeProvider from 'ui/themes/ThemeProvider';
+import GamesProvider from 'ui/providers/GamesProvider';
+import ThemeProvider from 'ui/providers/ThemeProvider';
 
 const Root = (
   <ThemeProvider>
@@ -14,9 +14,8 @@ const Root = (
       <HashRouter>
         <CacheProvider>
           <OverwolfLayout>
-            <GamesProvider>
-              <Main />
-            </GamesProvider>
+            <GamesProvider />
+            <Main />
           </OverwolfLayout>
         </CacheProvider>
       </HashRouter>

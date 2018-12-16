@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Overlay from 'ui/pages/Overlay';
-import ThemeProvider from 'ui/themes/ThemeProvider';
+import ThemeProvider from 'ui/providers/ThemeProvider';
 
 const Root = (
   <ThemeProvider>
