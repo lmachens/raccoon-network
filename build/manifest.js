@@ -3,7 +3,7 @@ module.exports = {
   type: 'WebApp',
   meta: {
     name: 'Raccoon Network',
-    version: '1.0.0',
+    version: '0.0.1',
     'minimum-overwolf-version': '0.109.1',
     author: 'Leon Machens',
     icon: 'assets/logo.png',
