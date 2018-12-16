@@ -58,7 +58,7 @@ const Feed = () => {
     <div className={classes.root}>
       <List>
         <ListItem>
-          <Hidden smUp>
+          <Hidden smUp implementation="css">
             <ExitButton />
           </Hidden>
           <ListItemText primary="Feed" />

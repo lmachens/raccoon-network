@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
   fixedRoot: {
     width: 360,
     minWidth: 360,
+    height: '100%',
     borderRight: `1px solid ${theme.palette.divider}`
   },
   grow: {
@@ -45,16 +46,16 @@ const Main = () => {
   return (
     <Switch>
       <div className={classes.root}>
-        <Hidden xsDown>
+        <Hidden xsDown implementation="css">
           <div className={classes.fixedRoot}>
             <Core />
           </div>
         </Hidden>
         <div className={classes.grow}>
-          <Hidden smUp>
+          <Hidden smUp implementation="css">
             <Route exact path="/" component={Core} />
           </Hidden>
-          <Hidden xsDown>
+          <Hidden xsDown implementation="css">
             <Route exact path="/" component={Feed} />
           </Hidden>
           {routes}

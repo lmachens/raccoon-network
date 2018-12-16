@@ -33,14 +33,14 @@ const Core: SFC<ICoreProps> = ({ location }) => {
       <Search>
         <div className={classes.buttons}>
           <Link to={'/feed'}>
-            <Hidden smUp>
+            <Hidden smUp implementation="css">
               <IconTextButton
                 label="Home"
                 icon={<HomeIcon />}
                 selected={location.pathname === '/feed'}
               />
             </Hidden>
-            <Hidden xsDown>
+            <Hidden xsDown implementation="css">
               <IconTextButton
                 label="Home"
                 icon={<HomeIcon />}

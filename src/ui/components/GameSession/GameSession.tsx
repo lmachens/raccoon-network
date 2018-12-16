@@ -59,17 +59,42 @@ const filterEvents = event => {
   return false;
 };
 
+let refreshInterval: any = null;
 const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
   const classes = useStyles({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { state, setCache } = useContext(CacheContext);
 
   const cacheKey = `${userId}-match-${matchId}`;
   const gameSession: IGameSession = state[cacheKey];
 
-  useEffect(() => {
-    handleRefresh();
-  }, []);
+  useEffect(
+    () => {
+      if (!gameSession) {
+        handleRefresh();
+      } else if (!gameSession.info.endedAt && !refreshInterval) {
+        console.log('GameSession not endet -> set refresh interval');
+        refreshInterval = setInterval(handleSilentRefresh, 30000);
+      } else if (gameSession.info.endedAt && refreshInterval) {
+        console.log('GameSession endet -> clear refresh interval');
+        clearInterval(refreshInterval);
+        refreshInterval = null;
+      }
+
+      return () => {
+        console.log('GameSession destructed -> clear refresh interval');
+        clearInterval(refreshInterval);
+        refreshInterval = null;
+      };
+    },
+    [gameSession]
+  );
+
+  const handleSilentRefresh = () => {
+    getGameSession({ userId, matchId }).then(result => {
+      setCache(cacheKey, result);
+    });
+  };
 
   const handleRefresh = () => {
     setLoading(true);
@@ -85,7 +110,7 @@ const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
     <div className={classes.root}>
       <List>
         <ListItem>
-          <Hidden smUp>
+          <Hidden smUp implementation="css">
             <ExitButton />
           </Hidden>
           <ListItemText

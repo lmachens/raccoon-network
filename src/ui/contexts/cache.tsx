@@ -1,3 +1,4 @@
+import deepDiff from 'deep-diff';
 import React from 'react';
 
 interface ICache {
@@ -22,9 +23,13 @@ export class CacheProvider extends React.Component<{}, ICacheState> {
   state = {};
 
   setCache = (key: string, value: any) => {
-    this.setState({
-      [key]: value
-    });
+    const diff = deepDiff.diff(this.state[key], value);
+    console.log(diff);
+    if (diff) {
+      this.setState({
+        [key]: value
+      });
+    }
   };
 
   render() {
