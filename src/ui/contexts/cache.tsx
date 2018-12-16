@@ -24,7 +24,6 @@ export class CacheProvider extends React.Component<{}, ICacheState> {
 
   setCache = (key: string, value: any) => {
     const diff = deepDiff.diff(this.state[key], value);
-    console.log(diff);
     if (diff) {
       this.setState({
         [key]: value

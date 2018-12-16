@@ -74,7 +74,7 @@ const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
         handleRefresh();
       } else if (!gameSession.info.endedAt && !refreshInterval) {
         console.log('GameSession not endet -> set refresh interval');
-        refreshInterval = setInterval(handleSilentRefresh, 30000);
+        refreshInterval = setInterval(handleSilentRefresh, 10000);
       } else if (gameSession.info.endedAt && refreshInterval) {
         console.log('GameSession endet -> clear refresh interval');
         clearInterval(refreshInterval);
@@ -141,8 +141,12 @@ const GameSession: SFC<IGameSessionProps> = ({ userId, matchId }) => {
           {gameSession.events
             .filter(filterEvents)
             .sort(sortEvent)
-            .map((event, i) => (
-              <GameSessionEvent key={i} event={event} startedAt={gameSession.info.startedAt!} />
+            .map(event => (
+              <GameSessionEvent
+                key={event.timestamp.getTime()}
+                event={event}
+                startedAt={gameSession.info.startedAt!}
+              />
             ))}
         </List>
       )}

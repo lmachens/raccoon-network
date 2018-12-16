@@ -55,6 +55,26 @@ export const gameLaunched = gameInfoResult => {
   return true;
 };
 
+export const gameEnded = gameInfoResult => {
+  if (!gameInfoResult) {
+    return false;
+  }
+
+  if (!gameInfoResult.gameInfo) {
+    return false;
+  }
+
+  if (!gameInfoResult.runningChanged && !gameInfoResult.gameChanged) {
+    return false;
+  }
+
+  if (!gameInfoResult.gameInfo.isRunning) {
+    return true;
+  }
+
+  return false;
+};
+
 export const gameRunning = gameInfo => {
   if (!gameInfo) {
     return false;

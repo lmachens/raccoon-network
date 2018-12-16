@@ -1,4 +1,4 @@
-import games, { gameLaunched, gameRunning } from 'api/games';
+import games, { gameEnded, gameLaunched, gameRunning } from 'api/games';
 import overwolf from 'api/overwolf';
 import { ODKRunningGameInfo } from 'api/overwolf/overwolf';
 import {
@@ -67,9 +67,7 @@ class GamesProvider extends React.PureComponent<{}, IGamesProviderState> {
     this.recordHighlight(highlightEvent);
   };
 
-  handleInfoUpdate = newInfoUpdate => {
-    const timestamp = new Date();
-    const infoUpdate = { ...newInfoUpdate, timestamp };
+  handleInfoUpdate = infoUpdate => {
     const { game_info = {}, level = {}, summoner_info = {} } = infoUpdate.info;
 
     this.setState(
@@ -93,7 +91,7 @@ class GamesProvider extends React.PureComponent<{}, IGamesProviderState> {
       setGameSessionInfo({
         gameId: Math.floor(gameInfo.id / 10),
         matchId: matchInfo.matchId,
-        info: matchInfo
+        info: { startedAt: new Date(), ...matchInfo }
       });
     }
   };
@@ -292,12 +290,13 @@ class GamesProvider extends React.PureComponent<{}, IGamesProviderState> {
   };
 
   handleGameInfoUpdated = gameInfoResult => {
-    console.log('handleGameInfoUpdated', gameInfoResult);
     this.setState({ gameInfo: gameInfoResult.gameInfo }, () => {
       if (gameLaunched(gameInfoResult)) {
+        console.log('handleGameInfoUpdated: gameLaunched');
         this.registerEvents();
         setTimeout(() => this.setFeatures(gameInfoResult.gameInfo), 1000);
-      } else {
+      } else if (gameEnded(gameInfoResult)) {
+        console.log('handleGameInfoUpdated: gameEnded');
         this.unregisterEvents();
         this.endGameSession();
       }
