@@ -17,7 +17,6 @@ interface IGamesContextValue {
 }
 
 const defaultMatchInfo = {
-  alive: true,
   level: 1,
   kills: 0,
   deaths: 0,
@@ -175,19 +174,6 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     }
 
     const died = events.find(event => event.name === 'death');
-    const respawnded = events.find(event => event.name === 'respawn');
-
-    if (died || respawnded) {
-      const alive = !!(respawnded || !died);
-
-      this.setState(
-        state => ({
-          matchInfo: { ...state.matchInfo, alive }
-        }),
-        this.updateGameSession
-      );
-    }
-
     const killed = events.find(event => event.name === 'kill');
     const assisted = events.find(event => event.name === 'assist');
 
@@ -254,6 +240,8 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
   };
 
   registerEvents = () => {
+    const { gameInfo } = this.state;
+
     console.log('registerEvents');
     this.unregisterEvents();
     this.getInfo();
@@ -319,6 +307,7 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
         this.registerEvents();
         setTimeout(() => this.setFeatures(gameInfoResult.gameInfo), 1000);
       } else {
+        this.unregisterEvents();
         this.endGameSession();
       }
     });
@@ -329,8 +318,9 @@ export class GamesProvider extends React.Component<{}, IGamesProviderState> {
     this.setState({ gameInfo }, () => {
       if (this.gameRunning(gameInfo)) {
         this.registerEvents();
-        setTimeout(() => this.setFeatures(gameInfo), 1000);
+        this.setFeatures(gameInfo);
       } else {
+        this.unregisterEvents();
         this.endGameSession();
       }
     });

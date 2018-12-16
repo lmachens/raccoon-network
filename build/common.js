@@ -48,6 +48,7 @@ module.exports = ({ outputPath, mode, ...other }) => ({
       2
     ),
     new CopyWebpackPlugin([{ from: path.resolve(__dirname, '../assets'), to: 'assets' }]),
+    new CopyWebpackPlugin([{ from: path.resolve(__dirname, '../plugins'), to: 'plugins' }]),
     new HtmlWebpackPlugin({
       filename: 'main.html',
       title: 'Raccoon Network - Main',

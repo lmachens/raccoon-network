@@ -16,6 +16,12 @@ module.exports = {
     game_targeting: {
       type: 'all'
     },
+    'extra-objects': {
+      'simple-io-plugin': {
+        file: 'plugins/simple-io-plugin.dll',
+        class: 'overwolf.plugins.SimpleIOPlugin'
+      }
+    },
     game_events: [5426],
     start_window: 'main',
     windows: {

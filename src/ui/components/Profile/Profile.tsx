@@ -83,6 +83,7 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
       });
   };
 
+  const { username = 'New User' } = profile || {};
   return (
     <List disablePadding>
       {loading && <Loading />}
@@ -94,9 +95,7 @@ const Profile: SFC<IProfileProps> = ({ location, history }) => {
           })}
         >
           <ListItemAvatar>
-            <ProfilePicture
-              username={profile && profile.username ? profile.username.slice(0, 2) : '?'}
-            />
+            <ProfilePicture username={username.slice(0, 2)} />
           </ListItemAvatar>
           <ListItemText
             primary={isAnonymous || !profile || !profile.username ? 'Guest' : profile.username}

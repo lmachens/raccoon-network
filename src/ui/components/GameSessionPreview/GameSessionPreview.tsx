@@ -60,6 +60,7 @@ const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({ gameSession, onClic
   const classes = useStyles({});
   const game = games[gameSession.gameId];
   const Component = game.GameSessionPreviewComponent;
+  const { username = 'New User' } = gameSession.profile;
   return (
     <ListItem
       className={classNames(classes.listItem, {
@@ -69,7 +70,7 @@ const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({ gameSession, onClic
     >
       <ListItemAvatar>
         <Link to={`/users/${gameSession.userId}`}>
-          <ProfilePicture username={gameSession.profile.username.slice(0, 2)} />
+          <ProfilePicture username={username.slice(0, 2)} />
         </Link>
       </ListItemAvatar>
       <ListItemText
@@ -78,7 +79,7 @@ const GameSessionPreview: SFC<IGameSessionPreviewProps> = ({ gameSession, onClic
           <Typography className={classes.primary}>
             <Link to={`/users/${gameSession.userId}`}>
               <Typography color="textPrimary" component="span" className={classes.link}>
-                {gameSession.profile.username}
+                {username}
               </Typography>
             </Link>
             {' played '}

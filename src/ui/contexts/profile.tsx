@@ -36,6 +36,7 @@ export class ProfileProvider extends React.Component<{}, IProfileState> {
 
   handleAuth: StitchAuthListener = {
     onAuthEvent: async auth => {
+      console.log('onAuthEvent', auth);
       const profile = auth.isLoggedIn ? await getProfile(auth.user!.id) : null;
       const isAnonymous = !!auth.user && auth.user.loggedInProviderName === 'anon-user';
       this.setState({
@@ -58,6 +59,7 @@ export class ProfileProvider extends React.Component<{}, IProfileState> {
 
   refreshProfile = async () => {
     const { user } = this.state;
+    console.log('refreshProfile', user);
     if (!user) {
       return;
     }

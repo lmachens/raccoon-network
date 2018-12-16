@@ -1,6 +1,6 @@
 import { supportedGameIds } from 'api/games';
 import { getUserId } from './auth';
-import { appDb, stitchClient } from './client';
+import { appDb } from './client';
 import { getProfile } from './profile';
 
 export interface IGameSessionEvent {
@@ -16,7 +16,6 @@ export interface IMatchInfo {
   startedAt?: Date;
   endedAt?: Date;
   outcome?: any;
-  alive?: boolean;
   champion?: string;
   gameMode?: string;
   level?: number;

@@ -25,6 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const Contact: SFC<IContactProps> = ({ profile, onClick, selected }) => {
   const classes = useStyles({});
+  const { username = 'New User' } = profile || {};
   return (
     <ListItem
       button
@@ -34,7 +35,7 @@ const Contact: SFC<IContactProps> = ({ profile, onClick, selected }) => {
       onClick={onClick}
     >
       <ListItemAvatar>
-        <ProfilePicture username={profile.username && profile.username.slice(0, 2)} />
+        <ProfilePicture username={username.slice(0, 2)} />
       </ListItemAvatar>
       <ListItemText
         primary={profile.username}

@@ -18,8 +18,7 @@ import {
   handleResetPassword,
   handleSignup
 } from 'api/stitch';
-import React, { useContext, useState } from 'react';
-import { ProfileContext } from 'ui/contexts/profile';
+import React, { useState } from 'react';
 import Loading from '../Loading';
 
 const useStyles = makeStyles(theme => ({
@@ -66,7 +65,6 @@ const Auth = () => {
   const [error, setError] = useState<Error | null>(null);
   const [email, setEmail] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const { refreshProfile } = useContext(ProfileContext);
 
   const handleSubmit = async event => {
     setLoading(true);
@@ -81,7 +79,6 @@ const Auth = () => {
     try {
       if (tabIndex === 0) {
         await handleLogin(email, passwordValue);
-        refreshProfile();
       } else if (tabIndex === 1) {
         if (passwordValue !== repeatPasswordValue) {
           throw new Error("Password doesn't match");
