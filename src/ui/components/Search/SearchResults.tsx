@@ -5,7 +5,7 @@ import { findProfiles, IUserProfile } from 'api/stitch/profile';
 import React, { SFC, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import Contact from '../Contact';
-import Game from '../Game';
+import GameListItem from '../GameListItem';
 import Link from '../Link';
 import Loading from '../Loading';
 
@@ -70,7 +70,7 @@ const SearchResults: SFC<ISearchResultsProps> = ({ search, query, location }) =>
         <>
           <ListSubheader>Games</ListSubheader>
           {searchResults.games.map(game => (
-            <Game key={game.id} game={game} />
+            <GameListItem key={game.id} game={game} />
           ))}
         </>
       )}

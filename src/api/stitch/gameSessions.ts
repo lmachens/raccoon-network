@@ -46,14 +46,20 @@ const gameSessions = appDb.collection<IGameSession>('gameSessions');
 export const getGameSessions = userId => {
   console.log('getGameSessions');
   return gameSessions
-    .find({ userId, gameId: { $in: supportedGameIds } }, { sort: { createdAt: -1 } })
+    .find(
+      { userId, gameId: { $in: supportedGameIds }, 'events.0': { $exists: true } },
+      { sort: { createdAt: -1 } }
+    )
     .asArray();
 };
 
 export const getGameSession = async ({ userId, matchId }) => {
   console.log('getGameSession');
   const result = await gameSessions
-    .find({ userId, matchId, gameId: { $in: supportedGameIds } }, { limit: 1 })
+    .find(
+      { userId, matchId, gameId: { $in: supportedGameIds }, 'events.0': { $exists: true } },
+      { limit: 1 }
+    )
     .asArray();
   const gameSession = result ? result[0] : null;
   return gameSession;
@@ -62,7 +68,10 @@ export const getGameSession = async ({ userId, matchId }) => {
 export const findGameSessions = (query, options) => {
   console.log('findGameSessions');
   return gameSessions
-    .find({ ...query, gameId: { $in: supportedGameIds } }, { ...options, sort: { createdAt: -1 } })
+    .find(
+      { ...query, gameId: { $in: supportedGameIds }, 'events.0': { $exists: true } },
+      { ...options, sort: { createdAt: -1 } }
+    )
     .asArray();
 };
 

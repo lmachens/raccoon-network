@@ -1,51 +1,18 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText, Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-import { IGame } from 'api/games';
-import classNames from 'classnames';
+import { gamesByName } from 'api/games';
 import React, { SFC } from 'react';
 
 interface IGameProps {
-  game: IGame;
-  selected?: boolean;
-  onClick?(): void;
+  gameName: string;
 }
 
-const useStyles = makeStyles(theme => ({
-  inline: {
-    display: 'inline'
-  },
-  listItem: {
-    padding: 8
-  },
-  selected: {
-    backgroundColor: `${theme.palette.action.selected} !important`
-  },
-  gameIcon: {
-    padding: 5
+const Game: SFC<IGameProps> = ({ gameName }) => {
+  const game = gamesByName[gameName];
+
+  if (!game) {
+    return null; // todo not found
   }
-}));
 
-const Game: SFC<IGameProps> = ({ game, onClick, selected }) => {
-  const classes = useStyles({});
-
-  return (
-    <Tooltip title="Coming soon">
-      <div>
-        <ListItem
-          button
-          className={classNames(classes.listItem, {
-            [classes.selected]: selected
-          })}
-          disabled
-          onClick={onClick}
-        >
-          <ListItemAvatar>
-            <Avatar src={game.iconSrc} className={classes.gameIcon} />
-          </ListItemAvatar>
-          <ListItemText primary={game.name} />
-        </ListItem>
-      </div>
-    </Tooltip>
-  );
+  return <div>{game.name}</div>;
 };
+
 export default Game;

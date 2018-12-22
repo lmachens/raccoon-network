@@ -4,6 +4,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Core from 'ui/components/Core';
 import Feed from 'ui/components/Feed';
+import Game from 'ui/components/Game';
 import GameSession from 'ui/components/GameSession';
 import User from 'ui/components/User';
 
@@ -40,6 +41,11 @@ const Main = () => {
         render={({ match }) => (
           <GameSession userId={match.params.userId} matchId={match.params.matchId} />
         )}
+      />
+      <Route
+        exact
+        path="/games/:gameName"
+        render={({ match }) => <Game gameName={match.params.gameName} />}
       />
     </>
   );

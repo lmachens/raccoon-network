@@ -24,6 +24,11 @@ const games: IGames = {
   [skylordsReborn.id]: skylordsReborn
 };
 
+export const gamesByName: IGames = {
+  [leagueOfLegends.name]: leagueOfLegends,
+  [skylordsReborn.name]: skylordsReborn
+};
+
 export default games;
 
 export const supportedGameIds = Object.keys(games).map(gameId => Number(gameId));
